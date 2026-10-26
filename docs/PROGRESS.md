@@ -4,7 +4,7 @@
 
 ## Current Phase
 
-Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública aprobados (TF-003), con cuatro sprints de pantallas planeados. Esqueleto del proyecto y CI completa (TF-004) y `main` protegida (TF-005). Sprint 0 cerrado; sigue el sprint 1 de pantallas. Solo entorno local (ADR-F004).
+Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública aprobados (TF-003), con cuatro sprints de pantallas planeados. Esqueleto del proyecto y CI completa (TF-004) y `main` protegida (TF-005). Sprint 0 cerrado. Sprint 1 de pantallas en curso: base de la app hecha (TF-006). Solo entorno local (ADR-F004).
 
 ## Completed
 
@@ -15,14 +15,17 @@ Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack deci
 - [x] TF-004 Esqueleto del proyecto y CI completa, con prueba de humo contra la API 1.8.0 local hecha por el usuario (2026-10-26)
 - [x] Sprint 0 cerrado (2026-10-26)
 - [x] TF-005 Ruleset de `main` aplicado por el usuario (2026-10-26)
+- [x] TF-006 Base de la app: encabezado, pie, errores por `type`, precios y foco al cambiar de pantalla (2026-10-26)
 
 ## In Progress
 
-Ninguna.
+- Sprint 1: TF-007 a TF-009.
 
 ## Next
 
-- Sprint 1 de pantallas: TF-006 a TF-009 (`SPRINT.md`)
+- TF-007 Inicio y catálogo
+- TF-008 Detalle de producto
+- TF-009 Carrito de invitado
 
 ## Blocked
 

@@ -4,6 +4,13 @@
 
 ## Unreleased
 
+- TF-006: base de la tienda.
+  - Encabezado con logo y buscador (de 2 a 100 caracteres, lleva a `/products?q=`), enlace para saltar al contenido y pie con la nota de precios con IVA. El contador del carrito, la cuenta y el aviso de privacidad llegan con TF-009, TF-010 y TF-016.
+  - Mensajes de error propios de la tienda según el `type` del Problem Details, con referencia para soporte solo en errores inesperados y espera visible tras un 429 (`REQUIREMENTS.md` §4.1).
+  - `PriceTag`: precio de la API, precio de comparación tachado solo si es mayor, "Desde" e "IVA incluido" (§4.2).
+  - Al cambiar de pantalla, el foco va al título (§4.6). Página 404 con enlaces al inicio y al catálogo.
+  - Del backoffice (commit `bbcd5af`) se copiaron `form-errors.ts`, `QueryState.vue` y `ProblemAlert.vue` (este último adaptado), con su origen.
+
 - Sprint 0 cerrado: TF-004 con la prueba de humo contra la API 1.8.0 local, y TF-005 con el ruleset de `main` aplicado.
 
 - Documentación de la API resincronizada con base-shop 1.8.0 (tag `v1.8.0`, commit `8bde9da`). La API tiene ahora una URL por frontend para los enlaces de sus correos (base-shop ADR-0169), así que `API_GAPS.md` G-08 queda resuelta. El contrato de `/v1` no cambió (`openapi/v1.json` igual) y los tipos generados no cambian.

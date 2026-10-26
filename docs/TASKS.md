@@ -29,14 +29,14 @@ Detalle de cada pantalla en `REQUIREMENTS.md` (§ de la columna "Criterios"). To
 
 | ID | Tarea | Estado | Depende de | Criterios de aceptación |
 |---|---|---|---|---|
-| TF-006 | Base de la aplicación: encabezado, pie, página 404, cliente de la API con tipos generados del OpenAPI y manejo de errores por `type` | TODO | TF-004 | `REQUIREMENTS.md` §4.1, §4.2, §4.6 y §5.15 |
+| TF-006 | Base de la aplicación: encabezado, pie, página 404, cliente de la API con tipos generados del OpenAPI y manejo de errores por `type` | DONE | TF-004 | `REQUIREMENTS.md` §4.1, §4.2, §4.6 y §5.15. El contador del carrito, la cuenta y el enlace al aviso de privacidad del encabezado y el pie se agregan con TF-009, TF-010 y TF-016 |
 | TF-007 | Inicio y catálogo con búsqueda, filtros, orden y paginación | TODO | TF-006 | `REQUIREMENTS.md` §5.1 y §5.2 |
 | TF-008 | Detalle de producto con selector de variantes | TODO | TF-006 | `REQUIREMENTS.md` §5.3 |
-| TF-009 | Carrito de invitado | TODO | TF-008 | `REQUIREMENTS.md` §4.5 y §5.4 (rutas de invitado) |
-| TF-010 | Sesión: inicio y cierre, renovación entre pestañas, carrito del cliente y fusión | TODO | TF-009 | `REQUIREMENTS.md` §4.5, §5.4 (rutas de cliente) y §5.8; ADR-F006 |
+| TF-009 | Carrito de invitado | TODO | TF-008 | `REQUIREMENTS.md` §4.5 y §5.4 (rutas de invitado), y el contador del carrito en el encabezado (§5.15) |
+| TF-010 | Sesión: inicio y cierre, renovación entre pestañas, carrito del cliente y fusión | TODO | TF-009 | `REQUIREMENTS.md` §4.5, §5.4 (rutas de cliente) y §5.8; ADR-F006. Con el acceso a la cuenta en el encabezado (§5.15) |
 | TF-011 | Registro, verificación de email y recuperación de contraseña | TODO | TF-010 | `REQUIREMENTS.md` §5.7 y §5.9. Con la API 1.8.0 o posterior, que envía estos enlaces a la tienda (G-08 resuelta) |
 | TF-012 | Checkout de invitado y de cliente, e inicio del pago | TODO | TF-010 | `REQUIREMENTS.md` §4.3, §4.4, §5.5 y §5.6. Versión del aviso de privacidad por variable mientras G-01 siga abierta; sin pago manual habilitado, el mensaje de §5.6 (G-03) |
 | TF-013 | Mi cuenta, direcciones y mis pedidos | TODO | TF-012 | `REQUIREMENTS.md` §5.10 a §5.12 |
 | TF-014 | Pedidos de invitado: consulta, enlace de acceso y recompra | TODO | TF-012 | `REQUIREMENTS.md` §5.13 |
 | TF-015 | Presupuesto de rendimiento en la CI | TODO | TF-007 | Lighthouse en la CI contra el build con la API simulada, que falla si se pasa el presupuesto de `REQUIREMENTS.md` §6.2 (salvo el LCP con imágenes mientras G-02 siga abierta) |
-| TF-016 | Aviso de privacidad | BLOCKED | TF-006 | `REQUIREMENTS.md` §5.14. Bloqueada por G-01 y PF-07: falta el texto legal y su dueño |
+| TF-016 | Aviso de privacidad | BLOCKED | TF-006 | `REQUIREMENTS.md` §5.14. Bloqueada por G-01 y PF-07: falta el texto legal y su dueño. Con el enlace al aviso en el pie (§5.15) |

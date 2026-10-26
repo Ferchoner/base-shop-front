@@ -62,7 +62,21 @@ Creado en TF-004:
 | `app/shared/api/generated/openapi.d.ts` | Tipos generados con `npm run api:types` desde `docs/api/openapi/v1.json`; la CI falla si no están al día | Generado |
 | `app/shared/utils/money.ts`, `dates.ts` | Dinero en MXN desde centavos y fechas en la zona del navegador | Copiados del backoffice |
 | `app/plugins/01.api.ts`, `02.vue-query.ts` | Cliente de la API y TanStack Query; la sesión se conecta en TF-010 | Adaptados del backoffice |
-| `app/layouts/default.vue`, `app/pages/index.vue`, `app/error.vue` | Encabezado y pie provisionales, inicio que comprueba la conexión con la API y página de error | Provisionales hasta TF-006 y TF-007; `error.vue` adaptado del backoffice |
+| `app/layouts/default.vue`, `app/pages/index.vue`, `app/error.vue` | Encabezado y pie provisionales, inicio que comprueba la conexión con la API y página de error | Reemplazados en TF-006; el inicio, en TF-007 |
 | `tests/unit/`, `tests/e2e/` | Vitest (con MSW en el cliente HTTP) y Playwright con axe sobre el build estático | Parte copiados del backoffice |
+
+Creado en TF-006:
+
+| Ruta | Contenido | Origen |
+|---|---|---|
+| `app/shared/api/problem-message.ts` | Título, texto y referencia que ve el cliente para cada `type` de error (`REQUIREMENTS.md` §4.1) | Propio |
+| `app/shared/ui/use-retry-cooldown.ts` | Cuenta atrás del `Retry-After` tras un 429 | Propio |
+| `app/shared/utils/form-errors.ts` | Errores de campo del Problem Details | Copiado del backoffice |
+| `app/components/ProblemAlert.vue`, `QueryState.vue` | Alerta de error y estados de carga, vacío y error de una query | Del backoffice; `ProblemAlert` adaptado a los mensajes de la tienda y `QueryState` con un slot de carga |
+| `app/components/PriceTag.vue`, `SiteSearch.vue` | Precio con comparación e IVA, y buscador del encabezado | Propios |
+| `app/layouts/default.vue`, `app/error.vue` | Encabezado, pie, enlace para saltar al contenido y páginas 404 y de error | `error.vue` adaptado del backoffice |
+| `app/plugins/03.route-focus.ts` | Foco al título al cambiar de pantalla (§4.6) | Propio |
+
+Los componentes que usan varias features viven en `app/components/` (autoimportados por Nuxt); los de una sola feature, en su carpeta.
 
 Los archivos copiados dicen en su primer comentario de qué archivo y commit del backoffice vienen (`bbcd5af`).
