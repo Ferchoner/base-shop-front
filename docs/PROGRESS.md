@@ -4,7 +4,7 @@
 
 ## Current Phase
 
-Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). En curso: los requisitos de la tienda pública (TF-003). Solo entorno local (ADR-F004).
+Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública detallados y en revisión (TF-003), con cuatro sprints de pantallas propuestos. Solo entorno local (ADR-F004).
 
 ## Completed
 
@@ -14,16 +14,19 @@ Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack deci
 
 ## In Progress
 
-- TF-003 Requisitos de la tienda pública
+- TF-003 Requisitos de la tienda pública (REVIEW: falta la aprobación del usuario)
 
 ## Next
 
 - TF-004 Esqueleto del proyecto y CI completa
 - TF-005 Aplicar el ruleset de `main`
+- Sprint 1 de pantallas: TF-006 a TF-009 (`SPRINT.md`)
 
 ## Blocked
 
-Ninguna tarea todavía. Las brechas de la API que bloquearán pantallas están en `API_GAPS.md`: G-01 y G-03 afectan al checkout, y G-08 a la verificación de email y la recuperación de contraseña.
+- TF-016 Aviso de privacidad: G-01 y PF-07.
+
+Otras brechas de la API que afectan pantallas, en `API_GAPS.md`: G-01 y G-03 afectan al checkout (TF-012), y G-08 a la verificación de email y la recuperación de contraseña.
 
 ## Pending Decisions
 
