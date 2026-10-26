@@ -16,7 +16,7 @@ Sprint 0 (inicialización), desde el 2026-10-26.
 
 ## Avance
 
-- 2026-10-26: TF-001 hecha (PR #1). TF-002 hecha (PR #2): Nuxt 4 SPA (ADR-F005) y el resto del stack como el backoffice (ADR-F006 a ADR-F010, aprobadas el mismo día). TF-003 hecha: pantallas detalladas en `REQUIREMENTS.md` y sprints de pantallas planeados abajo, aprobados el mismo día. TF-004 en revisión: esqueleto Nuxt con su CI completa; falta aplicar el ruleset de `main` (TF-005, requiere un administrador).
+- 2026-10-26: TF-001 hecha (PR #1). TF-002 hecha (PR #2): Nuxt 4 SPA (ADR-F005) y el resto del stack como el backoffice (ADR-F006 a ADR-F010, aprobadas el mismo día). TF-003 hecha: pantallas detalladas en `REQUIREMENTS.md` y sprints de pantallas planeados abajo, aprobados el mismo día. TF-004: esqueleto Nuxt con su CI completa fusionado (PR #4), con la documentación de la API resincronizada a 1.8.0; falta la prueba de humo de `npm run dev` contra la API real. TF-005 hecha: el usuario aplicó el ruleset de `main`.
 
 ## Próximos sprints
 
