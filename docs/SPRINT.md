@@ -16,7 +16,7 @@ Sprint 0 (inicialización), desde el 2026-10-26.
 
 ## Avance
 
-- 2026-10-26: TF-001 hecha (PR #1). TF-002: framework elegido, Nuxt 4 SPA (ADR-F005); el resto del stack, propuesto en ADR-F006 a ADR-F010.
+- 2026-10-26: TF-001 hecha (PR #1). TF-002: framework elegido, Nuxt 4 SPA (ADR-F005); el resto del stack, propuesto en ADR-F006 a ADR-F010 y aprobado el mismo día. TF-003 en curso.
 
 ## Historial
 

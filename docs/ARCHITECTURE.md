@@ -36,7 +36,7 @@ SPA con Nuxt 4 (`ssr: false`), generada como archivos estáticos con `nuxt gener
 
 ## Estructura
 
-Propuesta en ADR-F009, igual que el backoffice base-ecomm-admin (sus D-P15 y D-P17):
+Decidida en ADR-F009, igual que el backoffice base-ecomm-admin (sus D-P15 y D-P17):
 
 ```text
 app/
