@@ -2,6 +2,9 @@ import type { Page, Schemas } from '~/shared/api/types';
 
 export type ProductSummary = Schemas['ProductSummaryDto'];
 export type ProductPage = Page<ProductSummary>;
+export type ProductDetail = Schemas['ProductDetailDto'];
+export type ProductVariant = Schemas['StoreVariantDto'];
+export type ProductImage = Schemas['ImageDto'];
 export type CategoryNode = Schemas['PublicCategoryDto'];
 export type CategoryTree = Schemas['PublicCategoryTreeDto'];
 export type Brand = Schemas['StoreBrandDto'];

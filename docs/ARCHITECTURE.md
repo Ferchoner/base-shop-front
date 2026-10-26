@@ -88,6 +88,8 @@ Creado en TF-007:
 | `app/shared/api/use-list-params.ts`, `app/components/ListPagination.vue` | Página y filtros en la URL, y paginación | Del backoffice; `push` en lugar de `replace` para que "atrás" funcione, y paginación con nombre accesible |
 | `app/pages/index.vue`, `app/pages/products/index.vue` | Inicio y catálogo | Propios |
 
+Creado en TF-008: `app/features/catalog/variants.ts` (opciones en cascada, variante elegida y orden de la galería), `ProductGallery` y `VariantSelector` en `app/features/catalog/components/`, y la página `app/pages/products/[slug].vue`. Todos propios.
+
 Los componentes que usan varias features viven en `app/components/` (autoimportados por Nuxt); los de una sola feature, en su carpeta.
 
 Los archivos copiados dicen en su primer comentario de qué archivo y commit del backoffice vienen (`bbcd5af`).
