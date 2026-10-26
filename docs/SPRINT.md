@@ -4,7 +4,14 @@
 
 ## Sprint actual
 
-Sprint 1 (pantallas): un visitante navega el catálogo, ve un producto y arma un carrito de invitado (TF-006 a TF-009). Empieza cuando el usuario lo indique.
+Sprint 1 (pantallas): un visitante navega el catálogo, ve un producto y arma un carrito de invitado (TF-006 a TF-009). Empezó el 2026-10-26.
+
+| Tarea | Estado |
+|---|---|
+| TF-006 Base de la app | DONE |
+| TF-007 Inicio y catálogo | TODO |
+| TF-008 Detalle de producto | TODO |
+| TF-009 Carrito de invitado | TODO |
 
 ## Próximos sprints
 
