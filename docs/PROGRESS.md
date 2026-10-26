@@ -4,36 +4,35 @@
 
 ## Current Phase
 
-Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Framework decidido: Nuxt 4 SPA (ADR-F005); el resto del stack propuesto en ADR-F006 a ADR-F010, en revisión (TF-002). Siguen los requisitos de la tienda pública (TF-003). Solo entorno local (ADR-F004).
+Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública aprobados (TF-003), con cuatro sprints de pantallas planeados. Sigue el esqueleto del proyecto (TF-004). Solo entorno local (ADR-F004).
 
 ## Completed
 
 - [x] Repositorio creado con licencia Apache-2.0
 - [x] TF-001 Reglas y contexto para IAs heredados de base-shop (2026-10-26)
+- [x] TF-002 Decisiones del stack (2026-10-26)
+- [x] TF-003 Requisitos de la tienda pública (2026-10-26)
 
 ## In Progress
 
-- TF-002 Decisiones del stack (REVIEW: ADR-F006 a ADR-F010 esperan aprobación)
+Ninguna.
 
 ## Next
 
-- TF-003 Requisitos de la tienda pública
 - TF-004 Esqueleto del proyecto y CI completa
 - TF-005 Aplicar el ruleset de `main`
+- Sprint 1 de pantallas: TF-006 a TF-009 (`SPRINT.md`)
 
 ## Blocked
 
-Ninguna tarea todavía. Las brechas de la API que bloquearán pantallas están en `API_GAPS.md`: G-01 y G-03 afectan al checkout, y G-08 a la verificación de email y la recuperación de contraseña.
+- TF-016 Aviso de privacidad: G-01 y PF-07.
+
+Otras brechas de la API que afectan pantallas, en `API_GAPS.md`: G-01 y G-03 afectan al checkout (TF-012), y G-08 a la verificación de email y la recuperación de contraseña.
 
 ## Pending Decisions
 
 | ID | Decisión | Afecta a |
 |---|---|---|
-| PF-02 | Sesión en el navegador. Propuesta en ADR-F006 | TF-002, login |
-| PF-03 | Estilos y componentes. Propuesta en ADR-F007 | TF-002 |
-| PF-04 | Tests y calidad. Propuesta en ADR-F008 | TF-002, TF-004 |
-| PF-05 | Cliente de la API y tipos. Propuesta en ADR-F007 y ADR-F009 | TF-002, TF-004 |
-| PF-06 | Puerto local y variables. Propuesta en ADR-F010 | TF-004 |
 | PF-07 | Dueño del texto y de la versión del aviso de privacidad (G-01), con revisión legal | Registro, checkout de invitado |
 | PF-08 | Con qué proveedor se cobra en línea antes de abrir la tienda (G-04), junto con la API | Checkout, salida a producción |
 | PF-09 | Hosting, dominio, HTTPS, CSP y encabezados del servidor del frontend, junto con los de la API (base-shop P-05, P-06); con él, si el catálogo pasa a modo híbrido (ADR-F005, G-10) y cómo se redimensionan las imágenes (G-02) | Salida a producción (ADR-F004) |
@@ -47,6 +46,11 @@ Ninguna tarea todavía. Las brechas de la API que bloquearán pantallas están e
 | ADR-F003 | Git, CI y protección de `main` como en base-shop |
 | ADR-F004 | Solo entorno local |
 | ADR-F005 | Nuxt 4 como SPA, igual que el backoffice; el modo híbrido se valora con el hosting (cierra PF-01) |
+| ADR-F006 | Sesión en el navegador sin servidor intermedio, como el backoffice (cierra PF-02) |
+| ADR-F007 | Librerías del backoffice: Nuxt UI, TanStack Query, Pinia, ofetch, openapi-typescript, Zod (cierra PF-03 y PF-05) |
+| ADR-F008 | Vitest + MSW, Playwright con axe, ESLint + Prettier + vue-tsc (cierra PF-04) |
+| ADR-F009 | Organización por features con código copiado del backoffice |
+| ADR-F010 | Puerto 3002 y variables públicas (cierra PF-06) |
 
 ## Notas
 

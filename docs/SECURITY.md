@@ -30,7 +30,7 @@ Propios del frontend:
 
 La API entrega un token de acceso de unos 15 minutos y un refresh token de 7 días en el cuerpo, sin cookies; presentar un refresh token ya rotado revoca la sesión (base-shop ADR-0023, ADR-0114).
 
-Propuesta en ADR-F006, el mismo modelo que el backoffice:
+Decidido en ADR-F006, el mismo modelo que el backoffice:
 
 - token de acceso solo en memoria; refresh token en `localStorage`, con una llave propia de la tienda;
 - dos pestañas nunca renuevan a la vez: una sola renovación por pestaña y un Web Lock entre pestañas, que lee el refresh token más reciente;

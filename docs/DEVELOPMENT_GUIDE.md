@@ -16,9 +16,9 @@
 
 ## Convenciones
 
-Stack: Nuxt 4 SPA (ADR-F005). Propuestas, pendientes de aprobación: sesión (ADR-F006), librerías (ADR-F007), tests y calidad (ADR-F008), organización (ADR-F009) y entorno local (ADR-F010). Las convenciones de código detalladas (nombres de archivo, componentes, composables) se escriben aquí al crear el esqueleto (TF-004), tomando las del backoffice base-ecomm-admin.
+Stack: Nuxt 4 SPA (ADR-F005), con sesión (ADR-F006), librerías (ADR-F007), tests y calidad (ADR-F008), organización (ADR-F009) y entorno local (ADR-F010). Las convenciones de código detalladas (nombres de archivo, componentes, composables) se escriben aquí al crear el esqueleto (TF-004), tomando las del backoffice base-ecomm-admin.
 
-Ya propuesto:
+Ya decidido:
 
 - Organización `pages → features → shared`, sin imports entre features (`ARCHITECTURE.md`).
 - Sin `v-html` con datos de la API ni del usuario (regla de lint).
@@ -46,7 +46,7 @@ Resumen de `docs/api/API_SPEC.md` §1 a §8 para quien escribe pantallas. Ante u
 - **Consistencia eventual:** después de algunas operaciones, el estado tarda en actualizarse (§2.5). La interfaz lo advierte y vuelve a consultar; no asume el estado final.
 - **Carrito de invitado:** el `cartId` es la única credencial del carrito (base-shop ADR-0059). Se guarda como dato sensible y nunca va en una URL que pueda compartirse.
 - **Invitados:** el email y el código público de la orden viajan en el cuerpo, nunca en la URL (`docs/api/SECURITY.md`).
-- **Autenticación:** token de acceso JWT de unos 15 minutos en `Authorization: Bearer` y refresh token opaco de 7 días, rotado en cada uso; presentar uno ya rotado revoca la sesión (§3.1). La tienda los guarda como el backoffice: el de acceso en memoria y el refresh en `localStorage`, renovando de una en una entre pestañas (ADR-F006, propuesta).
+- **Autenticación:** token de acceso JWT de unos 15 minutos en `Authorization: Bearer` y refresh token opaco de 7 días, rotado en cada uso; presentar uno ya rotado revoca la sesión (§3.1). La tienda los guarda como el backoffice: el de acceso en memoria y el refresh en `localStorage`, renovando de una en una entre pestañas (ADR-F006).
 - **Imágenes:** `Image.url` es absoluta y la API la construye (§8.3). No se arma a mano.
 
 ### Accesibilidad y rendimiento
@@ -64,7 +64,7 @@ El frontend corre solo en local por ahora (ADR-F004, como la API con base-shop A
   - `CORS_ALLOWED_ORIGINS` debe incluir el origen exacto de la tienda, `http://localhost:3002` (ADR-F010), además del backoffice (`http://localhost:3001`); vacía por defecto, sin ella el navegador no puede llamar a la API (base-shop ADR-0085).
   - `FRONTEND_BASE_URL` es la base de los enlaces de los correos. Hoy apunta al backoffice; para probar los enlaces de clientes en local se apunta a `http://localhost:3002` mientras dure la prueba (`API_GAPS.md`, G-08). Las páginas `/verify-email`, `/reset-password` y `/order-access` de la tienda reciben `?token=…` (base-shop ADR-0117, ADR-0118, ADR-0148).
 - Los correos de la API llegan a Mailpit; los enlaces de verificación, recuperación y acceso a pedidos se abren desde ahí.
-- La tienda corre en el puerto 3002 con `NUXT_PUBLIC_API_BASE_URL` y `NUXT_PUBLIC_PRIVACY_NOTICE_VERSION`, fijadas al construir (ADR-F010, propuesta). Toda variable nueva se agrega a `.env.example` en el mismo cambio, con descripción y valor de ejemplo no real. `.env` nunca se versiona.
+- La tienda corre en el puerto 3002 con `NUXT_PUBLIC_API_BASE_URL` y `NUXT_PUBLIC_PRIVACY_NOTICE_VERSION`, fijadas al construir (ADR-F010). Toda variable nueva se agrega a `.env.example` en el mismo cambio, con descripción y valor de ejemplo no real. `.env` nunca se versiona.
 
 ## Entorno
 

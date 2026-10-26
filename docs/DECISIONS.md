@@ -27,11 +27,11 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
 | ADR-F003 | Git, CI y protección de `main` como en base-shop | Aceptada |
 | ADR-F004 | Solo entorno local | Aceptada |
 | ADR-F005 | Nuxt 4 como SPA, igual que el backoffice | Aceptada |
-| ADR-F006 | Sesión en el navegador sin servidor intermedio | Propuesta |
-| ADR-F007 | Librerías de la tienda, las mismas del backoffice | Propuesta |
-| ADR-F008 | Tests y calidad | Propuesta |
-| ADR-F009 | Organización por features y código copiado del backoffice | Propuesta |
-| ADR-F010 | Entorno local: puerto y variables | Propuesta |
+| ADR-F006 | Sesión en el navegador sin servidor intermedio | Aceptada |
+| ADR-F007 | Librerías de la tienda, las mismas del backoffice | Aceptada |
+| ADR-F008 | Tests y calidad | Aceptada |
+| ADR-F009 | Organización por features y código copiado del backoffice | Aceptada |
+| ADR-F010 | Entorno local: puerto y variables | Aceptada |
 
 ---
 
@@ -139,7 +139,7 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - Un XSS podría leer el refresh token: riesgo aceptado, como en el backoffice, con las mitigaciones anteriores.
   - Hereda el límite G-18 del backoffice: si la pestaña se recarga con una renovación en curso, la API revoca la sesión. Se registra como `API_GAPS.md` G-09, con la misma propuesta para el backend (un margen de gracia).
   - Requiere revisión humana (`TEAM_GUIDE.md`): toca el manejo de tokens.
-- **Estado:** Propuesta.
+- **Estado:** Aceptada (aprobada por el usuario el 2026-10-26).
 
 ---
 
@@ -158,7 +158,7 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - **Sin PWA** ni códigos de barras en la tienda por ahora (son del backoffice).
 - **Alternativas consideradas:** `useFetch`/`useAsyncData` de Nuxt (sin invalidación por llaves); openapi-fetch o axios; PrimeVue o Vuetify; VeeValidate. Descartadas por las mismas razones que en el backoffice.
 - **Consecuencias:** un desarrollador del backoffice trabaja en la tienda sin aprender otro stack. Nuxt UI tiene aspecto de panel administrativo por defecto: la tienda necesita su propio tema (TF-003).
-- **Estado:** Propuesta.
+- **Estado:** Aceptada (aprobada por el usuario el 2026-10-26).
 
 ---
 
@@ -174,7 +174,7 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - **Contra la API real:** una prueba de humo manual por sprint con la API en Docker, como hizo el backoffice antes de su release.
 - **Alternativas consideradas:** Cypress; oxlint como la API (no cubre las reglas de Vue y de Nuxt que usa el backoffice); tests e2e contra la API real en la CI (necesitaría levantar PostgreSQL y la API en cada pull request).
 - **Consecuencias:** la CI no detecta un cambio de la API que no esté en `docs/api/`; por eso la resincronización regenera los tipos y corre los tests (ADR-F002).
-- **Estado:** Propuesta.
+- **Estado:** Aceptada (aprobada por el usuario el 2026-10-26).
 
 ---
 
@@ -187,7 +187,7 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - **Código compartido copiado, no compartido como paquete:** al crear el esqueleto (TF-004) se copian de base-ecomm-admin las piezas de `app/shared` que la tienda necesita, adaptadas a clientes (por ejemplo, la sesión rechaza cuentas de staff, al revés que el backoffice). Cada archivo copiado dice en su primer comentario de qué archivo y commit viene.
 - **Alternativas consideradas:** un paquete npm compartido o un monorepo (más infraestructura para dos aplicaciones pequeñas); escribir todo desde cero (repite trabajo ya probado contra la API real).
 - **Consecuencias:** una corrección en `shared` de un repositorio no llega sola al otro; al corregir algo copiado, se revisa el otro repositorio.
-- **Estado:** Propuesta.
+- **Estado:** Aceptada (aprobada por el usuario el 2026-10-26).
 
 ---
 
@@ -203,4 +203,4 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - Sin variables secretas: es una SPA (ADR-F006).
 - **Alternativas consideradas:** el puerto 5173, que la API trae por defecto en `FRONTEND_BASE_URL` (no sirve de nada mientras esa variable apunte al backoffice, y es el puerto de Vite, que puede chocar con otros proyectos).
 - **Consecuencias:** para probar en local los enlaces de verificación, recuperación y acceso a pedidos de clientes, `FRONTEND_BASE_URL` de la API se apunta a `http://localhost:3002` temporalmente, hasta que la API tenga una URL por frontend (G-08).
-- **Estado:** Propuesta.
+- **Estado:** Aceptada (aprobada por el usuario el 2026-10-26).
