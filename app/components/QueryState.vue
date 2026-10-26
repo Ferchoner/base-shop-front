@@ -1,4 +1,4 @@
-<!-- Copiado de base-ecomm-admin app/components/QueryState.vue (commit bbcd5af, ADR-F009). -->
+<!-- Copiado de base-ecomm-admin app/components/QueryState.vue (commit bbcd5af, ADR-F009). Suma el slot de carga y oculta los esqueletos al lector de pantalla. -->
 <script setup lang="ts">
 import type { ApiProblem } from '~/shared/api/problem';
 
@@ -14,12 +14,16 @@ const emit = defineEmits<{ retry: [] }>();
 </script>
 
 <template>
-  <div v-if="loading" aria-busy="true" aria-label="Cargando">
-    <slot name="loading">
-      <div class="space-y-2">
-        <USkeleton v-for="n in 5" :key="n" class="h-10 w-full" />
-      </div>
-    </slot>
+  <!-- USkeleton anuncia cada esqueleto como alerta; se ocultan y se anuncia una sola vez. -->
+  <div v-if="loading" role="status">
+    <span class="sr-only">Cargando…</span>
+    <div aria-hidden="true">
+      <slot name="loading">
+        <div class="space-y-2">
+          <USkeleton v-for="n in 5" :key="n" class="h-10 w-full" />
+        </div>
+      </slot>
+    </div>
   </div>
   <div v-else-if="error" class="space-y-3">
     <ProblemAlert :problem="error" />

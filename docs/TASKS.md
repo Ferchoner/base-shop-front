@@ -30,7 +30,7 @@ Detalle de cada pantalla en `REQUIREMENTS.md` (§ de la columna "Criterios"). To
 | ID | Tarea | Estado | Depende de | Criterios de aceptación |
 |---|---|---|---|---|
 | TF-006 | Base de la aplicación: encabezado, pie, página 404, cliente de la API con tipos generados del OpenAPI y manejo de errores por `type` | DONE | TF-004 | `REQUIREMENTS.md` §4.1, §4.2, §4.6 y §5.15. El contador del carrito, la cuenta y el enlace al aviso de privacidad del encabezado y el pie se agregan con TF-009, TF-010 y TF-016 |
-| TF-007 | Inicio y catálogo con búsqueda, filtros, orden y paginación | TODO | TF-006 | `REQUIREMENTS.md` §5.1 y §5.2 |
+| TF-007 | Inicio y catálogo con búsqueda, filtros, orden y paginación | DONE | TF-006 | `REQUIREMENTS.md` §5.1 y §5.2 |
 | TF-008 | Detalle de producto con selector de variantes | TODO | TF-006 | `REQUIREMENTS.md` §5.3 |
 | TF-009 | Carrito de invitado | TODO | TF-008 | `REQUIREMENTS.md` §4.5 y §5.4 (rutas de invitado), y el contador del carrito en el encabezado (§5.15) |
 | TF-010 | Sesión: inicio y cierre, renovación entre pestañas, carrito del cliente y fusión | TODO | TF-009 | `REQUIREMENTS.md` §4.5, §5.4 (rutas de cliente) y §5.8; ADR-F006. Con el acceso a la cuenta en el encabezado (§5.15) |

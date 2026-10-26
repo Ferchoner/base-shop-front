@@ -4,6 +4,14 @@
 
 ## Unreleased
 
+- TF-007: inicio y catálogo.
+  - Inicio con las categorías de primer nivel y los 12 productos más recientes; sin productos, "Pronto tendremos productos" (`REQUIREMENTS.md` §5.1).
+  - Catálogo en `/products` con búsqueda, categoría, marcas, rango de precio en pesos (se envía en centavos), solo disponibles, orden y paginación de 24, todo en la URL; "atrás" deshace el último cambio (§5.2).
+  - "Relevancia" solo con búsqueda. Lo que la API rechazaría (rango al revés, relevancia sin búsqueda, más de 20 marcas) se descarta antes de enviarlo, y una categoría o marca que ya no existe se quita de la URL con un aviso.
+  - Los esqueletos de carga ya no se anuncian uno por uno: `USkeleton` de Nuxt UI los marca como alertas.
+  - Del backoffice (commit `bbcd5af`): `use-list-params.ts` (con `push` en lugar de `replace`), `ListPagination.vue` y `flattenTree`.
+  - `API_GAPS.md`: nueva G-12 (el OpenAPI limita `brand` a 100 caracteres en total, la API a 20 slugs).
+
 - TF-006: base de la tienda.
   - Encabezado con logo y buscador (de 2 a 100 caracteres, lleva a `/products?q=`), enlace para saltar al contenido y pie con la nota de precios con IVA. El contador del carrito, la cuenta y el aviso de privacidad llegan con TF-009, TF-010 y TF-016.
   - Mensajes de error propios de la tienda según el `type` del Problem Details, con referencia para soporte solo en errores inesperados y espera visible tras un 429 (`REQUIREMENTS.md` §4.1).
