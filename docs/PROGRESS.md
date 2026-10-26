@@ -15,7 +15,7 @@ Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack deci
 
 ## In Progress
 
-- TF-004 Esqueleto del proyecto y CI completa (REVIEW: falta el ruleset de `main`, TF-005, y aprobar ADR-F011)
+- TF-004 Esqueleto del proyecto y CI completa (REVIEW: falta el ruleset de `main`, TF-005)
 
 ## Next
 
@@ -50,6 +50,7 @@ Otras brechas de la API que afectan pantallas, en `API_GAPS.md`: G-01 y G-03 afe
 | ADR-F008 | Vitest + MSW, Playwright con axe, ESLint + Prettier + vue-tsc (cierra PF-04) |
 | ADR-F009 | Organización por features con código copiado del backoffice |
 | ADR-F010 | Puerto 3002 y variables públicas (cierra PF-06) |
+| ADR-F011 | Auditoría de dependencias con excepciones revisadas que vencen |
 
 ## Notas
 

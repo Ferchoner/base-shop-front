@@ -32,7 +32,7 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
 | ADR-F008 | Tests y calidad | Aceptada |
 | ADR-F009 | Organización por features y código copiado del backoffice | Aceptada |
 | ADR-F010 | Entorno local: puerto y variables | Aceptada |
-| ADR-F011 | Auditoría de dependencias con excepciones revisadas | Propuesta |
+| ADR-F011 | Auditoría de dependencias con excepciones revisadas | Aceptada |
 
 ---
 
@@ -221,4 +221,4 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - Se corrigieron las que tenían arreglo: `happy-dom` pasó a la 21 (vulnerabilidad alta, solo de tests) y `esbuild` se actualizó con `npm audit fix`.
 - **Alternativas consideradas:** `npm audit --audit-level=critical` (dejaría pasar cualquier alta nueva); `--omit=dev` (no sirve: `nuxt` es dependencia de producción aunque `node-forge` solo se use en desarrollo); `overrides` hacia otra versión (no hay ninguna corregida); quitar la auditoría de la CI hasta que haya arreglo (ADR-F008 la exige).
 - **Consecuencias:** la CI sigue fallando con cualquier vulnerabilidad alta o crítica nueva. Cuando salga una versión corregida de `node-forge` o Nuxt deje de usarla, el script avisa que la excepción sobra.
-- **Estado:** Propuesta (TF-004, pendiente de aprobación del usuario).
+- **Estado:** Aceptada (aprobada por el usuario el 2026-10-26).
