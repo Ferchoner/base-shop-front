@@ -30,18 +30,20 @@ Propios del frontend:
 
 La API entrega un token de acceso de unos 15 minutos y un refresh token de 7 días en el cuerpo, sin cookies; presentar un refresh token ya rotado revoca la sesión (base-shop ADR-0023, ADR-0114).
 
-Dónde se guardan y cómo se renuevan: `PENDIENTE DE DECISIÓN` (PF-02). Requisitos para la decisión:
+Propuesta en ADR-F006, el mismo modelo que el backoffice:
 
-- el refresh token no debe quedar al alcance de JavaScript de la página si se puede evitar (un XSS lo robaría por 7 días);
-- dos pestañas no deben renovar a la vez con el mismo refresh token, porque la segunda revocaría la sesión;
-- si se usan cookies (por ejemplo, con un BFF), se revisa CSRF, como pide `docs/api/SECURITY.md`;
-- cerrar sesión llama a `POST /v1/auth/logout` y borra todo rastro local.
+- token de acceso solo en memoria; refresh token en `localStorage`, con una llave propia de la tienda;
+- dos pestañas nunca renuevan a la vez: una sola renovación por pestaña y un Web Lock entre pestañas, que lee el refresh token más reciente;
+- cerrar sesión llama a `POST /v1/auth/logout` y borra memoria, `localStorage` y la caché de datos; las demás pestañas se enteran por el evento `storage`;
+- sin servidor intermedio ni cookies, así que no aplica CSRF (`docs/api/SECURITY.md`).
+
+Riesgo aceptado: un XSS podría leer el refresh token. Mitigaciones: sin `v-html`, sin scripts de terceros, iconos y fuentes locales y CSP estricta con el hosting. Límite conocido: una renovación perdida al recargar revoca la sesión (`API_GAPS.md`, G-09).
 
 El `cartId` del carrito de invitado es su única credencial (base-shop ADR-0059) y se trata con el mismo cuidado.
 
 ## Gestión de secretos
 
-- El frontend no tiene secretos propios por ahora. Si un BFF los necesita, viven en variables de entorno del servidor, en `.env` fuera de Git, y se declaran en `.env.example` con valores de ejemplo no reales.
+- La tienda es una SPA sin servidor propio (ADR-F005, ADR-F006): no tiene secretos, y sus variables `NUXT_PUBLIC_*` terminan en el bundle, así que nunca llevan uno. Si el modo híbrido llega a necesitar secretos, vivirán en variables del servidor, en `.env` fuera de Git, declaradas en `.env.example` con valores de ejemplo no reales.
 - Un secreto detectado se rota de inmediato y se saca del historial; solo los falsos positivos revisados van en `.gitleaksignore`, con un comentario.
 
 ## Encabezados de seguridad del frontend

@@ -18,7 +18,7 @@ Iguales a los de la API:
 Propios del frontend:
 
 - La API es la fuente de verdad del negocio: el frontend presenta, guía y valida para ayudar, pero no decide precios, totales, stock ni estados.
-- Un solo punto de acceso a la API (cliente tipado, PF-05): las pantallas no arman URLs, encabezados ni manejo de errores por su cuenta.
+- Un solo punto de acceso a la API (cliente tipado, ADR-F007): las pantallas no arman URLs, encabezados ni manejo de errores por su cuenta.
 - Accesibilidad y rendimiento como requisitos, no como mejoras.
 
 ## Integración con la API
@@ -30,14 +30,28 @@ Fija, sin importar el stack:
 - Errores: Problem Details (RFC 9457), decididos por `type`.
 - Lo que la API no ofrece: `API_GAPS.md`.
 
-## Estilo, estructura y renderizado
+## Renderizado
 
-`PENDIENTE DE DECISIÓN` (PF-01 a PF-05, TF-002):
+SPA con Nuxt 4 (`ssr: false`), generada como archivos estáticos con `nuxt generate` y servida con fallback a `index.html` (ADR-F005). El navegador habla directo con la API, sin servidor intermedio (ADR-F006). El catálogo podrá pasar a renderizarse en servidor con reglas por ruta cuando se decida el hosting (PF-09, `API_GAPS.md` G-10).
 
-- framework y modo de renderizado (servidor, estático o cliente), que decide también el SEO del catálogo;
-- si existe un servidor propio del frontend (BFF) entre el navegador y la API, que decide cómo se guarda la sesión (PF-02);
-- estructura de carpetas, estado del cliente, estilos y componentes;
-- generación del cliente de la API desde OpenAPI;
-- estrategia de tests (unitarios, componentes, end-to-end contra la API local).
+## Estructura
 
-Cada punto se decide con un ADR-F y se documenta aquí.
+Propuesta en ADR-F009, igual que el backoffice base-ecomm-admin (sus D-P15 y D-P17):
+
+```text
+app/
+├── pages/                rutas finas: leen parámetros y montan componentes de una feature
+├── features/<feature>/   catalog, cart, checkout, account, orders…
+│   ├── api.ts            queries y mutations de TanStack Query
+│   ├── schemas.ts        esquemas Zod de los formularios
+│   ├── types.ts          tipos derivados de los generados del OpenAPI
+│   └── components/
+└── shared/               cliente de la API, sesión, Problem Details, dinero y fechas, direcciones
+```
+
+- Dependencias: `pages → features → shared`. Una feature no importa a otra (regla de lint).
+- Sin capa de dominio: las reglas viven en la API.
+- Estado: TanStack Query para los datos de la API; Pinia solo para la sesión y el `cartId` (ADR-F007).
+- Las piezas de `shared` se copian del backoffice al crear el esqueleto, cada una con su origen (ADR-F009).
+
+El detalle se completa al crear el esqueleto (TF-004).

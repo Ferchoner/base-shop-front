@@ -54,7 +54,7 @@ Derivados del contrato de la API; se detallan en TF-003:
 ## 5. Requisitos no funcionales
 
 - Accesibilidad: WCAG 2.2 nivel AA.
-- Rendimiento: presupuesto por definir con el stack (PF-01).
+- Rendimiento: presupuesto por definir (TF-003); la tienda es una SPA (ADR-F005).
 - Navegadores soportados: `PENDIENTE DE DECISIÓN` (TF-003).
 - Seguridad: `SECURITY.md`.
 
