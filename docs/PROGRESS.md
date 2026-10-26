@@ -26,7 +26,7 @@ Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack deci
 
 - TF-016 Aviso de privacidad: G-01 y PF-07.
 
-Otras brechas de la API que afectan pantallas, en `API_GAPS.md`: G-01 y G-03 afectan al checkout (TF-012), y G-08 a la verificación de email y la recuperación de contraseña.
+Otras brechas de la API que afectan pantallas, en `API_GAPS.md`: G-01 y G-03 afectan al checkout (TF-012).
 
 ## Pending Decisions
 
@@ -53,4 +53,4 @@ Otras brechas de la API que afectan pantallas, en `API_GAPS.md`: G-01 y G-03 afe
 
 ## Notas
 
-- Versión de la API usada: 1.7.0 (`docs/api/README.md`).
+- Versión de la API usada: 1.8.0 (`docs/api/README.md`).

@@ -10,9 +10,9 @@ Esta carpeta es una copia de la documentación de [base-shop](https://github.com
 |---|---|
 | Repositorio | https://github.com/Ferchoner/base-shop |
 | Rama | `main` |
-| Commit | `7af0f1d4b3296d718488f04942bc97f51c170fdc` |
-| Fecha del commit | 2026-10-17 |
-| Versión de la API | 1.7.0 |
+| Commit | `8bde9da0d6e809270c8161c4b79f440edec4e0a2` |
+| Fecha del commit | 2026-10-26 |
+| Versión de la API | 1.8.0 |
 | Copiado el | 2026-10-26 |
 
 ## Archivos copiados

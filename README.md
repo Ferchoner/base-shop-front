@@ -4,7 +4,7 @@ Tienda pública de comercio electrónico sobre la API [base-shop](https://github
 
 ## Estado
 
-Inicialización (Sprint 0): reglas, documentación, requisitos aprobados y esqueleto del proyecto con su CI. Nuxt 4 SPA con el stack del backoffice [base-ecomm-admin](https://github.com/Ferchoner/base-ecomm-admin) (ADR-F005 a ADR-F010). Las pantallas empiezan en el sprint 1 (`docs/SPRINT.md`). Corre solo en local (ADR-F004). Versión de la API usada: 1.7.0.
+Inicialización (Sprint 0): reglas, documentación, requisitos aprobados y esqueleto del proyecto con su CI. Nuxt 4 SPA con el stack del backoffice [base-ecomm-admin](https://github.com/Ferchoner/base-ecomm-admin) (ADR-F005 a ADR-F010). Las pantallas empiezan en el sprint 1 (`docs/SPRINT.md`). Corre solo en local (ADR-F004). Versión de la API usada: 1.8.0.
 
 ## Requisitos
 

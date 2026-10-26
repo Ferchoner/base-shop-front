@@ -25,7 +25,7 @@ Propios del frontend:
 
 Fija, sin importar el stack:
 
-- Contrato: `docs/api/API_SPEC.md` y `docs/api/openapi/v1.json` (base-shop 1.7.0).
+- Contrato: `docs/api/API_SPEC.md` y `docs/api/openapi/v1.json` (base-shop 1.8.0).
 - Transporte: HTTPS en producción, JSON, `Authorization: Bearer`, sin cookies del lado de la API (base-shop ADR-0023, ADR-0085).
 - Errores: Problem Details (RFC 9457), decididos por `type`.
 - Lo que la API no ofrece: `API_GAPS.md`.

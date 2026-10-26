@@ -204,6 +204,7 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - Sin variables secretas: es una SPA (ADR-F006).
 - **Alternativas consideradas:** el puerto 5173, que la API trae por defecto en `FRONTEND_BASE_URL` (no sirve de nada mientras esa variable apunte al backoffice, y es el puerto de Vite, que puede chocar con otros proyectos).
 - **Consecuencias:** para probar en local los enlaces de verificación, recuperación y acceso a pedidos de clientes, `FRONTEND_BASE_URL` de la API se apunta a `http://localhost:3002` temporalmente, hasta que la API tenga una URL por frontend (G-08).
+- **Nota (2026-10-26):** desde base-shop 1.8.0 (ADR-0169) la API tiene una URL por frontend: `FRONTEND_BASE_URL` es la tienda, con `http://localhost:3002` por defecto, y `BACKOFFICE_BASE_URL` el backoffice. Ya no hace falta apuntarla temporalmente (G-08 resuelta).
 - **Estado:** Aceptada (aprobada por el usuario el 2026-10-26).
 
 ---

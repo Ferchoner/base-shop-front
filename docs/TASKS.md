@@ -34,7 +34,7 @@ Detalle de cada pantalla en `REQUIREMENTS.md` (§ de la columna "Criterios"). To
 | TF-008 | Detalle de producto con selector de variantes | TODO | TF-006 | `REQUIREMENTS.md` §5.3 |
 | TF-009 | Carrito de invitado | TODO | TF-008 | `REQUIREMENTS.md` §4.5 y §5.4 (rutas de invitado) |
 | TF-010 | Sesión: inicio y cierre, renovación entre pestañas, carrito del cliente y fusión | TODO | TF-009 | `REQUIREMENTS.md` §4.5, §5.4 (rutas de cliente) y §5.8; ADR-F006 |
-| TF-011 | Registro, verificación de email y recuperación de contraseña | TODO | TF-010 | `REQUIREMENTS.md` §5.7 y §5.9. En local, con `FRONTEND_BASE_URL` apuntando a la tienda (G-08) |
+| TF-011 | Registro, verificación de email y recuperación de contraseña | TODO | TF-010 | `REQUIREMENTS.md` §5.7 y §5.9. Con la API 1.8.0 o posterior, que envía estos enlaces a la tienda (G-08 resuelta) |
 | TF-012 | Checkout de invitado y de cliente, e inicio del pago | TODO | TF-010 | `REQUIREMENTS.md` §4.3, §4.4, §5.5 y §5.6. Versión del aviso de privacidad por variable mientras G-01 siga abierta; sin pago manual habilitado, el mensaje de §5.6 (G-03) |
 | TF-013 | Mi cuenta, direcciones y mis pedidos | TODO | TF-012 | `REQUIREMENTS.md` §5.10 a §5.12 |
 | TF-014 | Pedidos de invitado: consulta, enlace de acceso y recompra | TODO | TF-012 | `REQUIREMENTS.md` §5.13 |

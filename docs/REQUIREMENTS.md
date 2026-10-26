@@ -44,7 +44,7 @@ Los correos de la API enlazan a estas páginas del frontend, sobre `FRONTEND_BAS
 | `/reset-password` | Restablecer la contraseña con el token | base-shop ADR-0118 |
 | `/order-access` | Abrir los pedidos de invitado con el token | base-shop ADR-0148 |
 
-El token se envía a la API en el cuerpo y se quita de la URL visible después de leerlo, para que no quede en el historial ni en el `Referer`. Mientras la API tenga una sola `FRONTEND_BASE_URL`, en local se apunta a la tienda para probar estas páginas (`API_GAPS.md`, G-08).
+El token se envía a la API en el cuerpo y se quita de la URL visible después de leerlo, para que no quede en el historial ni en el `Referer`. Desde base-shop 1.8.0, `FRONTEND_BASE_URL` es la tienda y la recuperación de contraseña del staff va al backoffice (`BACKOFFICE_BASE_URL`, base-shop ADR-0169; `API_GAPS.md`, G-08).
 
 ## 4. Comportamientos transversales
 

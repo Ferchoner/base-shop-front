@@ -66,7 +66,7 @@ Heredados de la API: México, MXN e IVA del 16% incluido en los precios (base-sh
 
 | Versión del frontend | Versión de la API probada |
 |---|---|
-| (sin versión todavía) | 1.7.0 |
+| (sin versión todavía) | 1.8.0 |
 
 ## 8. Estado
 
