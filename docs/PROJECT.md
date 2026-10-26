@@ -70,4 +70,4 @@ Heredados de la API: México, MXN e IVA del 16% incluido en los precios (base-sh
 
 ## 8. Estado
 
-Fase: inicialización (Sprint 0). Reglas y documentación (TF-001), stack (TF-002, ADR-F005 a ADR-F011), requisitos aprobados (TF-003), esqueleto con CI completa (TF-004) y `main` protegida (TF-005). Siguen las pantallas, desde el sprint 1 (`SPRINT.md`). Ver `TASKS.md` y `PROGRESS.md`.
+Fase: Sprint 0 (inicialización) cerrado el 2026-10-26. Reglas y documentación (TF-001), stack (TF-002, ADR-F005 a ADR-F011), requisitos aprobados (TF-003), esqueleto con CI completa (TF-004) y `main` protegida (TF-005). Siguen las pantallas, desde el sprint 1 (`SPRINT.md`). Ver `TASKS.md` y `PROGRESS.md`.

@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- Sprint 0 cerrado: TF-004 con la prueba de humo contra la API 1.8.0 local, y TF-005 con el ruleset de `main` aplicado.
+
 - Documentación de la API resincronizada con base-shop 1.8.0 (tag `v1.8.0`, commit `8bde9da`). La API tiene ahora una URL por frontend para los enlaces de sus correos (base-shop ADR-0169), así que `API_GAPS.md` G-08 queda resuelta. El contrato de `/v1` no cambió (`openapi/v1.json` igual) y los tipos generados no cambian.
 
 - TF-004: esqueleto del proyecto y CI completa.
