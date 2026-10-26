@@ -4,7 +4,7 @@
 
 ## Current Phase
 
-Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública aprobados (TF-003), con cuatro sprints de pantallas planeados. Sigue el esqueleto del proyecto (TF-004). Solo entorno local (ADR-F004).
+Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública aprobados (TF-003), con cuatro sprints de pantallas planeados. Esqueleto del proyecto y CI completa en revisión (TF-004). Solo entorno local (ADR-F004).
 
 ## Completed
 
@@ -15,11 +15,10 @@ Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack deci
 
 ## In Progress
 
-Ninguna.
+- TF-004 Esqueleto del proyecto y CI completa (REVIEW: falta el ruleset de `main`, TF-005, y aprobar ADR-F011)
 
 ## Next
 
-- TF-004 Esqueleto del proyecto y CI completa
 - TF-005 Aplicar el ruleset de `main`
 - Sprint 1 de pantallas: TF-006 a TF-009 (`SPRINT.md`)
 

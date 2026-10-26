@@ -4,7 +4,7 @@ Tienda pública de comercio electrónico sobre la API [base-shop](https://github
 
 ## Estado
 
-Inicialización (Sprint 0): reglas, documentación y CI mínima. Framework: Nuxt 4 SPA, como el backoffice [base-ecomm-admin](https://github.com/Ferchoner/base-ecomm-admin) (ADR-F005); el resto del stack, como el backoffice, en ADR-F006 a ADR-F010. Corre solo en local (ADR-F004). Versión de la API usada: 1.7.0.
+Inicialización (Sprint 0): reglas, documentación, requisitos aprobados y esqueleto del proyecto con su CI. Nuxt 4 SPA con el stack del backoffice [base-ecomm-admin](https://github.com/Ferchoner/base-ecomm-admin) (ADR-F005 a ADR-F010). Las pantallas empiezan en el sprint 1 (`docs/SPRINT.md`). Corre solo en local (ADR-F004). Versión de la API usada: 1.7.0.
 
 ## Requisitos
 
@@ -13,8 +13,24 @@ Inicialización (Sprint 0): reglas, documentación y CI mínima. Framework: Nuxt
 - Docker, para el escaneo de secretos y para levantar la API.
 - La API base-shop corriendo en local, con `CORS_ALLOWED_ORIGINS` que incluya el origen del frontend (`docs/DEVELOPMENT_GUIDE.md`).
 
+Instalación y arranque:
+
+```bash
+cp .env.example .env   # opcional: los valores por defecto apuntan a la API local
+npm ci
+npm run dev            # http://localhost:3002
+```
+
 | Script | Uso |
 |---|---|
+| `npm run dev` | Tienda en desarrollo en el puerto 3002 (ADR-F010) |
+| `npm run lint`, `npm run format:check` | ESLint y Prettier |
+| `npm run typecheck` | TypeScript estricto con `vue-tsc` |
+| `npm test` | Tests unitarios y de componentes (Vitest) |
+| `npm run build` | Build estático en `.output/public` (`nuxt generate`) |
+| `npm run test:e2e` | Playwright con axe sobre el build; requiere `npm run build` antes |
+| `npm run audit` | Vulnerabilidades altas y críticas, con las excepciones revisadas de `audit-exceptions.json` (ADR-F011) |
+| `npm run api:types` | Regenera los tipos de la API desde `docs/api/openapi/v1.json` |
 | `npm run secrets:scan` | gitleaks con Docker sobre lo preparado y todo el historial; antes de cada commit |
 | `bash scripts/sync-api-docs.sh <clon de base-shop>` | Actualiza la copia de la documentación de la API en `docs/api/` |
 

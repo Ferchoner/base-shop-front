@@ -1,7 +1,7 @@
 # Continuous integration (ADR-F003, copied from base-shop ADR-0030 and ADR-0105). Runs on every pull
 # request to main and on every push to main. The job names are the required checks of the main
 # branch (.github/rulesets/main.json): renaming a job means updating the ruleset too.
-# The Pipeline job grows with the project: install, lint, tests and build arrive with the stack (PF-01).
+# The Pipeline job runs the checks of ADR-F008 on the Nuxt SPA (ADR-F005), numbered like the API's.
 name: CI
 
 on:
@@ -28,7 +28,7 @@ jobs:
   pipeline:
     name: Pipeline
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - name: Check out the repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -41,12 +41,47 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
+          # The latest 24.x, as the API does (base-shop ADR-0025), not the one cached on the runner.
           check-latest: true
+          cache: npm
+
+      # .npmrc makes an unreviewed install script fail the install (allowScripts in package.json).
+      - name: 1. Install dependencies
+        run: npm ci
+
+      - name: 2. Lint and format
+        run: |
+          npm run lint
+          npm run format:check
+
+      # The API types are generated from docs/api/openapi/v1.json and committed: a stale copy fails here.
+      - name: 3. API types up to date
+        run: |
+          npm run api:types
+          git diff --exit-code -- app/shared/api/generated
+
+      - name: 4. TypeScript compilation
+        run: npm run typecheck
+
+      - name: 5. Unit and component tests
+        run: npm test
+
+      # High and critical advisories fail, except the reviewed ones in audit-exceptions.json (ADR-F011).
+      - name: 6. Dependency audit
+        run: npm run audit
+
+      - name: 7. Build
+        run: npm run build
+
+      - name: 8. End-to-end tests with accessibility checks
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e
 
       # The same scan as before a local commit: gitleaks, pinned by digest in package.json, reads
       # the whole history offline; --redact keeps any finding out of the public log. Reviewed false
       # positives live in .gitleaksignore.
-      - name: Secret scan
+      - name: 9. Secret scan
         run: npm run secrets:scan:history
 
   commit-messages:

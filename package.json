@@ -9,9 +9,56 @@
     "node": ">=24.7.0 <25.0.0"
   },
   "scripts": {
+    "dev": "nuxt dev --port 3002",
+    "build": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "audit": "node scripts/audit.ts",
+    "api:types": "openapi-typescript docs/api/openapi/v1.json -o app/shared/api/generated/openapi.d.ts",
     "secrets:scan": "npm run secrets:scan:staged && npm run secrets:scan:history",
     "secrets:scan:staged": "node scripts/secrets-scan.ts ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f git /repo --pre-commit --staged --redact --verbose --no-banner",
     "secrets:scan:history": "node scripts/secrets-scan.ts ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f git /repo --redact --verbose --no-banner"
   },
-  "allowScripts": {}
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.140",
+    "@nuxt/ui": "^4.11.3",
+    "@pinia/nuxt": "^1.0.2",
+    "@tanstack/vue-query": "^5.104.1",
+    "nuxt": "^4.5.2",
+    "ofetch": "^1.5.1",
+    "pinia": "^4.0.3",
+    "tailwindcss": "^4.3.3",
+    "vue": "^3.5.43",
+    "vue-router": "^5.3.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@nuxt/eslint": "^1.17.0",
+    "@nuxt/test-utils": "^4.3.3",
+    "@playwright/test": "^1.63.0",
+    "@vue/test-utils": "^2.5.1",
+    "eslint": "^10.12.0",
+    "eslint-config-prettier": "^10.1.8",
+    "happy-dom": "^21.0.4",
+    "msw": "^2.15.0",
+    "openapi-typescript": "^7.13.0",
+    "prettier": "^3.9.9",
+    "typescript": "~5.9",
+    "vitest": "^5.0.3",
+    "vue-tsc": "^3.3.12"
+  },
+  "allowScripts": {
+    "esbuild": false,
+    "msw": false,
+    "unrs-resolver": false,
+    "vue-demi": false
+  }
 }

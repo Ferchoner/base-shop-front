@@ -11,7 +11,7 @@ Heredados de la API:
 - Proteger información sensible.
 - No mostrar stack traces ni mensajes internos al usuario.
 - Logging sin secretos ni datos sensibles.
-- Revisar dependencias vulnerables: la CI falla con vulnerabilidades altas y críticas (`npm audit --audit-level=high`, cuando haya dependencias) y Dependabot propone actualizaciones semanales.
+- Revisar dependencias vulnerables: la CI falla con vulnerabilidades altas y críticas (`npm run audit`), salvo excepciones revisadas que no llegan al navegador y vencen en una fecha (ADR-F011), y Dependabot propone actualizaciones semanales.
 - Detectar secretos en cada cambio: gitleaks antes de cada commit (`npm run secrets:scan`) y en la CI.
 - La CI corre con permisos de solo lectura, actions de terceros fijadas por SHA y sin interpolar datos del pull request en sus scripts.
 - Ninguna dependencia ejecuta scripts al instalarse sin revisión (`allowScripts` y `.npmrc`).

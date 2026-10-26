@@ -46,7 +46,7 @@ El alcance funcional detallado se mantiene en `REQUIREMENTS.md`.
 | Testing | Definido | Vitest + MSW, Playwright con axe | ADR-F008 |
 | Cliente de la API y tipos | Definido | ofetch en un cliente propio, TanStack Query, tipos con `openapi-typescript` desde `docs/api/openapi/v1.json`, Zod | ADR-F002, ADR-F007 |
 | Lint y formato | Definido | `@nuxt/eslint` + Prettier con la configuración de la API + `vue-tsc` | ADR-F003, ADR-F008 |
-| CI | Definido | GitHub Actions con los jobs `Pipeline` y `Commit messages`, `main` protegida, GitHub Flow, Dependabot semanal | ADR-F003 |
+| CI | Definido | GitHub Actions con los jobs `Pipeline` (lint, formato, tipos del contrato, typecheck, tests, auditoría, build, e2e con axe y secretos) y `Commit messages`, `main` protegida, GitHub Flow, Dependabot semanal | ADR-F003, ADR-F008, ADR-F011 |
 | Detección de secretos | Definido | gitleaks antes de cada commit y en la CI | ADR-F003 |
 | Hosting y CD | Pospuesto | Solo local | ADR-F004 |
 
