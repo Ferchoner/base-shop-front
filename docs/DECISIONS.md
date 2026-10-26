@@ -26,6 +26,12 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
 | ADR-F002 | Copia de la documentación de la API en `docs/api/` | Aceptada |
 | ADR-F003 | Git, CI y protección de `main` como en base-shop | Aceptada |
 | ADR-F004 | Solo entorno local | Aceptada |
+| ADR-F005 | Nuxt 4 como SPA, igual que el backoffice | Aceptada |
+| ADR-F006 | Sesión en el navegador sin servidor intermedio | Propuesta |
+| ADR-F007 | Librerías de la tienda, las mismas del backoffice | Propuesta |
+| ADR-F008 | Tests y calidad | Propuesta |
+| ADR-F009 | Organización por features y código copiado del backoffice | Propuesta |
+| ADR-F010 | Entorno local: puerto y variables | Propuesta |
 
 ---
 
@@ -94,3 +100,107 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - La CI no despliega.
   - Las decisiones que dependen del hosting (encabezados de seguridad del servidor del frontend, CDN de imágenes) quedan pendientes y se anotan en `PROGRESS.md`.
 - **Estado:** Aceptada (indicada por el usuario el 2026-10-26).
+
+---
+
+## ADR-F005 — Nuxt 4 como SPA, igual que el backoffice
+
+- **Fecha:** 2026-10-26
+- **Contexto:** Cierra PF-01. Hay dos datos nuevos desde TF-001:
+  - El backoffice del staff ya existe en [base-ecomm-admin](https://github.com/Ferchoner/base-ecomm-admin) (commit `bbcd5af`) como SPA en Nuxt 4 + Vue 3 + TypeScript (sus decisiones D-001 y D-P02).
+  - El frontend más fuerte del usuario es Vue 2/3 con Nuxt (desde 2022); React solo en mantenimiento.
+  - Una tienda pública se beneficia de un catálogo renderizado en servidor (SEO y primera carga en teléfonos). Pero si el servidor de la tienda llama a la API, todas esas llamadas salen de una sola IP y chocan con el límite de 100 solicitudes por minuto por IP (base-shop ADR-0154), y la API no confía en `X-Forwarded-For` mientras no haya hosting (base-shop P-06). El backoffice descartó un servidor intermedio por esa razón (su D-P02).
+- **Decisión:**
+  - **Nuxt 4 + Vue 3 + TypeScript estricto, como SPA:** `ssr: false` y build estático con `nuxt generate`, servido con fallback a `index.html`.
+  - **El modo híbrido queda guardado:** cuando se valore el entorno productivo (PF-09), se decide si el catálogo se renderiza en servidor según el hosting disponible. En Nuxt se cambia con reglas por ruta (`routeRules`), sin reescribir pantallas; antes de activarlo, la API tendría que aceptar la IP del servidor de la tienda o tener un límite propio para ella (`API_GAPS.md`, G-10).
+  - **Node.js 24**, como la API (ADR-F003); Nuxt 4 lo soporta. El backoffice usa Node.js 22.
+- **Alternativas consideradas:** Nuxt 4 híbrido desde el inicio (SEO desde el primer día, pero un servidor Node, caché y el problema del límite por IP antes de que haga falta, porque solo corre en local); Next.js con un servidor intermedio (la primera recomendación: fuera del stack fuerte del usuario y distinto al backoffice, y su servidor intermedio choca con el límite por IP); Vite + Vue sin Nuxt (pierde las convenciones compartidas con el backoffice).
+- **Consecuencias:**
+  - Sin SEO del catálogo mientras sea SPA: aceptable en local. La página de producto igual pone título y descripción con `useHead` para cuando se active el híbrido.
+  - `NUXT_PUBLIC_*` se fija al construir: un build por ambiente, como en el backoffice (su D-019).
+  - El backoffice y la tienda comparten stack y patrones (ADR-F007, ADR-F009).
+- **Estado:** Aceptada (elegida por el usuario el 2026-10-26, con el híbrido guardado para cuando se valore el hosting).
+
+---
+
+## ADR-F006 — Sesión en el navegador sin servidor intermedio
+
+- **Fecha:** 2026-10-26
+- **Contexto:** Cierra PF-02 y reemplaza la propuesta de un servidor intermedio (BFF) con cookie `HttpOnly` que hacía `API_GAPS.md` G-07. La API entrega el token de acceso (unos 15 minutos) y el refresh token (7 días) en el cuerpo, sin cookies, rota el refresh token en cada uso y revoca la sesión si se presenta uno ya rotado (base-shop ADR-0023, ADR-0114). Un servidor intermedio queda descartado por el límite por IP (ADR-F005). El backoffice resolvió lo mismo en su D-P03 y lo probó contra la API real (82 rotaciones seguidas con tres pestañas, su `docs/AUTHENTICATION.md`).
+- **Decisión:** el mismo modelo que el backoffice:
+  - token de acceso solo en memoria;
+  - refresh token en `localStorage`, con una llave propia de la tienda, compartido por las pestañas para que todas sigan una sola cadena de rotación (`sessionStorage` haría que una pestaña duplicada rote la misma copia y revoque la sesión);
+  - renovación de una en una: dentro de la pestaña, una sola promesa; entre pestañas, dentro de un Web Lock que lee el refresh token más reciente; proactiva antes de vencer y reactiva ante un 401;
+  - cerrar sesión borra memoria y `localStorage`, vacía la caché de datos y llama a `POST /v1/auth/logout`; las demás pestañas se enteran por el evento `storage`;
+  - el `cartId` del carrito de invitado (su única credencial, base-shop ADR-0059) también en `localStorage`, y se borra al fusionarlo con el carrito del cliente (UC-CRT-06);
+  - mitigación del XSS: sin `v-html` con datos de la API (regla de lint), sin scripts de terceros, iconos y fuentes locales, y CSP estricta cuando haya hosting (PF-09).
+- **Alternativas consideradas:** servidor intermedio con cookie `HttpOnly` (protege el refresh token de un XSS, pero todo el tráfico sale de una IP y comparte el límite de la API); `sessionStorage` (revoca la sesión con pestañas duplicadas); solo memoria (el cliente inicia sesión en cada recarga).
+- **Consecuencias:**
+  - Un XSS podría leer el refresh token: riesgo aceptado, como en el backoffice, con las mitigaciones anteriores.
+  - Hereda el límite G-18 del backoffice: si la pestaña se recarga con una renovación en curso, la API revoca la sesión. Se registra como `API_GAPS.md` G-09, con la misma propuesta para el backend (un margen de gracia).
+  - Requiere revisión humana (`TEAM_GUIDE.md`): toca el manejo de tokens.
+- **Estado:** Propuesta.
+
+---
+
+## ADR-F007 — Librerías de la tienda, las mismas del backoffice
+
+- **Fecha:** 2026-10-26
+- **Contexto:** Cierra PF-03 y PF-05. El backoffice ya eligió y probó un conjunto de librerías sobre Nuxt 4 (su `docs/TECHNOLOGY_DECISION.md`, D-P05 a D-P10 y D-P14).
+- **Decisión:** las mismas, salvo lo que la tienda no necesita:
+  - **Componentes y estilos:** Nuxt UI 4 + Tailwind CSS 4, con un tema propio de la tienda. Accesibles (Reka UI) y con formularios integrados.
+  - **Datos del servidor:** TanStack Query (`@tanstack/vue-query`): caché por llave, invalidación tras cambios, reintentos solo en lecturas.
+  - **Estado del cliente:** Pinia solo para la sesión y el `cartId`; nunca datos del servidor.
+  - **Cliente HTTP:** ofetch envuelto en un cliente propio: base URL, Bearer, renovación ante 401, Problem Details, `Idempotency-Key`, timeout.
+  - **Tipos del contrato:** `openapi-typescript` desde `docs/api/openapi/v1.json` (ADR-F002), con `npm run api:types`. TypeScript fijado en `~5.9`, como el backoffice (su D-018), porque TypeScript 7 no expone la API que usan `openapi-typescript` y `vue-tsc`. La API usa TypeScript 6 en el servidor; no afecta al contrato.
+  - **Validación de formularios:** Zod 4 con `UForm`, con los límites de `API_SPEC.md`; los 400 se llevan al campo por `errors[].field`.
+  - **Idioma y formato:** solo español de México, con `Intl` (MXN desde centavos, fechas desde UTC); sin módulo de i18n.
+  - **Sin PWA** ni códigos de barras en la tienda por ahora (son del backoffice).
+- **Alternativas consideradas:** `useFetch`/`useAsyncData` de Nuxt (sin invalidación por llaves); openapi-fetch o axios; PrimeVue o Vuetify; VeeValidate. Descartadas por las mismas razones que en el backoffice.
+- **Consecuencias:** un desarrollador del backoffice trabaja en la tienda sin aprender otro stack. Nuxt UI tiene aspecto de panel administrativo por defecto: la tienda necesita su propio tema (TF-003).
+- **Estado:** Propuesta.
+
+---
+
+## ADR-F008 — Tests y calidad
+
+- **Fecha:** 2026-10-26
+- **Contexto:** Cierra PF-04. El backoffice usa Vitest, MSW, Playwright con axe, ESLint, Prettier y `vue-tsc` (sus D-P11, D-P12 y D-058).
+- **Decisión:**
+  - **Unitarias y de componentes:** Vitest + `@nuxt/test-utils` + Vue Test Utils + happy-dom; MSW para simular la API en el cliente HTTP.
+  - **End-to-end:** Playwright sobre el build estático, en escritorio y móvil, con la API simulada; `@axe-core/playwright` revisa WCAG 2.2 A/AA en cada pantalla.
+  - **Calidad:** `@nuxt/eslint` + Prettier (la configuración de la API, ADR-F003) + `vue-tsc` estricto. Reglas de lint: una feature no importa a otra y `vue/no-v-html` como error.
+  - **CI:** el job `Pipeline` suma instalación, lint, formato, typecheck, tests, `npm audit --audit-level=high`, build y e2e, sin cambiar de nombre (ADR-F003).
+  - **Contra la API real:** una prueba de humo manual por sprint con la API en Docker, como hizo el backoffice antes de su release.
+- **Alternativas consideradas:** Cypress; oxlint como la API (no cubre las reglas de Vue y de Nuxt que usa el backoffice); tests e2e contra la API real en la CI (necesitaría levantar PostgreSQL y la API en cada pull request).
+- **Consecuencias:** la CI no detecta un cambio de la API que no esté en `docs/api/`; por eso la resincronización regenera los tipos y corre los tests (ADR-F002).
+- **Estado:** Propuesta.
+
+---
+
+## ADR-F009 — Organización por features y código copiado del backoffice
+
+- **Fecha:** 2026-10-26
+- **Contexto:** El backoffice organiza su código por features alineadas a los contextos de la API, sin capa de dominio, con dependencias `pages → features → shared` (sus D-P15 y D-P17). Su capa `app/shared` ya resuelve el cliente HTTP, la sesión, Problem Details, la política de contraseñas, el formulario de direcciones con el catálogo del INEGI y el formato de dinero y fechas. El usuario prefiere copiar a depender de otro repositorio, dejando constancia del origen (ADR-F001, ADR-F002).
+- **Decisión:**
+  - **Misma organización:** `app/pages` (rutas finas), `app/features/<feature>` (`api.ts`, `schemas.ts`, `types.ts`, `components/`) y `app/shared`. Una feature no importa a otra. Sin capa de dominio: las reglas viven en la API.
+  - **Código compartido copiado, no compartido como paquete:** al crear el esqueleto (TF-004) se copian de base-ecomm-admin las piezas de `app/shared` que la tienda necesita, adaptadas a clientes (por ejemplo, la sesión rechaza cuentas de staff, al revés que el backoffice). Cada archivo copiado dice en su primer comentario de qué archivo y commit viene.
+- **Alternativas consideradas:** un paquete npm compartido o un monorepo (más infraestructura para dos aplicaciones pequeñas); escribir todo desde cero (repite trabajo ya probado contra la API real).
+- **Consecuencias:** una corrección en `shared` de un repositorio no llega sola al otro; al corregir algo copiado, se revisa el otro repositorio.
+- **Estado:** Propuesta.
+
+---
+
+## ADR-F010 — Entorno local: puerto y variables
+
+- **Fecha:** 2026-10-26
+- **Contexto:** Cierra PF-06. La API corre en el puerto 3000 y el backoffice en el 3001. La API tiene una sola `FRONTEND_BASE_URL` para los enlaces de sus correos, y hoy apunta al backoffice por decisión del usuario (backoffice G-01 y D-032), así que los correos de clientes no llegan a la tienda (`API_GAPS.md`, G-08).
+- **Decisión:**
+  - **Puerto 3002** para la tienda en desarrollo (`npm run dev -- --port 3002`), agregado a `CORS_ALLOWED_ORIGINS` de la API.
+  - **Variables públicas**, fijadas al construir (ADR-F005), en `.env.example`:
+    - `NUXT_PUBLIC_API_BASE_URL`: base de la API sin `/v1` (por defecto `http://localhost:3000`);
+    - `NUXT_PUBLIC_PRIVACY_NOTICE_VERSION`: versión vigente del aviso de privacidad, la misma que usa el backoffice (su G-19); vacía, la tienda no permite registrarse ni comprar como invitado (`API_GAPS.md`, G-01).
+  - Sin variables secretas: es una SPA (ADR-F006).
+- **Alternativas consideradas:** el puerto 5173, que la API trae por defecto en `FRONTEND_BASE_URL` (no sirve de nada mientras esa variable apunte al backoffice, y es el puerto de Vite, que puede chocar con otros proyectos).
+- **Consecuencias:** para probar en local los enlaces de verificación, recuperación y acceso a pedidos de clientes, `FRONTEND_BASE_URL` de la API se apunta a `http://localhost:3002` temporalmente, hasta que la API tenga una URL por frontend (G-08).
+- **Estado:** Propuesta.

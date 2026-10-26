@@ -12,6 +12,8 @@ Una aplicación web segura, accesible, rápida en teléfonos, mantenible y docum
 
 La API es independiente del frontend (base-shop ADR-0010, ADR-0023): no usa cookies ni supone un framework cliente. Las decisiones propias del navegador (sesión, almacenamiento, renderizado) las toma este repositorio.
 
+El staff usa otro frontend, el backoffice [base-ecomm-admin](https://github.com/Ferchoner/base-ecomm-admin), con el mismo stack (ADR-F005, ADR-F009).
+
 ## 3. Alcance inicial
 
 Incluido, sobre las rutas públicas y de cliente de la API (los casos de uso UC-xxx son los de `docs/api/REQUIREMENTS.md`):
@@ -25,7 +27,7 @@ Incluido, sobre las rutas públicas y de cliente de la API (los casos de uso UC-
 
 Fuera del alcance inicial:
 
-- Panel del staff (todo `/v1/admin`): administración de catálogo, precios, inventario, órdenes, envíos, promociones, órdenes de trabajo y venta en la tienda física. Se decide después si es otra aplicación o parte de esta.
+- Panel del staff (todo `/v1/admin`): ya existe como otra aplicación, el backoffice base-ecomm-admin.
 - Pago en línea: la API solo tiene el pago en tienda (`API_GAPS.md`, G-04).
 - Despliegue: solo entorno local (ADR-F004).
 - Aplicación móvil nativa.
@@ -38,12 +40,12 @@ El alcance funcional detallado se mantiene en `REQUIREMENTS.md`.
 |---|---|---|---|
 | Lenguaje | Definido | TypeScript en modo estricto sobre Node.js 24, como la API | ADR-F001, base-shop ADR-0025 |
 | Gestor de paquetes | Definido | npm, con `package-lock.json` versionado; scripts de instalación negados por defecto | ADR-F003, base-shop ADR-0108 |
-| Framework y renderizado | PENDIENTE DE DECISIÓN | — | PF-01 |
-| Sesión y tokens en el navegador | PENDIENTE DE DECISIÓN | — | PF-02 |
-| Estilos y componentes | PENDIENTE DE DECISIÓN | — | PF-03 |
-| Testing | PENDIENTE DE DECISIÓN | — | PF-04 |
-| Cliente de la API y tipos | PENDIENTE DE DECISIÓN | Tipos generados desde `docs/api/openapi/v1.json` | PF-05, ADR-F002 |
-| Lint y formato | Definido parcialmente | Prettier con la configuración de la API; lint con el stack | ADR-F003, PF-01 |
+| Framework y renderizado | Definido | Nuxt 4 + Vue 3 como SPA (`ssr: false`, `nuxt generate`); el modo híbrido se valora con el hosting | ADR-F005 |
+| Sesión y tokens en el navegador | Propuesto | Token de acceso en memoria, refresh token en `localStorage`, renovación de una en una entre pestañas, como el backoffice | ADR-F006 |
+| Estilos y componentes | Propuesto | Nuxt UI 4 + Tailwind CSS 4, con tema propio | ADR-F007 |
+| Testing | Propuesto | Vitest + MSW, Playwright con axe | ADR-F008 |
+| Cliente de la API y tipos | Propuesto | ofetch en un cliente propio, TanStack Query, tipos con `openapi-typescript` desde `docs/api/openapi/v1.json`, Zod | ADR-F002, ADR-F007 |
+| Lint y formato | Propuesto | `@nuxt/eslint` + Prettier con la configuración de la API + `vue-tsc` | ADR-F003, ADR-F008 |
 | CI | Definido | GitHub Actions con los jobs `Pipeline` y `Commit messages`, `main` protegida, GitHub Flow, Dependabot semanal | ADR-F003 |
 | Detección de secretos | Definido | gitleaks antes de cada commit y en la CI | ADR-F003 |
 | Hosting y CD | Pospuesto | Solo local | ADR-F004 |
@@ -68,4 +70,4 @@ Heredados de la API: México, MXN e IVA del 16% incluido en los precios (base-sh
 
 ## 8. Estado
 
-Fase: inicialización. El repositorio tiene las reglas, la documentación y la CI mínima (TF-001). Siguen las decisiones del stack (TF-002), los requisitos de la tienda pública (TF-003) y el esqueleto del proyecto (TF-004). Ver `TASKS.md` y `PROGRESS.md`.
+Fase: inicialización. Reglas, documentación y CI mínima hechas (TF-001). Framework decidido: Nuxt 4 SPA (ADR-F005); el resto del stack, propuesto en ADR-F006 a ADR-F010, espera aprobación (TF-002). Siguen los requisitos de la tienda pública (TF-003) y el esqueleto del proyecto (TF-004). Ver `TASKS.md` y `PROGRESS.md`.

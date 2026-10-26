@@ -4,7 +4,7 @@ Tienda pública de comercio electrónico sobre la API [base-shop](https://github
 
 ## Estado
 
-Inicialización (Sprint 0): reglas, documentación y CI mínima. El stack todavía no está decidido (`docs/PROGRESS.md`, PF-01 a PF-06). Corre solo en local (ADR-F004). Versión de la API usada: 1.7.0.
+Inicialización (Sprint 0): reglas, documentación y CI mínima. Framework: Nuxt 4 SPA, como el backoffice [base-ecomm-admin](https://github.com/Ferchoner/base-ecomm-admin) (ADR-F005); el resto del stack está propuesto en ADR-F006 a ADR-F010. Corre solo en local (ADR-F004). Versión de la API usada: 1.7.0.
 
 ## Requisitos
 

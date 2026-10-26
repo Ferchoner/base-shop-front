@@ -14,6 +14,10 @@ Sprint 0 (inicialización), desde el 2026-10-26.
   4. TF-004 Esqueleto del proyecto y CI completa.
 - **Criterio de cierre:** las cuatro tareas en DONE, con el primer sprint de pantallas planeado.
 
+## Avance
+
+- 2026-10-26: TF-001 hecha (PR #1). TF-002: framework elegido, Nuxt 4 SPA (ADR-F005); el resto del stack, propuesto en ADR-F006 a ADR-F010.
+
 ## Historial
 
 Ninguno todavía.
