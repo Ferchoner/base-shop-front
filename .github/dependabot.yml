@@ -1,0 +1,43 @@
+# Dependency updates (ADR-F003, copied from base-shop ADR-0030 and ADR-0106). Version updates run
+# every Monday. Security updates are opened as soon as an advisory is published and are not delayed
+# by the cooldown. The npm ecosystem has nothing to update until the stack adds dependencies (PF-01).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: America/Mexico_City
+    # Wait a week before proposing a new release: compromised packages are usually caught within days.
+    cooldown:
+      default-days: 7
+    # Subjects like "chore: bump ...", as the Commit messages check expects.
+    commit-message:
+      prefix: chore
+    groups:
+      # Minor and patch releases together; each major release gets its own pull request.
+      npm-minor-and-patch:
+        applies-to: version-updates
+        update-types: [minor, patch]
+    ignore:
+      # @types/node follows the Node.js major version of the project (base-shop ADR-0025).
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: America/Mexico_City
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: ci
+    groups:
+      github-actions:
+        applies-to: version-updates
+        patterns: ['*']

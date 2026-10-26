@@ -1,0 +1,11 @@
+# Prettier formats code and configuration only (ADR-F003, from base-shop ADR-0084).
+# Markdown is excluded: aligning table columns would rewrite whole tables on every edit.
+*.md
+docs/
+prompts/
+
+# Generated files
+dist/
+build/
+coverage/
+package-lock.json

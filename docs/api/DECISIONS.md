@@ -1,0 +1,5388 @@
+# ARCHITECTURAL DECISION RECORDS
+
+## Formato
+
+Cada decisión importante debe registrar:
+
+- ID
+- Fecha
+- Contexto
+- Decisión
+- Alternativas consideradas
+- Consecuencias
+- Estado
+
+Estados posibles: Propuesta, Aceptada, Reemplazada, Rechazada.
+
+## Índice
+
+| ID | Título | Estado |
+|---|---|---|
+| ADR-0001 | Estado inicial | Reemplazada parcialmente por ADR-0002 |
+| ADR-0002 | Stack tecnológico | Aceptada |
+| ADR-0003 | Monolito modular con DDD pragmático | Aceptada |
+| ADR-0004 | Mapa de bounded contexts | Aceptada |
+| ADR-0005 | Integración entre contextos | Aceptada |
+| ADR-0006 | Persistencia: una base de datos, un esquema | Aceptada |
+| ADR-0007 | Dinero en centavos y una sola moneda | Aceptada |
+| ADR-0008 | Tratamiento de impuestos | Aceptada |
+| ADR-0009 | Estado único de la orden | Aceptada |
+| ADR-0010 | Compra como invitado | Aceptada |
+| ADR-0011 | Inventario: almacén, reservas y concurrencia | Aceptada |
+| ADR-0012 | Pago recibido después de expirar la orden | Aceptada |
+| ADR-0013 | Pagos: proveedores y modo de captura | Aceptada |
+| ADR-0014 | Eventos de dominio sin outbox | Reemplazada por ADR-0150 |
+| ADR-0015 | Reglas del carrito | Aceptada |
+| ADR-0016 | Publicación de productos | Aceptada |
+| ADR-0017 | Granularidad de permisos | Aceptada |
+| ADR-0018 | Alcance del MVP | Aceptada |
+| ADR-0019 | Protocolo de checkout | Aceptada |
+| ADR-0020 | Acceso de invitados a su pedido | Aceptada |
+| ADR-0021 | Cancelación de órdenes | Aceptada |
+| ADR-0022 | Integración de autenticación con Passport | Aceptada |
+| ADR-0023 | Mecanismo de autenticación | Aceptada |
+| ADR-0024 | Almacenamiento de imágenes | Aceptada |
+| ADR-0025 | Versiones de runtime, base de datos y gestor de paquetes | Aceptada |
+| ADR-0026 | País de operación y moneda | Aceptada |
+| ADR-0027 | Tasa de IVA y facturación | Aceptada |
+| ADR-0028 | Integración de cache | Aceptada |
+| ADR-0029 | Jobs programados | Aceptada |
+| ADR-0030 | Integración continua y estrategia de ramas | Aceptada |
+| ADR-0031 | Hosting: solo entorno local por ahora | Aceptada |
+| ADR-0032 | Configuración, secretos y observabilidad en entorno local | Aceptada |
+| ADR-0033 | Herramientas de persistencia, transacciones, tests y trazabilidad | Aceptada |
+| ADR-0034 | Versionado de la API | Aceptada |
+| ADR-0035 | Formato de errores | Aceptada |
+| ADR-0036 | Paginación, ordenamiento, filtros y organización de rutas | Aceptada |
+| ADR-0037 | Auditoría técnica | Aceptada |
+| ADR-0038 | Eliminación lógica | Aceptada |
+| ADR-0039 | Listas de precios en el MVP | Aceptada |
+| ADR-0040 | Pagos: método manual y preparación de PayPal | Aceptada |
+| ADR-0041 | Envíos manuales | Aceptada |
+| ADR-0042 | Costo de envío | Aceptada |
+| ADR-0043 | Permisos, roles y cuentas del staff | Aceptada |
+| ADR-0044 | Verificación de email para comprar | Aceptada |
+| ADR-0045 | Envío de correos en desarrollo | Aceptada |
+| ADR-0046 | Mecanismo de verificación de email | Aceptada |
+| ADR-0047 | Política de contraseñas | Aceptada |
+| ADR-0048 | Preparación para segundo factor (2FA) | Aceptada |
+| ADR-0049 | Identificadores de la orden: consecutivo interno y código público | Aceptada |
+| ADR-0050 | Estados del envío | Aceptada |
+| ADR-0051 | Cancelación y reembolso de órdenes pagadas | Aceptada |
+| ADR-0052 | Reintegro de stock de órdenes canceladas y devueltas | Aceptada |
+| ADR-0053 | Entrega fallida y devolución | Aceptada |
+| ADR-0054 | Restauración del carrito al expirar una orden | Aceptada |
+| ADR-0055 | Pago manual en tienda y recompra de órdenes canceladas | Aceptada |
+| ADR-0056 | Recuperación de contraseña y enlaces hacia el frontend | Aceptada |
+| ADR-0057 | Datos del cliente y formato de dirección | Aceptada |
+| ADR-0058 | Peso y dimensiones de variantes | Aceptada |
+| ADR-0059 | Fusión de carritos e identificador del carrito de invitado | Aceptada |
+| ADR-0060 | Búsqueda, filtros y consulta del catálogo público | Aceptada |
+| ADR-0061 | Disponibilidad pública | Aceptada |
+| ADR-0062 | Mensajes de login y registro | Aceptada |
+| ADR-0063 | Comportamiento de `Idempotency-Key` | Aceptada |
+| ADR-0064 | Códigos HTTP y tipos de error | Aceptada |
+| ADR-0065 | Rate limiting | Aceptada |
+| ADR-0066 | Modelo de datos y convenciones de persistencia | Aceptada |
+| ADR-0067 | Datos personales: aviso de privacidad, derechos ARCO y anonimización | Aceptada |
+| ADR-0068 | Edición de variantes | Aceptada |
+| ADR-0069 | Motivos de movimientos de stock | Aceptada |
+| ADR-0070 | Ciclo de conservación de datos personales en órdenes | Aceptada |
+| ADR-0071 | Contratos REST y convenciones de la API | Aceptada |
+| ADR-0072 | Sesiones al cambiar la contraseña y slugs de categorías y marcas | Aceptada |
+| ADR-0073 | Herramienta de lint | Aceptada |
+| ADR-0074 | Notificaciones por correo del ciclo de la orden | Aceptada |
+| ADR-0075 | Permiso para configurar el costo de envío | Aceptada |
+| ADR-0076 | Reactivación de entidades suspendidas, archivadas o desactivadas | Aceptada |
+| ADR-0077 | Enlace de acceso al pedido por correo | Reemplazada parcialmente por ADR-0148 |
+| ADR-0078 | Envíos sin paquetería | Aceptada |
+| ADR-0079 | IVA del costo de envío y base del umbral de envío gratis | Aceptada |
+| ADR-0080 | Efecto de desactivar categorías y marcas en la tienda | Aceptada |
+| ADR-0081 | Un solo almacén en el MVP | Reemplazada por ADR-0160 |
+| ADR-0082 | Recompra del staff cuando el carrito original ya no existe | Aceptada |
+| ADR-0083 | Plazo de entrega estimado | Aceptada |
+| ADR-0084 | Formato de código, ramas y mensajes de commit | Aceptada |
+| ADR-0085 | CORS | Aceptada |
+| ADR-0086 | Encabezados de seguridad de las respuestas HTTP | Aceptada |
+| ADR-0087 | Validación de entrada y de configuración con class-validator | Aceptada |
+| ADR-0088 | Estructura de carpetas y convenciones de nombres | Aceptada |
+| ADR-0089 | Uso de Docker: desarrollo local e imagen de producción | Aceptada |
+| ADR-0090 | Base de datos de los tests de integración con Testcontainers | Aceptada |
+| ADR-0091 | Prisma: configuración, esquema por contexto y primera migración | Aceptada |
+| ADR-0092 | Valores iniciales del método de envío | Aceptada |
+| ADR-0093 | Contexto transaccional con `nestjs-cls` | Aceptada |
+| ADR-0094 | Shared kernel: dinero, IVA contenido, identificadores, errores, eventos y reloj | Aceptada |
+| ADR-0095 | Respuestas de error, validación de entrada e identificador de correlación | Aceptada |
+| ADR-0096 | Versionado por ruta y documentación OpenAPI en local | Aceptada |
+| ADR-0097 | Logs de la aplicación | Aceptada |
+| ADR-0098 | Bus de eventos en proceso con despacho en segundo plano | Aceptada |
+| ADR-0099 | Mecanismo de idempotencia HTTP | Aceptada |
+| ADR-0100 | Mecanismo de registro de auditoría | Aceptada |
+| ADR-0101 | Base de los jobs programados | Aceptada |
+| ADR-0102 | Mecanismo de rate limiting | Aceptada |
+| ADR-0103 | Verificación automática de límites entre módulos y capas | Aceptada |
+| ADR-0104 | Base del cache con espacios de nombres | Aceptada |
+| ADR-0105 | Pipeline de CI en GitHub Actions | Aceptada |
+| ADR-0106 | Protección de la rama principal y Dependabot | Aceptada |
+| ADR-0107 | TypeScript se mantiene en 6.x | Aceptada |
+| ADR-0108 | Scripts de instalación de las dependencias | Aceptada |
+| ADR-0109 | Catálogo geográfico del INEGI y scripts de operación | Aceptada |
+| ADR-0110 | Envío de correos y enlaces al frontend | Aceptada |
+| ADR-0111 | Autorización, catálogo de permisos y base de Identity & Access | Aceptada |
+| ADR-0112 | Administración de roles, staff y clientes, y motivo en la auditoría | Aceptada |
+| ADR-0113 | Direcciones de clientes y uso del catálogo geográfico desde Identity | Aceptada |
+| ADR-0114 | Sesiones: login, renovación, cierre y autenticación de cada solicitud | Aceptada |
+| ADR-0115 | Política de contraseñas, lista de contraseñas comunes y cambio de contraseña | Aceptada |
+| ADR-0116 | Alta y reactivación del staff, contraseñas temporales y primer superadministrador | Aceptada |
+| ADR-0117 | Registro, verificación y cambio de email, y corrección de datos del cliente | Aceptada |
+| ADR-0118 | Recuperación de contraseña | Aceptada |
+| ADR-0119 | Detección de secretos antes de cada commit | Aceptada |
+| ADR-0120 | Categorías y marcas: slugs, ciclos y árbol | Aceptada |
+| ADR-0121 | Imágenes de producto en disco: validación, subida y `/media` | Aceptada |
+| ADR-0122 | Método de envío, cálculo del costo y tasa de IVA configurable | Aceptada |
+| ADR-0123 | Productos y variantes: división de T-140, slugs, opciones y búsqueda | Aceptada |
+| ADR-0124 | Imágenes de producto: galería, límite y subidas simultáneas | Aceptada |
+| ADR-0125 | Precios: lista predeterminada, línea de periodos y fachadas | Aceptada |
+| ADR-0126 | Carga masiva de precios: formato, todo o nada y proceso en bloque | Aceptada |
+| ADR-0127 | Inventario: almacén, entradas, ajustes y listado sin copiar datos de Catalog | Aceptada |
+| ADR-0128 | Reservas de stock: fachada, vigencia y TTL configurable | Aceptada |
+| ADR-0129 | Tienda pública: consulta, `storeVisibility`, tablas de cada contexto y cache acotada | Aceptada |
+| ADR-0130 | Validación: una regla por campo, primero la presencia y el tipo | Aceptada |
+| ADR-0131 | Carrito: bloqueos, límite de líneas, variantes no vendibles e imagen principal | Aceptada |
+| ADR-0132 | Checkout y pedidos: división de T-180, dependencias de Ordering, reintegro sin ciclo y vencimiento del pago | Aceptada |
+| ADR-0133 | Administración de órdenes: cancelación sin pago, pago capturado, pago tardío y reserva todo o nada | Aceptada |
+| ADR-0134 | Pagos: Ordering usa a Payments, pago en tienda y división de T-190 | Aceptada |
+| ADR-0135 | Reembolsos: cancelar órdenes pagadas, reembolso manual y reintegro hasta T-161 | Aceptada |
+| ADR-0136 | Vencimiento de órdenes impagas: un job en Ordering con su reserva | Aceptada |
+| ADR-0137 | Carrito de una orden vencida: división de T-181 e idempotencia por el carrito de origen | Aceptada |
+| ADR-0138 | Consulta de pedido de invitado: una sola consulta, 404 único y staff permitido | Aceptada |
+| ADR-0139 | Recompra de órdenes: rutas en Ordering, respuesta con `cartId` y carrito destino del staff | Aceptada |
+| ADR-0140 | Envíos: división de T-195, creación al pagarse la orden, envío cancelado y datos de la orden | Aceptada |
+| ADR-0141 | Envíos en camino: notas, guía quitada y la orden que sigue al envío por eventos | Aceptada |
+| ADR-0142 | Reintegro de stock: Ordering bloquea la orden, Inventory pone el tope y el reembolso ya no reintegra | Aceptada |
+| ADR-0143 | Correos de la orden: módulo de notificaciones, eventos de Ordering y su fachada | Aceptada |
+| ADR-0144 | Limpieza diaria: un job por dueño de cada tabla y borrados por lotes | Aceptada |
+| ADR-0145 | Anonimización: módulo de privacidad, órdenes concluidas y bloqueo del cliente en el checkout | Aceptada |
+| ADR-0146 | Auditoría: consulta por cursor y archivo diario verificado, por día UTC | Aceptada |
+| ADR-0147 | Imagen de producción sin el CLI de Prisma, e imagen de migración aparte | Aceptada |
+| ADR-0148 | Enlace de acceso a los pedidos de invitado | Aceptada |
+| ADR-0149 | Plazos de conservación configurables, con valores por defecto | Aceptada |
+| ADR-0150 | Entrega garantizada de eventos (outbox transaccional) | Aceptada |
+| ADR-0151 | Ciclo de conservación: bloqueo y anonimización automáticos | Aceptada |
+| ADR-0152 | Consulta de datos bloqueados, cuentas inactivas y política pública | Aceptada |
+| ADR-0153 | Auditoría de seguridad y matriz de rutas como control permanente | Aceptada |
+| ADR-0154 | Correcciones de la auditoría de seguridad que cambian decisiones | Aceptada |
+| ADR-0155 | Contrato de la API comprobado y documento OpenAPI versionado | Aceptada |
+| ADR-0156 | Detección de secretos en worktrees de git, sin falsos aprobados | Aceptada |
+| ADR-0157 | Cobertura de toda la suite con umbral en la CI, y prueba de los rellenos de datos | Aceptada |
+| ADR-0158 | Cierre del proyecto como MVP | Aceptada |
+| ADR-0159 | Versiones después del MVP | Aceptada |
+| ADR-0160 | Varios almacenes propios | Aceptada |
+| ADR-0161 | Ventas asistidas en la tienda física | Aceptada |
+| ADR-0162 | Pago manual habilitado desde la API | Aceptada |
+| ADR-0163 | Datos para el ticket, nota del pago y GTIN | Aceptada |
+| ADR-0164 | Carga masiva de productos y de existencias | Aceptada |
+| ADR-0165 | Servicios solo en tienda y órdenes de trabajo | Aceptada |
+| ADR-0166 | Órdenes de trabajo: folio, cliente, estados y edición | Aceptada |
+| ADR-0167 | Órdenes de trabajo: ventas ligadas, nota de servicio y conservación de datos | Aceptada |
+| ADR-0168 | Promociones | Aceptada |
+
+---
+
+## ADR-0001 — Estado inicial
+
+### Contexto
+
+El proyecto aún no tiene decisiones tecnológicas definitivas.
+
+### Decisión
+
+No asumir stack, proveedor de pagos, infraestructura o estrategia de autenticación hasta ser aprobado.
+
+### Estado
+
+Reemplazada parcialmente por ADR-0002 y ADR-0013 (2026-09-24). Sigue vigente para todo lo que continúa como PENDIENTE DE DECISIÓN (ver `PROGRESS.md`).
+
+---
+
+## ADR-0002 — Stack tecnológico
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Se requiere un stack aprobado para iniciar el desarrollo.
+- **Decisión:** Node.js, TypeScript, NestJS, PostgreSQL, Prisma ORM, API REST, Swagger/OpenAPI, Docker y Jest.
+- **Alternativas consideradas:** No registradas; el stack fue definido por el equipo.
+- **Consecuencias:** Autenticación, storage, cache, colas, CI/CD, hosting y observabilidad siguen pendientes (ver `PROJECT.md`). La versión de Node.js, la de PostgreSQL y el gestor de paquetes se definen en ADR-0025.
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0003 — Monolito modular con DDD pragmático
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Se busca mantenibilidad sin complejidad prematura.
+- **Decisión:**
+  - Monolito modular. Cada bounded context se organiza en `domain`, `application`, `infrastructure` y `presentation`.
+  - El dominio no depende de NestJS ni de Prisma. `@prisma/client` solo se usa en Infrastructure.
+  - Las interfaces de repositories se definen en Domain; sus implementaciones, en Infrastructure.
+  - Los puertos hacia servicios externos (pasarelas de pago, paqueterías, almacenamiento, reloj) se definen en Application.
+  - Los DTOs HTTP pertenecen a Presentation y no se usan como objetos de dominio.
+  - Los casos de uso pertenecen a Application; las reglas de negocio, a Domain.
+  - Sin abstracciones genéricas innecesarias (no `BaseRepository<T>` ni `BaseEntity` con lógica).
+  - Value Objects solo cuando existe una razón de negocio.
+  - Sin Event Sourcing, microservicios ni CQRS complejo. Se permite "CQRS ligero": consultas de lectura que usan Prisma directamente en Infrastructure sin pasar por aggregates.
+  - Shared kernel mínimo: `Money`, tipos de ID (branded types), error de dominio base y forma común de domain event.
+  - Nivel de rigor por subdominio: core (Ordering, Inventory, Pricing) con modelado rico; supporting (Catalog, Shopping, Shipping) moderado; generic (Identity & Access, Payments) delgado.
+- **Alternativas consideradas:** Microservicios; arquitectura en capas sin contextos.
+- **Consecuencias:** Los límites entre módulos deben verificarse con herramientas en CI (ver ADR-0005).
+- **Estado:** Aceptada. El puerto del reloj es uno solo para todos los contextos y va en el shared kernel, igual que `TransactionManager` (ADR-0093, ADR-0094).
+
+---
+
+## ADR-0004 — Mapa de bounded contexts
+
+- **Fecha:** 2026-09-24
+- **Contexto:** La propuesta inicial incluía Identity, Catalog, Pricing, Inventory, Shopping, Ordering, Payments, Shipping y Administration. La documentación previa listaba Auth, Users, Catalog, Inventory, Cart, Orders, Payments, Promotions y Admin.
+- **Decisión:** Contextos: Identity & Access, Catalog, Pricing, Inventory, Shopping, Ordering, Payments y Shipping.
+  - Administration no es un bounded context: cada contexto expone sus operaciones administrativas en su capa de presentación, protegidas por permisos.
+  - La auditoría técnica es una capacidad transversal de infraestructura, no un contexto. La historia de negocio (historial de estados, movimientos de stock, periodos de precio) pertenece a cada contexto.
+  - Auth y Users se unen en Identity & Access. Cart se llama Shopping; Orders, Ordering.
+  - Promotions queda fuera del MVP (ADR-0018).
+  - Notificaciones: módulo que solo reacciona a eventos, sin dominio propio.
+  - Ordering es dueño del checkout.
+- **Alternativas consideradas:** Mantener Administration como contexto (descartado: duplicaría reglas o accedería a repositorios ajenos).
+- **Consecuencias:** El detalle de cada contexto está en `DOMAIN_MODEL.md`.
+- **Estado:** Aceptada (aprobación formal 2026-09-24).
+
+---
+
+## ADR-0005 — Integración entre contextos
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Se requiere que los módulos sean independientes y extraíbles.
+- **Decisión:**
+  - Cada módulo expone una fachada pública de aplicación con sus propios tipos. Nunca exporta entidades, aggregates ni repositorios.
+  - El contexto consumidor define un puerto con lo que necesita, y un adaptador en su infraestructura llama a la fachada del otro contexto (capa anticorrupción ligera).
+  - Entre contextos solo se comparten IDs, snapshots inmutables y eventos.
+  - Sin relaciones de Prisma ni llaves foráneas entre contextos.
+  - Los límites se verifican automáticamente (por ejemplo, `dependency-cruiser` o `eslint-plugin-boundaries`).
+  - Excepción: la consulta del catálogo público puede leer tablas de Catalog, Pricing e Inventory, solo para lectura (ADR-0060).
+- **Alternativas consideradas:** Acceso directo a repositorios de otros contextos; joins entre tablas de contextos distintos.
+- **Consecuencias:** Los listados que combinan Catalog, Pricing e Inventory requieren fachadas con operaciones por lotes para evitar N+1.
+- **Estado:** Aceptada (aprobación formal 2026-09-24). Los límites se verifican con `dependency-cruiser` (ADR-0103). Primera aplicación del puerto del consumidor con su adaptador en ADR-0113 (Identity usa el catálogo geográfico).
+
+---
+
+## ADR-0006 — Persistencia: una base de datos, un esquema
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Se evaluó usar esquemas de PostgreSQL separados por contexto.
+- **Decisión:** Una sola base de datos PostgreSQL y un solo esquema. El esquema de Prisma se divide en archivos por contexto. Prisma Migrate para migraciones; las restricciones `CHECK` se añaden como SQL dentro de las migraciones porque el esquema de Prisma no las expresa.
+- **Alternativas consideradas:** Un esquema de PostgreSQL por contexto.
+- **Consecuencias:** El cliente de Prisma expone todas las tablas a cualquier infraestructura; la separación depende de las reglas de ADR-0005. Prisma no hace seguimiento de cambios: los repositorios necesitan mapeadores y comparación de colecciones hijas, lo que refuerza mantener los aggregates pequeños.
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0007 — Dinero en centavos y una sola moneda
+
+- **Fecha:** 2026-09-24
+- **Decisión:** Los montos se representan como enteros en la unidad mínima (centavos) mediante el Value Object `Money`, que incluye la moneda. Una sola moneda en operación, pero la moneda se guarda en `Money` y en cada lista de precios.
+- **Alternativas consideradas:** `Decimal` de PostgreSQL; multimoneda desde el inicio.
+- **Consecuencias:** Aritmética sin errores de redondeo en el almacenamiento. Pasar a multimoneda no requiere cambiar la estructura de datos. La moneda es MXN (ADR-0026).
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0008 — Tratamiento de impuestos
+
+- **Fecha:** 2026-09-24
+- **Decisión:** Cada lista de precios indica si sus precios incluyen impuesto; el valor por defecto es "incluido". El impuesto se calcula y redondea por línea de orden.
+- **Alternativas consideradas:** Precios siempre sin impuesto; redondeo sobre el total.
+- **Consecuencias:** El desglose por línea es consistente con el total. Tasas aplicables y reglas por producto: resueltas en ADR-0027.
+- **Estado:** Aceptada. El modo de redondeo (al centavo, con las mitades hacia arriba) está en ADR-0094.
+
+---
+
+## ADR-0009 — Estado único de la orden
+
+- **Fecha:** 2026-09-24
+- **Decisión:** La orden tiene un solo campo `status`, en lugar de separar estado de pago y de surtido.
+- **Estados:** PendingPayment, Paid, AwaitingManualFulfillment, Shipped, Delivered, Cancelled, Expired, Refunded. Los reembolsos parciales no cambian el estado de la orden; su detalle vive en Payment.
+- **Alternativas consideradas:** Tres dimensiones (status, paymentStatus, fulfillmentStatus).
+- **Consecuencias:** Viable porque no hay envíos parciales ni promociones en el MVP. Si se habilitan envíos parciales o devoluciones, revisar esta decisión.
+- **Estado:** Aceptada, incluida la lista de estados (aprobación formal 2026-09-24).
+
+---
+
+## ADR-0010 — Compra como invitado
+
+- **Fecha:** 2026-09-24
+- **Decisión:** Se permite comprar sin cuenta. La orden tiene `customerId` opcional y email de contacto obligatorio. El carrito de invitado se identifica con un `cartId` opaco que devuelve la API; no se asumen cookies.
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0011 — Inventario: almacén, reservas y concurrencia
+
+- **Fecha:** 2026-09-24
+- **Decisión:**
+  - Opera un solo almacén. La asignación se implementa como domain service para permitir múltiples almacenes en el futuro.
+  - `onHand` disminuye al confirmarse el pago (commit de la reserva). El despacho solo se refleja como estado en Shipping.
+  - El carrito no reserva stock; se reserva en el checkout.
+  - La reserva usa actualización condicional atómica (solo incrementa `reserved` si `onHand − reserved ≥ cantidad`), más una restricción `CHECK (reserved >= 0 AND reserved <= on_hand)` en la base de datos.
+  - TTL de reserva fijo, configurable, con valor inicial de 20 minutos.
+- **Alternativas consideradas:** `SELECT … FOR UPDATE`; división entre almacenes; descuento de stock al despachar; TTL por método de pago.
+- **Consecuencias:** Requiere pruebas de concurrencia contra PostgreSQL real. El TTL corto obliga a no ofrecer métodos de pago asíncronos (ADR-0013).
+- **Estado:** Aceptada. Las reservas y su TTL configurable (`RESERVATION_TTL`) se implementaron en ADR-0128. ADR-0160: con varios almacenes, la asignación es una política de dominio que reserva cada orden completa en el primer almacén activo que la tiene toda.
+
+---
+
+## ADR-0012 — Pago recibido después de expirar la orden
+
+- **Fecha:** 2026-09-24
+- **Decisión:** Si llega un pago capturado para una orden expirada, se intenta reservar stock y procesar la orden. Si no hay stock, la orden pasa a AwaitingManualFulfillment para resolución manual por el staff (conseguir stock y pasar a Paid, o cancelar con reembolso).
+- **Alternativas consideradas:** Reembolso automático; reembolso siempre.
+- **Consecuencias:** Requiere una vista administrativa de órdenes en AwaitingManualFulfillment. Con captura inmediata (ADR-0013), una cancelación en este estado implica reembolso.
+- **Estado:** Aceptada. Ordering reserva y confirma en la misma transacción con la fachada de Inventory, que permite abrir una reserva nueva para la orden (ADR-0128). Implementada en T-180 parte b (ADR-0133): sin stock, la orden pasa a AWAITING_MANUAL_FULFILLMENT sin apartar nada. Una orden anonimizada pasa a AWAITING_MANUAL_FULFILLMENT sin reservar, y el staff solo puede cancelarla con su reembolso (ADR-0145).
+
+---
+
+## ADR-0013 — Pagos: proveedores y modo de captura
+
+- **Fecha:** 2026-09-24
+- **Decisión:**
+  - Proveedores previstos: PayPal, Mercado Pago y Stripe. Un adaptador por proveedor detrás del puerto `PaymentGateway`; cada uno traduce los estados del proveedor a los estados del dominio.
+  - Captura inmediata. El modelo conserva el estado `Authorized` para poder pasar después a "autorizar y capturar tras validar internamente".
+  - El puerto no incluye todavía operaciones de captura ni anulación; se agregan cuando se active ese modo.
+  - Sin métodos de pago asíncronos en el lanzamiento. En Mercado Pago se excluyen explícitamente los pagos en efectivo y por transferencia.
+  - Un `Payment` por orden, con intentos y reembolsos como entidades internas.
+  - Nunca se almacenan datos de tarjeta; solo referencias y tokens del proveedor.
+- **Alternativas consideradas:** Autorizar al pagar y capturar al despachar; autorizar y capturar tras validar.
+- **Revisar si:** los casos de AwaitingManualFulfillment dejan de ser raros, hay muchas cancelaciones de órdenes pagadas antes del envío, o se habilitan métodos asíncronos.
+- **Pendiente:** orden de integración de los proveedores y cuáles entran en el MVP; verificar ventanas de autorización y devolución de comisiones de cada proveedor.
+- **Estado:** Aceptada. ADR-0158: ningún proveedor entra en el MVP; el orden de integración se decide cuando una entidad quiera usar el proyecto.
+
+---
+
+## ADR-0014 — Eventos de dominio sin outbox
+
+- **Fecha:** 2026-09-24
+- **Decisión:** Los eventos se despachan en proceso después del commit, sin transactional outbox. Mitigaciones obligatorias:
+  - Job de conciliación que detecta Payments capturados cuyas órdenes siguen en PendingPayment y reejecuta la confirmación.
+  - Handlers idempotentes.
+  - Registro en logs de cada fallo o interrupción de handlers.
+- **Alternativas consideradas:** Outbox para todos los eventos; outbox solo para la cadena pago → orden → inventario.
+- **Riesgo aceptado:** Una notificación (por ejemplo, un correo) puede perderse si la aplicación se cae justo después del commit.
+- **Revisar si:** los logs muestran fallos frecuentes de handlers, o el negocio pasa a depender de una notificación (por ejemplo, la confirmación como comprobante).
+- **Estado:** Reemplazada por ADR-0150 (2026-10-03): los eventos se guardan con el cambio y se reintentan hasta entregarse. Aceptada antes e implementada en ADR-0098, con despacho en segundo plano.
+
+---
+
+## ADR-0015 — Reglas del carrito
+
+- **Fecha:** 2026-09-24
+- **Decisión:**
+  - El carrito no guarda el precio como verdad; se calcula al leer consultando Pricing.
+  - Máximo 30 unidades por línea.
+  - Al iniciar sesión, el carrito de invitado se fusiona con el de la cuenta sumando cantidades; cada línea se limita a 30 sin enviar aviso al cliente. El carrito devuelto refleja las cantidades finales.
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0016 — Publicación de productos
+
+- **Fecha:** 2026-09-24
+- **Decisión:**
+  - Se puede publicar un producto sin precio vigente. La consulta de la tienda oculta las variantes sin precio vigente, y el producto completo si ninguna tiene precio. El checkout vuelve a validar.
+  - Publicar no exige imagen. La API siempre devuelve un arreglo de imágenes, vacío si no hay, nunca `null`.
+  - Las imágenes se almacenan detrás de un puerto; el dominio solo guarda la referencia.
+- **Consecuencias:** El listado de administración debe indicar qué productos publicados no son visibles por falta de precio.
+- **Estado:** Aceptada. `storeVisibility` lo indica en cada `AdminProduct` (ADR-0129).
+
+---
+
+## ADR-0017 — Granularidad de permisos
+
+- **Fecha:** 2026-09-24
+- **Decisión:** Permisos por contexto y acción (por ejemplo, `catalog.write`, `orders.manage`). El catálogo de permisos se define en código, declarado por cada módulo. Los roles se editan en base de datos. Identity guarda las asignaciones sin conocer el significado de cada permiso.
+- **Alternativas consideradas:** Permisos por recurso y acción.
+- **Estado:** Aceptada. ADR-0111 precisa la ubicación del catálogo: un único archivo en el shared kernel, agrupado por contexto.
+
+---
+
+## ADR-0018 — Alcance del MVP
+
+- **Fecha:** 2026-09-24
+- **Decisión:**
+  - Promociones y cupones fuera del MVP; la orden guarda un campo de descuento desde el inicio.
+  - Devoluciones fuera del MVP; `Refund` se modela dentro de `Payment`.
+  - Notificaciones como módulo que reacciona a eventos.
+  - Libreta de direcciones en Identity & Access como aggregate separado; se extrae si crece.
+  - Sin envíos parciales: una orden genera un envío, con el modelo Shipment → ítems preparado para envíos parciales.
+- **Estado:** Aceptada. Modificada por ADR-0158: el MVP se cierra con lo construido hasta el Sprint 9, sin proveedores de pago en línea ni despliegue.
+
+---
+
+## ADR-0019 — Protocolo de checkout
+
+- **Fecha:** 2026-09-24
+- **Decisión:**
+  - `QuoteCheckout`: sin efectos secundarios; devuelve totales, opciones de envío y disponibilidad.
+  - `PlaceOrder`: recibe cartId, dirección, opción de envío, `expectedTotal` e `Idempotency-Key`. Si el total recalculado no coincide con `expectedTotal`, responde 409.
+  - Una transacción cubre: validar carrito, cotizar precios, reservar stock, crear la orden en PendingPayment y marcar el carrito. La llamada al proveedor de pagos ocurre fuera de la transacción.
+  - Esta transacción toca Ordering, Inventory y Shopping: es un acoplamiento transaccional consciente, aceptable en el monolito. Si se separa Inventory, se convierte en saga.
+- **Nota de la revisión del 2026-09-26:** en el MVP hay un solo método de envío (ADR-0042), así que la cotización no ofrece opciones de envío y la colocación de la orden no recibe una.
+- **Estado:** Aceptada (aprobación formal 2026-09-24). Implementada en T-180 parte a (ADR-0132): la transacción bloquea el carrito, y revisa el comprador, el carrito, la dirección, la vendibilidad, el total y el stock, en ese orden.
+
+---
+
+## ADR-0020 — Acceso de invitados a su pedido
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Se permite compra como invitado (ADR-0010) y el invitado necesita consultar su pedido sin cuenta.
+- **Decisión:**
+  - Mecanismo base (MVP): el invitado consulta su pedido con email de contacto y el código público de la orden (ADR-0049).
+  - Mecanismo adicional, si su costo es bajo: enlace de acceso enviado por correo, con token firmado y fecha de expiración.
+- **Alternativas consideradas:** Solo enlace por correo; obligar a crear cuenta.
+- **Consecuencias:**
+  - El identificador que usa el invitado no es adivinable (código aleatorio, ADR-0049); junto con el email y el rate limiting, impide la enumeración.
+  - La respuesta de error no debe revelar si existe una orden con ese número o ese email.
+  - El enlace por correo depende del proveedor de correo (P-24).
+- **Estado:** Aceptada. Implementada en T-185 (ADR-0138). El enlace por correo quedó fuera del MVP (ADR-0077) y se implementó después en ADR-0148, con un token aleatorio guardado como hash en lugar de un token firmado.
+
+---
+
+## ADR-0021 — Cancelación de órdenes
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Faltaba definir quién puede cancelar una orden.
+- **Decisión:**
+  - Solo el personal con permiso de gestión de órdenes (`orders.manage`) puede cancelar. Ese permiso se asigna a administradores y roles de nivel alto.
+  - El cliente no puede cancelar desde la API.
+  - Se puede cancelar en PendingPayment, Paid y AwaitingManualFulfillment. No se cancela una orden en Shipped o posterior (BR-CAN-01).
+  - Cancelar una orden pagada implica reembolso total.
+- **Consecuencias:** Cualquier solicitud de cancelación del cliente se atiende por un canal externo a la API. Los roles con `orders.manage` son Administrador y Superadministrador (ADR-0043).
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0022 — Integración de autenticación con Passport
+
+- **Fecha:** 2026-09-24
+- **Contexto:** P-01 requería definir cómo se implementa la autenticación.
+- **Decisión:** Se usa Passport mediante su integración oficial para NestJS (`@nestjs/passport`).
+- **Ubicación en la arquitectura:**
+  - Las estrategias de Passport viven en Infrastructure de Identity & Access; los guards, en Presentation.
+  - Las estrategias delegan en casos de uso de Application (por ejemplo, Authenticate). La validación de credenciales y las reglas (usuario suspendido, BR-USR-02) no se implementan dentro de la estrategia.
+  - El dominio no depende de Passport (ADR-0003).
+- **Consecuencias:** Passport define cómo se conectan las estrategias, no el mecanismo de sesión. El mecanismo concreto se define en ADR-0023. Los guards de autorización por permiso (ADR-0017) son independientes de Passport.
+- **Estado:** Aceptada. Implementada en ADR-0114: Passport solo para el token de acceso; el login no usa estrategia.
+
+---
+
+## ADR-0023 — Mecanismo de autenticación
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-01 sobre la integración de Passport (ADR-0022).
+- **Decisión:**
+  - Login con estrategia local de Passport (email y contraseña), usada solo en el endpoint de login.
+  - Solicitudes autenticadas con estrategia JWT: token de acceso de corta duración, unos 15 minutos, configurable.
+  - Transporte en el encabezado `Authorization: Bearer`. La API no usa cookies para autenticación.
+  - Renovación con refresh token opaco, guardado con hash en base de datos y rotado en cada uso. Duración: 7 días, configurable.
+  - Detección de reutilización: si se presenta un refresh token ya rotado, se revocan todos los tokens de esa sesión y el usuario debe volver a iniciar sesión.
+  - Hash de contraseñas con Argon2id.
+- **Alternativas consideradas:** Sesiones del lado del servidor; JWT de larga duración sin refresh token; tokens en cookies.
+- **Consecuencias:**
+  - Revocación: suspender un usuario (`UserSuspended`) o cerrar sesión revoca sus refresh tokens. El token de acceso sigue siendo válido hasta que vence, así que el margen de acceso tras una revocación es la duración del token de acceso.
+  - Al no usar cookies, CSRF no aplica a la autenticación de la API.
+  - Se agrega la tabla de refresh tokens en Identity & Access.
+  - La clave de firma de los JWT es un secreto y se gestiona según ADR-0032.
+  - Cada refresh token pertenece a una sesión (familia de tokens), para poder revocarla completa al detectar reutilización.
+  - Con 7 días sin renovar, el usuario debe volver a iniciar sesión.
+- **Estado:** Aceptada. Implementada y modificada por ADR-0114: el login no usa la estrategia local, y cada solicitud comprueba la cuenta y la sesión, así que revocar una sesión o suspender una cuenta corta también el token de acceso.
+
+---
+
+## ADR-0024 — Almacenamiento de imágenes
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-02. Las imágenes de productos necesitan almacenamiento y enlaces públicos.
+- **Decisión:**
+  - Por ahora, las imágenes se guardan en el disco del servidor.
+  - A futuro se busca migrar a un CDN para el almacenamiento y la generación de enlaces.
+  - Para que esa migración no toque el dominio ni los datos:
+    - El puerto de almacenamiento (Application) tiene un adaptador de disco local (Infrastructure). El CDN será otro adaptador.
+    - La base de datos guarda la clave de almacenamiento (ruta relativa), nunca la URL completa.
+    - La URL pública se construye al responder, a partir de la clave y una URL base configurable.
+- **Alternativas consideradas:** Almacenamiento de objetos o CDN desde el inicio.
+- **Consecuencias:**
+  - Si la API corre en Docker, la carpeta de imágenes debe ser un volumen persistente; si no, las imágenes se pierden al recrear el contenedor.
+  - Con varias instancias de la API, el disco local no se comparte. Mientras se use disco, la API corre en una sola instancia o sobre un volumen compartido.
+  - Las imágenes deben incluirse en los respaldos del servidor.
+  - Quién sirve las imágenes (la propia API o un servidor web delante) depende del hosting (P-06).
+  - Formatos permitidos: JPEG, PNG y WebP. Tamaño máximo: 5 MB por imagen, configurable. Un archivo fuera de estos límites se rechaza.
+- **Revisar si:** se necesita más de una instancia de la API, el volumen de imágenes crece o se requieren varios tamaños de imagen.
+- **Estado:** Aceptada. Implementada en ADR-0121: puerto `ProductImageStorage` con adaptador de disco, `IMAGE_STORAGE_DIR`, `IMAGE_BASE_URL` e `IMAGE_MAX_BYTES`, y la API sirve las imágenes en `/media` mientras P-06 siga abierta.
+
+---
+
+## ADR-0025 — Versiones de runtime, base de datos y gestor de paquetes
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-20. Estado de las versiones a esta fecha:
+  - Node.js: 22 en Maintenance LTS (fin de soporte en abril de 2027), 24 en Active LTS (fin de soporte en abril de 2028), 26 en Current (entra a LTS en octubre de 2026).
+  - PostgreSQL: 18 es la versión estable actual; 19 está en beta, con versión final planeada para octubre de 2026.
+  - Prisma soporta oficialmente Node.js ^20.19, ^22.12 y ^24, y PostgreSQL hasta la versión 18.
+- **Decisión:**
+  - Node.js 24 (Active LTS).
+  - PostgreSQL 18.
+  - npm como gestor de paquetes.
+  - Se fija la versión mayor y se usa siempre la última actualización menor (imágenes de Docker `node:24` y `postgres:18`).
+- **Alternativas consideradas:** Node.js 26 (un año más de soporte, pero sin soporte oficial de Prisma a la fecha); PostgreSQL 19 (sin versión final ni soporte listado en Prisma); pnpm.
+- **Consecuencias:**
+  - La versión de Node.js se declara en el proyecto (campo `engines` de `package.json` y archivo de versión para el entorno local) para que todos usen la misma.
+  - El archivo de bloqueo de npm (`package-lock.json`) se versiona en Git.
+  - Subir a Node.js 26 es un cambio menor (Dockerfile, CI y pruebas); cambiar de versión mayor de PostgreSQL con datos requiere una migración de la base.
+- **Revisar si:** Prisma y NestJS soportan oficialmente Node.js 26 (candidato a actualización planeada), o si se acerca el fin de soporte de Node.js 24 (abril de 2028).
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0026 — País de operación y moneda
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra parcialmente P-10 (se completa en ADR-0027).
+- **Decisión:**
+  - País de operación: México.
+  - Moneda: peso mexicano (MXN), por ahora la única moneda (ADR-0007). Los montos se guardan en centavos.
+- **Consecuencias:**
+  - El impuesto aplicable es el IVA (ver ADR-0027).
+  - Formato de direcciones (ADR-0057) y datos personales (ADR-0067) se definen con base en México.
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0027 — Tasa de IVA y facturación
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-10 y P-30.
+- **Decisión:**
+  - Todos los productos se venden con IVA del 16%. No hay productos a tasa 0% ni exentos, y no se aplica el estímulo de la región fronteriza.
+  - La tasa es un valor de configuración, no una constante en el código.
+  - No habrá emisión de facturas electrónicas (CFDI) por ahora; no se guardan datos fiscales del cliente.
+- **Alternativas consideradas:** Clase de impuesto por producto (propuesta, no adoptada mientras no existan excepciones).
+- **Consecuencias:**
+  - Cada línea de orden guarda como snapshot la tasa aplicada y el monto de impuesto, para que un cambio futuro de tasa no altere órdenes existentes.
+  - Si aparece un producto con otra tasa, se agrega una clase de impuesto por producto con valor por defecto del 16%, sin afectar las órdenes históricas.
+  - Los clientes que requieran factura no pueden obtenerla desde la API.
+- **Revisar si:** se venden productos a tasa 0% o exentos, el negocio obtiene el estímulo fronterizo, o se requiere emitir facturas.
+- **Estado:** Aceptada. La tasa se configura con `VAT_RATE_BP` (ADR-0122).
+
+---
+
+## ADR-0028 — Integración de cache
+
+- **Fecha:** 2026-09-24
+- **Contexto:** P-03 requería definir la cache.
+- **Decisión:** Se usa la integración oficial de NestJS para cache (`@nestjs/cache-manager`).
+- **Ubicación en la arquitectura:**
+  - La cache vive en Infrastructure o Presentation; Domain y Application no dependen de ella.
+  - Si un caso de uso necesita cache explícita, lo hace a través de un puerto propio, no de la librería directamente.
+- **Reglas:**
+  - Nunca se usa cache para decisiones que requieren consistencia: disponibilidad de stock en el checkout, precios al colocar una orden, estado de pagos, carrito, permisos de autorización y tokens.
+  - Todo valor en cache tiene TTL.
+- **Almacén y uso:**
+  - Almacén en memoria del proceso, coherente con operar una sola instancia (ADR-0024).
+  - Se cachean solo lecturas públicas del catálogo: árbol de categorías, detalle de producto y listados de la tienda sin texto de búsqueda (ADR-0060).
+  - TTL de 120 segundos, configurable.
+  - Invalidación inmediata por eventos de Catalog (`ProductPublished`, `ProductArchived`, `VariantDiscontinued`); el resto de cambios (precios, disponibilidad, precios programados que entran en vigor) se reflejan al vencer el TTL.
+- **Consecuencias:**
+  - Un listado puede mostrar hasta 120 segundos un precio o una disponibilidad desactualizados. El checkout no usa cache y valida el total con `expectedTotal` (ADR-0019).
+  - La cache se pierde al reiniciar la API; solo afecta el rendimiento de las primeras solicitudes.
+  - Si la API se escala a varias instancias, se cambia a un almacén compartido (por ejemplo, Redis) sin tocar el código que usa la cache.
+- **Estado:** Aceptada. Implementada en ADR-0104. ADR-0120 cachea el árbol público de categorías, que se actualiza al vencer el TTL. ADR-0129 cachea el detalle, los listados sin búsqueda y las marcas, y limita cada espacio a 1 000 valores.
+
+---
+
+## ADR-0029 — Jobs programados
+
+- **Fecha:** 2026-09-24
+- **Contexto:** P-04 requería un mecanismo para jobs periódicos (ADR-0011, ADR-0014).
+- **Decisión:**
+  - Se usa la integración oficial de NestJS para tareas programadas (`@nestjs/schedule`), ejecutada dentro del proceso de la API. No se usa una cola de mensajes por ahora.
+  - Jobs y frecuencias:
+    - Expiración de reservas y de órdenes impagas: cada minuto.
+    - Conciliación de pagos: cada 5 minutos, revisando solo pagos con más de 10 minutos sin resolver. Consulta al proveedor los pagos cuyo webhook no llegó y reejecuta la confirmación de pagos capturados cuya orden sigue en PendingPayment.
+    - Limpieza diaria a las 3:00 (hora de México):
+      - Refresh tokens vencidos o revocados: se borran después de 30 días.
+      - Llaves de idempotencia: se borran después de 24 horas.
+      - Eventos de webhooks procesados: se borran después de 30 días.
+      - Carritos de invitado sin actividad: se borran después de 30 días. Los carritos de usuarios registrados se conservan.
+      - Tokens de verificación de email y de recuperación de contraseña vencidos o usados (ADR-0056; agregado en la revisión del 2026-09-26).
+  - No requieren job: los precios programados (se resuelven al consultar) y la cache (expira por TTL).
+- **Reglas para todos los jobs:**
+  - El job es solo un punto de entrada en Infrastructure: llama a un caso de uso de Application, igual que un controlador.
+  - Si la ejecución anterior sigue en curso, la siguiente se omite (sin ejecuciones superpuestas).
+  - Procesa por lotes con un límite por ejecución; cada elemento en su propia transacción, para que un fallo no revierta el lote.
+  - Es idempotente: procesar dos veces el mismo elemento no produce efectos duplicados.
+  - Cada fallo se registra en los logs.
+  - Los horarios de los jobs diarios usan la zona horaria de México (America/Mexico_City).
+- **Consecuencias:**
+  - Con el TTL de 20 minutos y ejecución cada minuto, una reserva vencida puede seguir ocupando stock hasta un minuto extra.
+  - Los jobs corren en el mismo proceso que la API, lo cual es coherente con operar una sola instancia (ADR-0024). Si se escala a varias instancias, cada una ejecutaría los jobs: habrá que agregar un bloqueo en PostgreSQL (advisory lock) o mover los jobs a un proceso separado.
+- **Estado:** Aceptada. La base común de los jobs se detalla en ADR-0101. El job de expiración se implementó en T-230 (ADR-0136): uno solo, en Ordering, vence cada orden junto con su reserva. La limpieza diaria se implementó en T-231 (ADR-0144): un job por dueño de cada tabla, con borrados por lotes de 1,000 filas, cada lote en su propia sentencia. ADR-0148 suma la limpieza diaria de los enlaces de acceso a los pedidos de invitado (`ordering.cleanup-access-tokens`). ADR-0149: los plazos de 30 días de la limpieza diaria (eventos de webhooks, refresh tokens y carritos de invitado) serán configurables (T-232). ADR-0150 agrega `platform.deliver-events`, cada minuto, que reintenta las entregas de eventos y funciona con varias instancias. ADR-0151 vuelve configurables esos plazos de 30 días y suma `ordering.retention`, también a las 3:00, que bloquea y anonimiza los datos personales de las órdenes. ADR-0152 suma `privacy.anonymize-inactive-customers`, también a las 3:00, apagado por defecto.
+
+---
+
+## ADR-0030 — Integración continua y estrategia de ramas
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra la parte de CI de P-05. La parte de despliegue (CD) depende del hosting (P-06).
+- **Decisión:**
+  - El repositorio está en GitHub; la CI usa GitHub Actions.
+  - El pipeline corre en cada pull request y en cada cambio a la rama principal, en este orden:
+    1. Instalación con `npm ci`.
+    2. Lint y formato.
+    3. Verificación de límites entre módulos (ADR-0003, ADR-0005).
+    4. Compilación de TypeScript.
+    5. Tests unitarios.
+    6. Tests de integración contra PostgreSQL 18 real.
+    7. Verificación de migraciones: se aplican desde cero y el esquema de Prisma no difiere de ellas.
+    8. Auditoría de dependencias: falla con vulnerabilidades altas y críticas; las demás solo se reportan.
+    9. Detección de secretos.
+    10. Construcción de la imagen de Docker.
+  - La rama principal está protegida: solo se fusiona mediante pull request con el pipeline en verde.
+  - Estrategia de ramas: rama principal siempre desplegable y ramas cortas por tarea (GitHub Flow).
+  - Sin porcentaje mínimo de cobertura al inicio. Los tests de dominio y de concurrencia se exigen por la Definition of Done.
+  - Dependabot abre pull requests de actualización de dependencias agrupados semanalmente; cada uno pasa por el pipeline.
+- **Alternativas consideradas:** GitFlow; porcentaje mínimo de cobertura; fallar con cualquier vulnerabilidad.
+- **Consecuencias:**
+  - La protección de la rama principal y la activación de Dependabot se configuran en GitHub; requieren permisos de administrador del repositorio.
+  - Herramientas concretas de lint, formato, límites y detección de secretos se eligen en las tareas correspondientes (T-103, T-104, T-106).
+  - Despliegue continuo: pospuesto mientras no haya hosting (ADR-0031).
+- **Estado:** Aceptada. El pipeline se implementó en ADR-0105; la protección de la rama principal y Dependabot, en ADR-0106. Modificada por ADR-0157: la CI exige una cobertura mínima de toda la suite.
+
+---
+
+## ADR-0031 — Hosting: solo entorno local por ahora
+
+- **Fecha:** 2026-09-24
+- **Contexto:** P-06. Requisitos del hosting según decisiones previas: proceso siempre encendido (jobs y cache en memoria, ADR-0028, ADR-0029), disco persistente para imágenes (ADR-0024), PostgreSQL 18 y Docker.
+- **Decisión:**
+  - Por ahora no hay hosting: el proyecto corre solo en el entorno local de desarrollo con Docker Compose.
+  - Candidatos para cuando se necesite un entorno compartido (desarrollo del frontend, demos, pruebas de pago de punta a punta): Oracle Cloud Always Free (costo cero, condiciones sujetas a cambios sin aviso) o un VPS de bajo costo (estable, pocos dólares al mes). En ambos casos, Docker Compose en un servidor propio.
+- **Alternativas descartadas:**
+  - GitHub Pages: solo publica sitios estáticos; no ejecuta Node.js ni PostgreSQL.
+  - Nivel gratuito de Render: los servicios se apagan por inactividad (rompe jobs y cache), el sistema de archivos es efímero (pierde imágenes) y la base de datos gratuita expira a los 30 días.
+- **Consecuencias:**
+  - El despliegue continuo (CD, P-05) queda pospuesto. La CI en GitHub Actions funciona igual.
+  - Quién sirve las imágenes en producción se decide al elegir hosting.
+  - Las pruebas de webhooks de pago quedan pendientes (P-31): los proveedores no pueden llamar a un entorno local sin un túnel.
+- **Revisar cuando:** se necesite un entorno compartido o se prepare el lanzamiento.
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0032 — Configuración, secretos y observabilidad en entorno local
+
+- **Fecha:** 2026-09-24
+- **Contexto:** P-13 y P-07, condicionadas por ADR-0031 (solo entorno local).
+- **Decisión:**
+  - Toda la configuración y los secretos se leen de variables de entorno. En local, desde un archivo `.env` que nunca se versiona.
+  - El repositorio incluye un archivo `.env.example` con todas las variables que usa el proyecto (configuración, secretos y observabilidad), cada una con una descripción y un valor de ejemplo no real. Al desplegar, sirve como base: se copia y se completan los valores reales.
+  - Toda variable nueva se agrega a `.env.example` en el mismo cambio que la introduce (parte de la Definition of Done).
+  - La configuración se valida al arrancar: si falta una variable obligatoria, la API no inicia.
+  - Observabilidad en local: logs en consola con nivel configurable por variable de entorno. Herramientas de métricas, trazas y seguimiento de errores se deciden junto con el hosting.
+- **Consecuencias:**
+  - El archivo `.env` debe estar en `.gitignore`; la detección de secretos de la CI (ADR-0030) es la segunda barrera.
+  - Al elegir hosting se decidirá dónde viven los secretos en el servidor (P-13) y las herramientas de observabilidad (P-07).
+- **Estado:** Aceptada. Los logs en consola se detallan en ADR-0097.
+
+---
+
+## ADR-0033 — Herramientas de persistencia, transacciones, tests y trazabilidad
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-26: propuestas que estaban pendientes de confirmación.
+- **Decisión:**
+  - Migraciones con Prisma Migrate; las restricciones `CHECK` se agregan como SQL en la migración correspondiente (ADR-0006).
+  - Contexto transaccional con `nestjs-cls` y su plugin transaccional para Prisma. Los repositorios obtienen la transacción activa sin que Application ni Domain dependan de Prisma.
+  - Tests de integración contra PostgreSQL 18 real en Docker, localmente y en la CI (ADR-0030). No se usan mocks de base de datos para repositorios, transacciones ni concurrencia.
+  - Identificador de correlación por solicitud HTTP, incluido en todos los logs que esa solicitud genera.
+- **Consecuencias:** Las pruebas de concurrencia de inventario y checkout (ADR-0011) se ejecutan contra la base real, que es la única forma de detectar sobreventa.
+- **Estado:** Aceptada. El contexto transaccional se detalla en ADR-0093; el identificador de correlación, en ADR-0095.
+
+---
+
+## ADR-0034 — Versionado de la API
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-08.
+- **Decisión:** Versionado por prefijo en la ruta. Todos los endpoints viven bajo `/v1` (por ejemplo, `/v1/catalog/products`), incluidos los endpoints administrativos y los webhooks de pago.
+- **Alternativas consideradas:** Versionado por encabezado o por tipo de contenido.
+- **Consecuencias:**
+  - Dentro de `v1` solo se hacen cambios compatibles con clientes existentes (agregar campos o endpoints). Un cambio incompatible requiere una nueva versión.
+  - La especificación OpenAPI se genera para `v1`.
+  - Política para retirar versiones antiguas: se define cuando exista una segunda versión.
+- **Estado:** Aceptada. Implementada con el versionado por ruta de NestJS (ADR-0096). ADR-0161 acepta una excepción acotada: en una orden `IN_STORE`, que solo coloca el staff, `shippingAddress` y `estimatedDelivery` pueden ser `null`.
+
+---
+
+## ADR-0035 — Formato de errores
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-09.
+- **Decisión:** Todas las respuestas de error siguen el estándar RFC 9457 (Problem Details for HTTP APIs), con tipo de contenido `application/problem+json` y los campos del estándar: `type`, `title`, `status`, `detail` e `instance`.
+- **Alternativas consideradas:** Formato propio.
+- **Consecuencias:**
+  - Los errores de dominio se traducen a Problem Details en la capa de presentación; Domain no conoce HTTP.
+  - Nunca se incluyen stack traces ni detalles internos en producción (`SECURITY.md`).
+  - Campos adicionales (extensiones): definidos en ADR-0064.
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0036 — Paginación, ordenamiento, filtros y organización de rutas
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-27.
+- **Decisión:**
+  - **Paginación por página:** parámetros `page` (desde 1) y `pageSize` (20 por defecto, máximo 100; un valor mayor es error de validación). Respuesta con `data` (resultados) y `meta` (`page`, `pageSize`, `totalItems`, `totalPages`).
+  - **Ordenamiento:** parámetro `sort` con el nombre del campo y prefijo `-` para orden descendente (`?sort=-createdAt`). Cada endpoint declara los campos ordenables; cualquier otro es error de validación. El orden por defecto de cada endpoint termina en el ID para que sea estable entre páginas.
+  - **Filtros:** parámetros de consulta declarados y documentados por endpoint; un filtro no permitido es error de validación.
+  - **Grupos de rutas:**
+    - Público, sin autenticación: `/v1/...` (catálogo, carrito, checkout, consulta de pedido de invitado).
+    - Cliente autenticado: `/v1/me/...` (pedidos, direcciones). El ID del cliente se toma del token, nunca de la URL.
+    - Administración: `/v1/admin/{contexto}/...`, con token de staff y permiso del contexto.
+    - Webhooks: `/v1/webhooks/{proveedor}`, con verificación de firma.
+  - **Convenciones de nombres:** recursos en plural, en inglés y separados por guion (`/v1/price-lists`); campos JSON en camelCase; fechas en ISO 8601, en UTC.
+- **Alternativas consideradas:** Paginación por cursor; endpoints administrativos en las mismas rutas públicas con guards por método.
+- **Consecuencias:**
+  - Un listado que crezca mucho (por ejemplo, auditoría o movimientos de stock) puede usar paginación por cursor sin afectar a los demás.
+  - Algunos recursos tienen vista pública y vista administrativa con respuestas distintas.
+  - El envoltorio `data` / `meta` permite agregar información a los listados sin romper clientes de `v1`.
+- **Estado:** Aceptada. Implementada en ADR-0111; la paginación por cursor, en ADR-0127. ADR-0153 limita `page` a 1,000,000: un valor mayor respondía 500.
+
+---
+
+## ADR-0037 — Auditoría técnica
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra la parte de auditoría de P-18. La historia de negocio vive en cada contexto (ADR-0004); la auditoría técnica registra quién hizo qué, cuándo y desde dónde.
+- **Decisión:**
+  - **Qué se audita:**
+    - Toda modificación del staff en `/v1/admin`.
+    - Eventos de seguridad: inicio de sesión exitoso y fallido, cierre de sesión, cambio y recuperación de contraseña, reutilización de refresh token detectada, suspensión de usuarios, cambios de roles y permisos, y accesos denegados a rutas administrativas.
+    - No se auditan acciones de clientes en carrito y checkout, ni jobs ni webhooks: sus efectos quedan en la historia de negocio.
+  - **Contenido de cada registro:** actor (ID de usuario o "system"), código de acción estable (por ejemplo, `orders.cancel`), recurso (tipo e ID), fecha y hora en UTC, resultado (éxito o denegado), identificador de correlación, IP, agente de usuario y campos modificados con valor anterior y nuevo.
+  - **Campos sensibles y personales:** hashes de contraseña, tokens, datos de pago y datos personales (nombres, email, teléfono y dirección) nunca se guardan con su valor; se registra que cambiaron (ADR-0067).
+  - **Escritura:** en la misma transacción que el cambio auditado. Los intentos denegados y los inicios de sesión fallidos se registran por separado.
+  - **Retención en dos niveles:**
+    - Registros recientes en `audit_logs`: 3 meses, configurable.
+    - Registros más antiguos: el job de limpieza diaria (ADR-0029) los exporta a archivos comprimidos (JSON Lines con gzip, un archivo por día) y después los borra de la base. Si la escritura del archivo falla o su conteo no coincide, los registros no se borran.
+    - Los archivos se guardan en el disco del servidor, en un directorio privado distinto del de imágenes y nunca servido públicamente; su ruta se configura por variable de entorno (`.env.example`).
+    - Archivos con más de 2 años de antigüedad (configurable): se borran.
+  - **Acceso:** solo lectura en `/v1/admin/audit`, con el permiso `audit.read` reservado a administradores; paginación por cursor. Los archivos comprimidos no se consultan desde la API; su lectura es manual. Ningún endpoint modifica ni borra registros.
+- **Alternativas consideradas:**
+  - Particionamiento mensual de PostgreSQL: requiere SQL manual en las migraciones porque Prisma no administra tablas particionadas.
+  - Tabla de archivo en la misma base de datos: consultable, pero no reduce el espacio en disco.
+  - Retención única de 2 años sin archivo.
+- **Consecuencias:**
+  - La base de datos conserva solo 3 meses de auditoría; los registros anteriores dejan de ocupar espacio en ella.
+  - Consultar registros con más de 3 meses requiere descomprimir los archivos manualmente (aceptado).
+  - Los archivos deben incluirse en los respaldos del servidor, igual que las imágenes (ADR-0024).
+  - Si se adopta un almacenamiento externo (por ejemplo, junto con el CDN), los archivos pueden moverse ahí.
+  - Plazos sujetos a validación legal (P-61).
+- **Estado:** Aceptada. El registro (UC-AUD-01) se implementa en ADR-0100. La consulta y el archivo se implementaron en T-220 (ADR-0146): un archivo por día UTC, verificado registro por registro, que nunca se sobrescribe.
+
+---
+
+## ADR-0038 — Eliminación lógica
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra la parte de eliminación lógica de P-18.
+- **Decisión:** No hay borrado lógico genérico (columna `deletedAt` en todas las tablas). Las entidades con valor histórico usan estados de negocio; las demás se borran físicamente cuando nada las referencia.
+
+| Entidad | Política |
+|---|---|
+| Productos | Archivar |
+| Variantes | Descontinuar |
+| Categorías y marcas | Borrar solo sin productos ni subcategorías; si no, desactivar |
+| Imágenes | Borrar registro y archivo en disco |
+| Almacenes | Desactivar |
+| Listas de precios | Desactivar |
+| Periodos de precio futuros | Borrar mientras no hayan iniciado |
+| Staff | Suspender, nunca borrar |
+| Clientes | Suspender; si piden eliminar su cuenta, anonimizar (detalle en ADR-0067) |
+| Direcciones del cliente | Borrar |
+| Roles | Borrar solo sin usuarios asignados |
+| Órdenes, pagos, envíos, movimientos de stock, auditoría | Nunca se borran (la auditoría, solo por retención, ADR-0037) |
+| Carritos, refresh tokens, llaves de idempotencia, eventos de webhooks | Borrado físico por retención (ADR-0029) |
+
+- **Identificadores únicos:**
+  - Un SKU nunca se reutiliza, aunque la variante esté descontinuada.
+  - El slug de un producto archivado sigue reservado.
+  - El email de un usuario suspendido sigue ocupado; el de un cliente anonimizado se libera.
+- **Alternativas consideradas:** Borrado lógico universal con `deletedAt` (cada consulta debe filtrar; complica restricciones únicas); borrado físico siempre.
+- **Consecuencias:** Las consultas filtran por estado de forma explícita. El detalle de la anonimización está en ADR-0067.
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0039 — Listas de precios en el MVP
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-25.
+- **Decisión:**
+  - El MVP usa una sola lista de precios general. El modelo (`PriceList`, `VariantPrice`, `PriceResolver`) queda preparado para más listas sin cambios estructurales.
+  - Reglas vigentes desde ahora:
+    - Existe una lista predeterminada que no se puede desactivar.
+    - Si una lista más específica no tiene precio para una variante, se usa el de la predeterminada.
+    - La prioridad es única entre listas activas.
+    - Nunca se elige automáticamente el precio más bajo entre listas; manda la prioridad.
+    - Todas las listas en MXN; la predeterminada con impuesto incluido.
+  - El formato de la carga masiva de precios se define al implementar Pricing (T-145).
+- **Alternativas consideradas:** Listas por grupo de clientes; listas por canal o temporada.
+- **Consecuencias:**
+  - Las ofertas simples se cubren con el precio de comparación y los precios programados.
+  - Los listados del catálogo son iguales para todos los visitantes, lo que mantiene válida la cache de ADR-0028. Si se agregan listas por cliente, habrá que revisar esa cache.
+- **Estado:** Aceptada. La lista predeterminada la crea una migración en T-145 (ADR-0125), y ADR-0126 define el formato de la carga masiva.
+
+---
+
+## ADR-0040 — Pagos: método manual y preparación de PayPal
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-12. Todavía no hay cuentas ni entornos de prueba de los proveedores.
+- **Decisión:**
+  - **Método manual, solo para pruebas:** el pago se hace fuera del sistema y un administrador lo registra marcando la orden como pagada.
+    - Se modela como un proveedor más ("manual") detrás del puerto `PaymentGateway`. Registrar el pago produce `PaymentCaptured`, así que el resto del flujo (orden pagada, confirmación de la reserva) es el mismo que con un proveedor real.
+    - Requiere un permiso de pagos y queda en la auditoría técnica.
+    - Se habilita con una variable de entorno declarada en `.env.example`, desactivada por defecto. Habilitarlo en un entorno con clientes reales requiere una decisión explícita.
+  - **PayPal, semiimplementado:** adaptador lo más completo posible (creación del pago, traducción de estados, verificación de firma de webhooks), sin probar hasta contar con cuenta y sandbox. Se marca como no verificado y no se habilita.
+  - **Mercado Pago y Stripe:** se posponen. Se revisa que el puerto `PaymentGateway` admita sus flujos (redirección a su página de pago o confirmación con un secreto de cliente), sin escribir sus adaptadores.
+- **Alternativas consideradas:** Semiimplementar los tres proveedores. Se descartó porque el costo real no está en escribir el adaptador sino en verificarlo; tres adaptadores sin probar se desactualizan (SDK, versiones de API) antes de poder validarlos, y el valor de preparar el segundo y el tercero es bajo mientras no se pruebe el primero.
+- **Consecuencias:**
+  - El pago manual suele registrarse después del TTL de la reserva (20 minutos). En ese caso aplica ADR-0012: se intenta reservar de nuevo y, si no hay stock, la orden pasa a AwaitingManualFulfillment. Para pruebas, el TTL puede ampliarse por configuración.
+  - El adaptador de PayPal requiere verificación completa (T-191, P-31) antes de habilitarse.
+- **Revisar cuando:** se tenga la cuenta y el sandbox de PayPal, o se decida integrar Mercado Pago o Stripe.
+- **Estado:** Aceptada. Implementada en T-190 parte a (ADR-0134): variable `MANUAL_PAYMENTS_ENABLED`, `false` por defecto. Modificada por ADR-0158: el adaptador de PayPal (T-192) queda fuera del MVP, sin construir; el método manual sigue siendo solo para pruebas. Modificada por ADR-0161 (T-187 parte a): el método manual deja de ser solo para pruebas y es el cobro de la tienda física, detrás de la misma variable, y guarda cómo se cobró. Modificada por ADR-0162 (T-194): el método manual ya no lo habilita la variable, que deja de existir, sino la configuración de Payments, que cambia un superadministrador con `PUT /v1/admin/payment-settings`.
+
+---
+
+## ADR-0041 — Envíos manuales
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra la parte operativa de P-11. No se contemplan envíos automatizados a corto plazo.
+- **Decisión:**
+  - Sin integración con paqueterías: no se implementa el puerto `CarrierGateway` hasta que exista una integración real.
+  - Al pagarse la orden (`OrderPaid`) se crea el envío en estado Pending, como lista de trabajo para el staff.
+  - Todo lo demás lo hace el administrador manualmente: captura la paquetería y el número de guía, marca el envío como despachado y después como entregado (o fallido).
+  - Los cambios de estado del envío actualizan la orden (Shipped, Delivered) mediante los eventos ya definidos.
+- **Consecuencias:**
+  - No hay generación de guías ni rastreo automático.
+  - El costo de envío en el checkout se define en ADR-0042.
+- **Estado:** Aceptada. Desde ADR-0140, el envío nace en la misma transacción en que la orden pasa a PAID, no con `OrderPaid`.
+
+---
+
+## ADR-0042 — Costo de envío
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-11. Con envíos manuales (ADR-0041), la orden debe conocer el costo de envío antes del pago.
+- **Decisión:**
+  - Costo fijo por orden, configurable por el administrador.
+  - Envío gratis a partir de un monto mínimo de compra, configurable por el administrador.
+  - El costo se calcula al cotizar el checkout y queda como snapshot en la orden.
+- **Alternativas consideradas:** Solo costo fijo; solo envío gratis por monto; tarifas por zona o por peso.
+- **Consecuencias:**
+  - No se usan peso, dimensiones ni zona del destino para calcular el costo.
+  - Un cambio de tarifa no afecta a órdenes ya colocadas.
+  - Si se requiere cobrar según zona o peso, se amplía `ShippingRateCalculator` sin cambiar el contrato del checkout.
+- **Estado:** Aceptada. Valores iniciales en ADR-0092. Implementada en ADR-0122: `ShippingRateCalculator` y la fachada de Shipping para el checkout.
+
+---
+
+## ADR-0043 — Permisos, roles y cuentas del staff
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-15.
+- **Decisión:**
+  - **Catálogo de permisos** (contexto.acción, ADR-0017):
+
+| Permiso | Permite |
+|---|---|
+| `catalog.read` | Ver el catálogo administrativo, incluidos borradores y archivados |
+| `catalog.write` | Gestionar productos, variantes, imágenes, categorías y marcas |
+| `pricing.read` / `pricing.write` | Ver / gestionar listas y precios |
+| `inventory.read` / `inventory.write` | Ver / registrar entradas y ajustes, gestionar almacenes |
+| `orders.read` | Ver pedidos |
+| `orders.manage` | Cancelar pedidos y resolver AwaitingManualFulfillment |
+| `payments.manage` | Registrar pagos manuales y emitir reembolsos |
+| `payments.configure` | Habilitar o deshabilitar el pago manual en tienda; solo el rol superadministrador (agregado por ADR-0162) |
+| `shipping.manage` | Gestionar envíos (guías y estados) |
+| `shipping.configure` | Configurar el costo de envío y el umbral de envío gratis (agregado por ADR-0075) |
+| `customers.read` | Ver datos de clientes |
+| `customers.manage` | Suspender y anonimizar clientes |
+| `staff.manage` | Gestionar cuentas del staff y roles |
+| `audit.read` | Consultar la auditoría |
+| `events.manage` | Ver y reintentar las entregas de eventos de dominio (agregado por ADR-0150) |
+| `orders.read-blocked` | Consultar los datos personales bloqueados de un pedido, con motivo y auditado (agregado por ADR-0152) |
+| `orders.place` | Colocar pedidos a nombre de un cliente en la tienda física (agregado por ADR-0161) |
+| `work-orders.read` | Ver órdenes de trabajo (agregado por ADR-0165) |
+| `work-orders.manage` | Recibir equipos en la tienda física y llevar sus órdenes de trabajo (agregado por ADR-0165) |
+
+  - **Roles iniciales:**
+    - Superadministrador: todos los permisos. No se puede quitar el último (BR-USR-03).
+    - Administrador: todos excepto `staff.manage` y, desde ADR-0162, `payments.configure`. Es el rol "de nivel alto" de ADR-0021.
+    - Operador: `catalog.*`, `pricing.*`, `inventory.*`, `orders.read`, `shipping.manage`, `customers.read`.
+    - Vendedor (agregado por ADR-0161): `catalog.read`, `inventory.read`, `orders.read`, `orders.place`, `customers.read` y, desde ADR-0165, `work-orders.read` y `work-orders.manage`.
+  - **Tipo de cuenta explícito:** cliente o staff. Las cuentas de staff no compran y los clientes nunca tienen roles.
+  - **Primer superadministrador:** se crea con un script de línea de comandos ejecutado manualmente, con los datos en variables de entorno. No hay usuarios predeterminados en el repositorio ni en las migraciones.
+  - **Alta del staff:** la hace un superadministrador desde `/v1/admin`, con contraseña temporal que se cambia obligatoriamente en el primer inicio de sesión. No existe registro público de staff.
+  - **Autenticación del staff:** solo con contraseña (ADR-0023), sin segundo factor por ahora.
+- **Alternativas consideradas:** Invitación por correo; roles adicionales desde el inicio; segundo factor desde el inicio.
+- **Consecuencias:**
+  - Dinero (pagos manuales, reembolsos), cancelaciones y auditoría quedan en Administrador y Superadministrador.
+  - Los roles se editan en base de datos, así que pueden crearse otros sin cambiar código.
+  - Sin segundo factor, una contraseña del staff filtrada da acceso completo a sus permisos; el rate limiting del login y la auditoría de inicios de sesión son las mitigaciones actuales.
+- **Revisar:** segundo factor (2FA) para el staff como mejora de seguridad a mediano o largo plazo, idealmente antes de operar con clientes reales.
+- **Estado:** Aceptada. Roles iniciales creados por migración y superadministrador con permisos implícitos en ADR-0111. Alta del staff y script del primer superadministrador implementados en ADR-0116. ADR-0150 agrega `events.manage` al Administrador, por migración; el Superadministrador lo tiene implícito. ADR-0152 agrega `orders.read-blocked` al Administrador, por migración. ADR-0161 agrega `orders.place` al Administrador y el rol Vendedor, por migración, y el staff coloca pedidos a nombre de un cliente en la tienda física, sin comprar para sí. ADR-0162 agrega `payments.configure`, que solo tiene el Superadministrador: ningún otro rol puede tenerlo, y el Administrador queda con todos los permisos salvo `staff.manage` y `payments.configure`.
+
+---
+
+## ADR-0044 — Verificación de email para comprar
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-23.
+- **Decisión:**
+  - Un cliente registrado debe tener su email verificado para colocar una orden. Sin verificar puede iniciar sesión, navegar y usar el carrito.
+  - Las compras como invitado no requieren verificación. Se asume que el invitado controla el email que usa y es responsable de él, para mantener un checkout ágil.
+- **Consecuencias:**
+  - PlaceOrder rechaza la orden de un cliente registrado sin email verificado, con un error RFC 9457 específico para que el cliente pueda solicitar la verificación.
+  - Riesgo aceptado: un cliente registrado sin verificar puede comprar como invitado y evitar la verificación; el email de contacto de un invitado puede ser incorrecto.
+  - La verificación requiere enviar correos; en desarrollo se usa un capturador local (ADR-0045).
+  - Mecanismo de verificación: ADR-0046.
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0045 — Envío de correos en desarrollo
+
+- **Fecha:** 2026-09-24
+- **Contexto:** La verificación de email (ADR-0044), las notificaciones y el enlace de acceso al pedido requieren enviar correos, pero no hay proveedor de correo (P-24) ni hosting (ADR-0031).
+- **Decisión:**
+  - El envío de correos va detrás de un puerto en Application; el dominio no conoce el mecanismo de envío.
+  - En desarrollo, el adaptador envía a un capturador de correos local en Docker Compose (por ejemplo, Mailpit): los correos no salen a internet y se revisan en una bandeja web local.
+  - La configuración del envío se declara en `.env.example` (ADR-0032).
+  - El proveedor real se elige cuando haya hosting (P-24) y se agrega como otro adaptador.
+- **Consecuencias:**
+  - La verificación de email, las notificaciones y el enlace de acceso al pedido pueden desarrollarse y probarse en local.
+  - P-24 deja de bloquear el desarrollo; solo bloquea operar con clientes reales.
+- **Estado:** Aceptada. Implementada en ADR-0110 (T-122).
+
+---
+
+## ADR-0046 — Mecanismo de verificación de email
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-32.
+- **Decisión:**
+  - Se envía un enlace con un token firmado de un solo uso, vigente 24 horas (configurable). *Nota de la revisión del 2026-09-26: el modelo de datos (ADR-0066) guarda un token aleatorio con hash, igual que ADR-0056; no se usa un token firmado.*
+  - El cliente puede solicitar el reenvío, con límite de frecuencia; un reenvío invalida el enlace anterior.
+  - Si el cliente cambia su email, debe verificarlo de nuevo antes de volver a comprar.
+  - El enlace apunta a la URL base del frontend configurada por variable de entorno (ADR-0056).
+- **Consecuencias:** La respuesta a una solicitud de reenvío no revela si el email existe.
+- **Estado:** Aceptada. Implementada en ADR-0117: enlace `/verify-email?token=…`, vigencia en `EMAIL_VERIFICATION_TTL` y aviso al email anterior al cambiarlo.
+
+---
+
+## ADR-0047 — Política de contraseñas
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Sin segundo factor (ADR-0043), la contraseña es la única barrera de autenticación. Aplica a clientes y staff, incluidas las contraseñas temporales.
+- **Decisión:**
+  - Longitud: mínimo 15 y máximo 64 caracteres.
+  - Sin reglas de composición: no se exigen mayúsculas, dígitos ni caracteres especiales.
+  - Caracteres aceptados: letras (incluidas las acentuadas y la ñ), dígitos, el espacio y todos los símbolos imprimibles, entre ellos `. , ! ? _ - @ # $ % & * + = / \ ( ) [ ] { } : ; " ' < > ~ ^ | `` ` ``.
+  - Se rechazan las contraseñas que aparezcan en una lista local de contraseñas comunes (comparación sin distinguir mayúsculas y minúsculas), sin consultar servicios externos. La lista concreta se elige al implementar (T-120).
+- **Referencia:** Alineada con NIST SP 800-63B revisión 4 (2025): mínimo de 15 caracteres cuando la contraseña es el único factor, aceptación de al menos 64 caracteres, sin reglas de composición y con verificación contra contraseñas comunes.
+- **Alternativas consideradas:** Política inicial de 8 a 50 caracteres con mayúscula, dígito y carácter especial de una lista cerrada (reemplazada el mismo día, P-33).
+- **Consecuencias:**
+  - Las contraseñas temporales del staff las genera el sistema con al menos 15 caracteres.
+  - Los gestores de contraseñas y las frases de contraseña funcionan sin restricciones.
+  - Mitigaciones adicionales: Argon2id, rate limiting del login y auditoría de inicios de sesión.
+- **Revisar:** si se incorpora el segundo factor (ADR-0048), la longitud mínima puede mantenerse; no es necesario reducirla.
+- **Estado:** Aceptada. Implementada en ADR-0115: longitud en caracteres tras normalizar a NFKC, y lista de 5,328 contraseñas comunes de SecLists en `data/passwords/`.
+
+---
+
+## ADR-0048 — Preparación para segundo factor (2FA)
+
+- **Fecha:** 2026-09-24
+- **Contexto:** El 2FA se pospone a mediano o largo plazo (ADR-0043), pero debe poder incorporarse sin rediseñar la autenticación.
+- **Decisión:** Se prepara el diseño, sin implementar código ni tablas del segundo factor:
+  - El caso de uso de autenticación devuelve un resultado que distingue "autenticado" de otros desenlaces (credenciales inválidas, cuenta suspendida, cambio de contraseña obligatorio). Un futuro "se requiere segundo factor" será otro desenlace, no un cambio de flujo.
+  - La respuesta del login es un objeto con campos nombrados (no solo los tokens sueltos), de modo que agregar un paso de desafío para usuarios con 2FA sea un cambio compatible dentro de `v1` (ADR-0034).
+  - Las estrategias de Passport delegan en casos de uso (ADR-0022), así que una estrategia o paso adicional no toca el dominio.
+  - La auditoría ya registra los eventos de autenticación, a los que se sumarán los del segundo factor.
+- **Alternativas consideradas:** Crear desde ahora columnas y endpoints de 2FA sin usarlos (descartado por la regla de evitar abstracciones sin uso).
+- **Consecuencias:** El tipo de segundo factor (aplicación de autenticación, correo u otro) y si será obligatorio para el staff se deciden al implementarlo.
+- **Estado:** Aceptada. Desenlaces de `SignIn` en ADR-0114.
+
+---
+
+## ADR-0049 — Identificadores de la orden: consecutivo interno y código público
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-35. ADR-0020 exige que el identificador que usa un invitado no sea adivinable, y se quiere conservar un número consecutivo.
+- **Decisión:** Cada orden tiene dos identificadores:
+  - **Número interno consecutivo**, generado desde una secuencia de PostgreSQL. Lo usa el staff para la operación interna y no se expone a los clientes.
+  - **Código público aleatorio** de 8 caracteres en Base32 Crockford (sin I, L, O ni U; sin distinguir mayúsculas y minúsculas), mostrado como `XXXX-XXXX`. Es el que ve el cliente, aparece en los correos y se usa en la consulta de pedido de invitado.
+  - El código público tiene restricción `UNIQUE`; ante una repetición, se genera otro.
+- **Alternativas consideradas:** Solo consecutivo (adivinable); consecutivo ofuscado con Sqids o Hashids (reversible, no es medida de seguridad); solo código aleatorio.
+- **Consecuencias:**
+  - La secuencia no garantiza números continuos: una transacción revertida deja huecos. El consecutivo sirve para ordenar e identificar, no como conteo exacto.
+  - Las respuestas a clientes (`/v1/me`, consulta de invitado, correos) muestran solo el código público; las administrativas muestran ambos, y el staff puede buscar por cualquiera de los dos.
+- **Estado:** Aceptada. Implementada en T-180 parte a (ADR-0132): un código repetido se resuelve con `ON CONFLICT DO NOTHING` y otro sorteo, sin abortar la transacción.
+
+---
+
+## ADR-0050 — Estados del envío
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-34. El diseño inicial del dominio (previo a ADR-0041) contemplaba estados ligados a paqueterías (LabelCreated, InTransit, Returned) que no se alcanzan con envíos manuales.
+- **Decisión:**
+  - Estados implementados en el MVP: Pending, Dispatched, Delivered, DeliveryFailed y Returned (este último agregado por ADR-0053).
+  - Transiciones: Pending → Dispatched → Delivered | DeliveryFailed; DeliveryFailed → Returned (ADR-0053).
+  - Los estados ligados a paqueterías (guía generada, en tránsito) se documentan como previstos en `DOMAIN_MODEL.md`, pero no se implementan hasta que exista una integración real, igual que el puerto `CarrierGateway` (ADR-0041).
+  - Los clientes de la API deben tolerar valores de estado que no conocen, de modo que agregar estados en el futuro sea un cambio compatible dentro de `v1` (ADR-0034).
+- **Alternativas consideradas:** Implementar desde ahora los estados de paquetería sin usarlos.
+- **Motivo:** Un estado inalcanzable no es inofensivo en el código: aparece en validaciones, filtros, documentación de la API y pruebas sin que ningún flujo lo produzca. Agregarlo después cuesta poco, y documentarlo como previsto conserva la preparación.
+- **Estado:** Aceptada. ADR-0140 agrega Cancelled, solo desde Pending, al cancelar la orden pagada.
+
+---
+
+## ADR-0051 — Cancelación y reembolso de órdenes pagadas
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-36 y P-37. "Cancelada" y "reembolsada" describen hechos distintos que ocurren en momentos distintos: la decisión de no surtir y la devolución efectiva del dinero.
+- **Decisión:**
+  - Cancelar una orden en PendingPayment la lleva a Cancelled, estado terminal, y libera su reserva.
+  - Cancelar una orden en Paid o AwaitingManualFulfillment la lleva a Cancelled e inicia el reembolso total.
+  - Cuando el reembolso se confirma, la orden pasa de Cancelled a Refunded, estado terminal.
+  - Si el reembolso falla, la orden sigue en Cancelled y el staff puede reintentarlo.
+  - Confirmación del reembolso:
+    - Con proveedor (PayPal, cuando se habilite): webhook o conciliación.
+    - Con pago manual: el reembolso se hace fuera del sistema y lo registra un administrador con `payments.manage`. Queda auditado y solo está disponible cuando el pago manual está habilitado (ADR-0040).
+  - En el MVP no hay reembolsos independientes de la cancelación; un pedido entregado no se reembolsa desde el sistema (ADR-0018).
+- **Alternativas consideradas:** Pasar directamente a Refunded al cancelar (la orden diría "reembolsada" antes de devolver el dinero); solo Cancelled, con el avance del reembolso únicamente en Payment.
+- **Consecuencias:**
+  - Cancelled es terminal solo cuando no hubo pago capturado.
+  - Las órdenes en Cancelled con pago capturado son la lista de reembolsos pendientes del staff.
+  - El reintegro de stock se define en ADR-0052.
+- **Estado:** Aceptada. Implementada en T-190 parte b (ADR-0135) con el pago manual; los reembolsos que fallan llegan con un proveedor (T-192). Desde ADR-0140, cancelar una orden PAID cancela también su envío, y responde 409 si el envío ya salió.
+
+---
+
+## ADR-0052 — Reintegro de stock de órdenes canceladas y devueltas
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-38. Al confirmarse el pago, `onHand` ya disminuyó (ADR-0011). Una orden se cancela por motivos variados, y la mercancía puede estar intacta, dañada o ya fuera del almacén, así que reintegrar siempre o nunca sería incorrecto.
+- **Decisión:**
+  - El reintegro de stock es un proceso de Inventory independiente de la cancelación: una entrada de stock con motivo que puede hacer referencia a la orden cancelada, con las cantidades que realmente regresan (total o parcial).
+  - Como funcionalidad opcional, al cancelar una orden en Paid el staff puede indicar que se reintegre el stock en la misma operación. En ese caso se reintegran todas las líneas por su cantidad completa; un reintegro parcial se hace con el proceso independiente.
+  - La misma opción existe al registrar o reintentar el reembolso de la orden: solo está disponible si la orden no tiene ningún reintegro previo (ni al cancelar ni por el proceso independiente), para evitar reintegros dobles. Si ya hubo alguno, lo que falte se reintegra con el proceso independiente. Cuando el reembolso lo confirma el proveedor de forma automática, no hay intervención del staff y el reintegro se hace con el proceso independiente.
+  - Las opciones de reintegro requieren, además del permiso de la operación (`orders.manage` o `payments.manage`), el permiso `inventory.write`.
+  - El proceso independiente también aplica a órdenes con envío devuelto (ADR-0053).
+  - No aplica a órdenes en PendingPayment (su reserva simplemente se libera) ni en AwaitingManualFulfillment (su stock nunca se confirmó).
+  - La cantidad total reintegrada de cada línea de una orden no puede superar la cantidad vendida, sumando la opción al cancelar y el proceso independiente.
+  - Cada reintegro genera un movimiento de stock con motivo y referencia a la orden, y se audita.
+- **Alternativas consideradas:** Reintegro automático siempre; nunca reintegrar desde el sistema.
+- **Consecuencias:** Una orden cancelada puede quedar sin reintegro; el inventario refleja solo lo que el staff confirma que regresó.
+- **Estado:** Aceptada. Implementada en T-161 (ADR-0142): la opción queda solo al cancelar, y el reembolso ya no reintegra, porque Payments no conoce las líneas de la orden.
+
+---
+
+## ADR-0053 — Entrega fallida y devolución
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-39. Sin envíos automatizados, una entrega fallida no desencadena ningún proceso del sistema.
+- **Decisión:**
+  - Marcar un envío como DeliveryFailed no cambia el estado de la orden, que permanece en Shipped.
+  - Si la mercancía regresa, el staff marca manualmente el envío como Returned y reintegra el stock con el proceso independiente de Inventory (ADR-0052), por las cantidades que realmente regresan.
+  - No hay reintento de entrega, cancelación ni reembolso automáticos a partir de una entrega fallida o una devolución. Una orden en Shipped no se cancela (BR-CAN-01), así que cualquier arreglo con el cliente se gestiona fuera del sistema.
+- **Alternativas consideradas:** Cancelar o reembolsar automáticamente; permitir reintentar la entrega.
+- **Consecuencias:**
+  - Returned pasa de estado previsto a implementado en el envío (ADR-0050).
+  - Una orden con envío devuelto queda en Shipped; su reembolso, si lo hay, ocurre fuera del sistema.
+- **Revisar si:** se integra un proceso de envío automatizado; entonces se definirán cancelación, reembolso o reintento a partir de entregas fallidas.
+- **Estado:** Aceptada. Implementada en T-195 parte b (ADR-0141), con una nota opcional del staff en la entrega fallida y en la devolución.
+
+---
+
+## ADR-0054 — Restauración del carrito al expirar una orden
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-40. Al colocar la orden, el carrito pasa a CheckedOut; si la orden expira por falta de pago, el cliente perdería sus productos.
+- **Decisión:**
+  - Cuando una orden pasa a Expired, todas sus líneas regresan al carrito del cliente.
+  - Si el carrito ya tiene productos, se suman las cantidades, con el mismo tope de 30 por línea y sin aviso que en la fusión de carritos (ADR-0015).
+  - Cliente registrado: se usa su carrito activo; si no tiene, se reactiva el carrito original de la orden.
+  - Invitado: se reactiva el carrito original de la orden (el mismo `cartId` que conoce el cliente).
+  - Los precios no se restauran: el carrito los calcula al leer (BR-CRT-04).
+- **Consecuencias:**
+  - Una orden expirada puede recibir un pago tardío (ADR-0012) después de que sus productos regresaron al carrito; si el cliente vuelve a comprar, podría pagar dos veces. Riesgo aceptado mientras el único método sea el pago manual de pruebas; se revisa al habilitar pagos reales.
+  - Shopping reacciona al evento `OrderExpired`.
+- **Estado:** Aceptada. T-230 publica `OrderExpired` con las líneas, el cliente y el carrito de origen (ADR-0136); T-181 devuelve las líneas al carrito. Implementada en T-181 parte a (ADR-0137).
+
+---
+
+## ADR-0055 — Pago manual en tienda y recompra de órdenes canceladas
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-41.
+- **Decisión:**
+  - El pago manual se realiza de forma física en la tienda. Al iniciar el pago con este método, la API devuelve una "acción requerida" que indica pago en tienda, con el código público de la orden y el total a pagar.
+  - Un pago manual solo se registra sobre órdenes en PendingPayment o Expired (esta última con el flujo de pago tardío de ADR-0012). No se registra sobre órdenes Cancelled, Refunded ni en ningún otro estado.
+  - Una orden cancelada nunca se reactiva. Como máximo, sus líneas se pueden copiar a un carrito para volver a comprarlas en una orden nueva, con precios y disponibilidad actuales y el mismo criterio de suma y tope de ADR-0054. Las variantes que ya no se venden se omiten.
+  - Pueden copiarla el cliente dueño de la orden (registrado, o invitado identificado con email y código público) y, como apoyo al cliente, el staff con `orders.manage` (Administrador y Superadministrador). El staff copia las líneas al carrito del cliente con el mismo criterio de ADR-0054, nunca a un carrito propio (BR-USR-08), y la acción se audita.
+- **Consecuencias:**
+  - Si un cliente paga en tienda una orden ya cancelada, el caso se atiende fuera del sistema.
+  - Riesgo aceptado: con el TTL de 20 minutos (se mantiene), un pago en tienda casi siempre llegará después de expirar la orden y seguirá el flujo de pago tardío; como las líneas ya habrán regresado al carrito (ADR-0054), el cliente podría comprar dos veces. Se revisa si el pago en tienda llega a ofrecerse a clientes reales (ADR-0013).
+- **Estado:** Aceptada. Implementada en T-190 parte a (ADR-0134): el pago manual se registra en `POST /v1/admin/orders/{orderId}/manual-capture`. La recompra se implementó en T-181 parte b (ADR-0139): el staff copia la orden de un cliente a su carrito activo o a uno nuevo.
+
+---
+
+## ADR-0056 — Recuperación de contraseña y enlaces hacia el frontend
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-42.
+- **Decisión:**
+  - **Recuperación por enlace enviado al email**, para clientes y staff:
+    - Token aleatorio de un solo uso, guardado con hash en la base de datos.
+    - Vigencia de 30 minutos (configurable).
+    - La respuesta a la solicitud es idéntica exista o no el email; para cuentas suspendidas se responde igual, pero no se envía el correo.
+    - Límite de frecuencia por email y por IP.
+    - Solicitar un enlace nuevo invalida los anteriores.
+    - La nueva contraseña cumple ADR-0047.
+    - Al restablecer, se revocan todas las sesiones (refresh tokens) del usuario y se envía un correo avisando del cambio.
+  - **Enlaces hacia el frontend:** los enlaces de recuperación y de verificación de email (ADR-0046) se arman con la URL base del frontend, configurada por variable de entorno y declarada en `.env.example`, más el token. El frontend envía el token a la API. Mientras no exista frontend, el token se toma del correo en el capturador local (ADR-0045) y se usa directamente contra la API.
+  - **Cambio obligatorio del staff:** pide la contraseña temporal, igual que un cambio normal pide la contraseña actual.
+- **Alternativas consideradas:** Código de 6 dígitos por correo (más independiente del frontend, pero expuesto a fuerza bruta y menos cómodo); passkeys (más seguras, pero un cambio mayor; candidatas junto con el 2FA, ADR-0048).
+- **Consecuencias:** Los tokens de recuperación se guardan en su propia tabla; los vencidos o usados se eliminan en la limpieza diaria (ADR-0029).
+- **Estado:** Aceptada. La URL base del frontend y el armado de los enlaces se implementaron en ADR-0110 (T-122). ADR-0117 fija la página de verificación (`/verify-email`) y reserva `/reset-password` para la recuperación. Recuperación implementada en ADR-0118: `/reset-password?token=…`, vigencia en `PASSWORD_RESET_TTL`, y el cambio de email invalida los enlaces pendientes.
+
+---
+
+## ADR-0057 — Datos del cliente y formato de dirección
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-43. País de operación: México (ADR-0026).
+- **Decisión:**
+  - **Registro de cliente:** email, contraseña, nombres y apellidos (dos campos). El teléfono no se pide en el registro.
+  - **Formato de dirección** (libreta de direcciones, checkout de invitado y snapshots de órdenes y envíos):
+
+| Campo | Obligatorio | Validación |
+|---|---|---|
+| Nombre de quien recibe | Sí | Texto; un solo campo con el nombre completo, informativo para la paquetería |
+| Teléfono de contacto | Sí | 10 dígitos (formato nacional) |
+| Calle | Sí | Texto |
+| Número exterior | Sí | Texto (admite "S/N" y letras) |
+| Número interior | No | Texto |
+| Colonia | Sí | Texto |
+| Código postal | Sí | 5 dígitos (solo formato) |
+| Municipio o alcaldía | Sí | Lista cerrada; debe pertenecer al estado elegido |
+| Ciudad o localidad | No | Texto |
+| Estado | Sí | Lista cerrada de las 32 entidades federativas |
+| Referencias o entre calles | No | Texto |
+| País | Fijo | México |
+
+  - **Catálogo de estados y municipios:** se toma del Catálogo Único de Claves de Áreas Geoestadísticas Estatales, Municipales y Localidades del INEGI, que se actualiza mensualmente. Se guarda en la base de datos con las claves oficiales (2 dígitos por estado, 5 por municipio) y se carga con un script manual e idempotente a partir del archivo descargado; la API no descarga nada por sí misma. Un municipio que desaparece del catálogo se marca como inactivo, nunca se borra (ADR-0038), porque puede estar en direcciones existentes.
+  - Las direcciones guardan la clave y el nombre del estado y del municipio; los snapshots de órdenes y envíos conservan los nombres vigentes al momento de la compra.
+  - Máximo 10 direcciones por cliente (configurable).
+- **Alternativas consideradas:** Nombre completo en un solo campo; municipio como texto libre; validar el código postal contra el catálogo de Correos de México (mejora futura, junto con autocompletar la dirección).
+- **Consecuencias:**
+  - El catálogo geográfico es dato de referencia compartido: lo consultan Identity & Access (direcciones) y Ordering (checkout de invitado) mediante una fachada de solo lectura.
+  - Periodicidad de revisión del catálogo: los cambios de municipios son poco frecuentes; se recomienda revisarlo al menos cada trimestre.
+- **Estado:** Aceptada. Implementada en ADR-0109 (T-124). Direcciones implementadas en ADR-0113 (T-130); máximo en `MAX_ADDRESSES_PER_CUSTOMER`.
+
+---
+
+## ADR-0058 — Peso y dimensiones de variantes
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-59. Con costo de envío fijo (ADR-0042) y sin paqueterías (ADR-0041), el peso y las dimensiones no intervienen en ningún cálculo.
+- **Decisión:** Peso y dimensiones (largo, ancho y alto) de cada variante son opcionales. Unidades: gramos y centímetros.
+- **Consecuencias:**
+  - Se pueden capturar como información para el staff al preparar envíos.
+  - Si en el futuro el costo de envío depende del peso o se integra una paquetería, habrá que volverlos obligatorios y completar los datos faltantes.
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0059 — Fusión de carritos e identificador del carrito de invitado
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-44. El servidor no conoce el carrito de invitado de un cliente hasta que el cliente envía su `cartId`.
+- **Decisión:**
+  - La fusión se dispara con un endpoint explícito bajo `/v1/me`, que el cliente llama después de iniciar sesión enviando el `cartId` del invitado. El login no fusiona carritos.
+  - Reglas:
+    - Es idempotente: fusionar un carrito que ya se fusionó en la misma cuenta devuelve el carrito actual sin volver a sumar.
+    - Si el cliente no tiene carrito activo, el carrito de invitado pasa a ser de la cuenta, sin copiar líneas.
+    - El carrito fusionado queda en Merged y su `cartId` ya no permite modificarlo.
+    - Solo se fusionan carritos de invitado (sin dueño); cualquier otro se rechaza.
+    - El staff no fusiona carritos (BR-USR-08).
+    - Las variantes no vendibles se conservan; la vista del carrito muestra la disponibilidad y el checkout vuelve a validar.
+  - El `cartId` de todo carrito de invitado es aleatorio y no adivinable, porque es la única credencial de ese carrito.
+- **Alternativas consideradas:** Fusionar dentro del login; fusionar de forma implícita mediante un encabezado.
+- **Consecuencias:** Si el frontend no llama a la fusión, el carrito de invitado queda sin dueño y se elimina a los 30 días de inactividad (ADR-0029).
+- **Estado:** Aceptada. Implementada en T-170 (ADR-0131): la fusión bloquea primero el carrito de invitado y después el del cliente.
+
+---
+
+## ADR-0060 — Búsqueda, filtros y consulta del catálogo público
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-47. El listado público debe ocultar productos sin precio vigente (BR-PRD-06) y permitir filtrar y ordenar por precio y disponibilidad, datos que viven en Pricing e Inventory. Con ADR-0005, un listado paginado desde Catalog no puede filtrar por esos datos sin producir páginas incompletas y totales incorrectos.
+- **Decisión:**
+  - **Excepción de solo lectura a ADR-0005:** la consulta del catálogo público lee en una misma consulta SQL tablas de Catalog, Pricing e Inventory. Vive en un servicio de consultas identificado, solo lee, y la verificación de límites de la CI permite esa excepción únicamente a ese servicio. El precio vigente se calcula con la fecha actual dentro de la consulta, así que los precios programados no necesitan jobs.
+  - **Búsqueda por texto:** búsqueda de texto completo de PostgreSQL con configuración en español, sin acentos (extensión `unaccent`) y con coincidencia por prefijo, sobre el título del producto, el nombre de la marca y el de sus categorías. La descripción no se incluye.
+  - **Filtros:** categoría (incluye subcategorías), una o varias marcas, rango de precio (mínimo y máximo en centavos, IVA incluido) y solo disponibles.
+  - **Ordenamiento:** relevancia (por defecto con texto de búsqueda), más recientes por fecha de publicación (por defecto sin texto), precio ascendente y descendente, y nombre. El precio de un producto para filtrar y ordenar es el más bajo entre sus variantes vendibles.
+  - **Cache:** solo los listados sin texto de búsqueda; las búsquedas van directo a la base.
+- **Alternativas consideradas:** Proyección de lectura actualizada por eventos (respeta ADR-0005, pero necesita un job para precios programados y puede desfasarse); filtrar después de paginar (páginas incompletas); motor de búsqueda externo; coincidencia parcial con trigramas; filtros por opciones de variante (fuera del MVP).
+- **Consecuencias:**
+  - La extensión `unaccent` y los índices de búsqueda se crean en una migración con SQL.
+  - Si el catálogo crece o la consulta se vuelve lenta, se puede migrar a una proyección de lectura sin cambiar el contrato de la API.
+  - El filtro "solo disponibles" usa la disponibilidad de ADR-0061.
+- **Estado:** Aceptada. ADR-0123 fija el `search_vector` (pesos y configuración) y deja la consulta pública para T-140 parte c, después de T-145 y T-160. El listado administrativo de stock no extiende esta excepción: completa cada página con la fachada de Catalog (ADR-0127). La consulta pública se implementó en ADR-0129, que también calcula `storeVisibility` con ella; un test verifica que ningún otro archivo lea tablas de otros contextos.
+
+---
+
+## ADR-0061 — Disponibilidad pública
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-46.
+- **Decisión:**
+  - El catálogo público muestra solo "disponible" o "agotado" por variante, nunca la cantidad en stock. Disponible significa que la cantidad disponible (`onHand − reserved`) es mayor que cero.
+  - Un producto está disponible si al menos una de sus variantes vendibles lo está; el filtro "solo disponibles" (ADR-0060) usa esta definición.
+  - Las cantidades exactas solo se ven en las rutas administrativas (`inventory.read`).
+- **Consecuencias:** En la vista del carrito y en la cotización del checkout, cada línea indica si la cantidad pedida puede surtirse (sí o no), sin revelar la cantidad disponible; así el cliente sabe qué ajustar antes de colocar la orden.
+- **Estado:** Aceptada. `InventoryFacade.canFulfill` responde solo sí o no por línea, así que las cantidades no salen de Inventory (ADR-0128). La tienda calcula la disponibilidad en el almacén activo (ADR-0129). ADR-0160: una variante está disponible si algún almacén activo tiene una unidad libre.
+
+---
+
+## ADR-0062 — Mensajes de login y registro
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-54 y P-55.
+- **Decisión:**
+  - **Login:** ante un email inexistente, una contraseña incorrecta o una cuenta suspendida, la respuesta es la misma: credenciales no válidas. No se revela el motivo.
+  - **Registro:** si el email ya está registrado, la respuesta lo indica, para que el usuario pueda iniciar sesión o recuperar su cuenta.
+- **Consecuencias:**
+  - Riesgo aceptado: el registro permite comprobar si un email está registrado. Por eso, que la recuperación de contraseña y el reenvío de verificación no lo revelen (ADR-0046, ADR-0056) deja de ser una protección completa contra la enumeración de cuentas; se mantienen igual porque no agregan riesgo.
+  - Mitigación: rate limiting obligatorio en el registro, igual que en el login.
+  - Un usuario suspendido no sabe desde la API que su cuenta está suspendida; lo sabrá por el canal de soporte de la tienda.
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0063 — Comportamiento de `Idempotency-Key`
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-52. Referencia: borrador de la IETF que estandariza el encabezado `Idempotency-Key`.
+- **Decisión:**
+  - Obligatorio en colocar orden (UC-ORD-02) e iniciar pago (UC-PAY-01); si falta, la solicitud se rechaza con 400. No se usa en otros endpoints: las operaciones del staff sobre pagos y reembolsos ya están protegidas por invariantes del dominio.
+  - La llave queda ligada a quien la envía (el usuario autenticado o, para invitados, el `cartId`) y al endpoint.
+  - Misma llave y mismo contenido: se devuelve la respuesta guardada sin volver a ejecutar la operación.
+  - Misma llave y contenido distinto: se rechaza con 422.
+  - Misma llave mientras la solicitud original sigue en proceso: se rechaza con 409.
+  - Se guardan las respuestas de operaciones que se ejecutaron (éxitos y errores de negocio). No se guardan errores de servidor (5xx), de autenticación ni de rate limiting, para que el cliente pueda reintentar.
+  - Formato: texto de hasta 255 caracteres; se recomienda un UUID.
+  - Retención: 24 horas (ADR-0029).
+- **Consecuencias:** Tras un 409 por `expectedTotal`, el cliente vuelve a cotizar y debe usar una llave nueva, porque el contenido cambió.
+- **Estado:** Aceptada. Implementada en ADR-0099.
+
+---
+
+## ADR-0064 — Códigos HTTP y tipos de error
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra la parte de errores de P-53.
+- **Decisión:**
+  - **Criterio de códigos:**
+    - 400: la solicitud es inválida por sí misma (validación de campos, parámetros no permitidos, `Idempotency-Key` ausente, enlace inválido o vencido). La validación usa 400, no 422.
+    - 401: no se sabe quién es (sin token, token vencido, credenciales no válidas, firma de webhook inválida).
+    - 403: se sabe quién es, pero no puede hacerlo (permiso faltante, email sin verificar, staff que intenta comprar, cambio de contraseña obligatorio, pago manual deshabilitado).
+    - 404: no existe o no se revela que existe.
+    - 409: solicitud válida que choca con el estado actual (versión, total distinto, stock insuficiente, transición inválida, valor duplicado, borrado con referencias, periodo de precio superpuesto o iniciado).
+    - 413 y 415: archivo demasiado grande o de formato no admitido.
+    - 422: solo para `Idempotency-Key` reutilizada con otro contenido (ADR-0063).
+    - 429: límite de frecuencia excedido, con encabezado `Retry-After`.
+  - **Campo `type`:** URI relativa estable por tipo de error (por ejemplo, `/problems/insufficient-stock`), documentada en OpenAPI. Los clientes deciden según `type`; `title` y `detail` son para personas.
+  - **Extensiones de Problem Details:**
+    - `correlationId` en todas las respuestas de error (ADR-0033).
+    - `errors` en los errores de validación: lista de campo y mensaje.
+    - `lines` en el error de stock insuficiente: variantes que no pueden surtirse, sin cantidades (ADR-0061).
+- **Alternativas consideradas:** 422 para la validación; 400 genérico para errores de negocio.
+- **Consecuencias:** El catálogo de errores de `REQUIREMENTS.md` (E-01 a E-26) queda con código asignado; los slugs de `type` se fijan en T-005.
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0065 — Rate limiting
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra la parte de rate limiting de P-53.
+- **Decisión:**
+  - Se usa el módulo oficial de NestJS para limitar la frecuencia (`@nestjs/throttler`), con contadores en memoria, coherente con operar una sola instancia.
+  - Límites, configurables por variables de entorno (`.env.example`):
+
+| Endpoint | Límite |
+|---|---|
+| Login | 5 intentos fallidos por email en 15 minutos, y 20 por IP |
+| Registro | 5 por IP por hora |
+| Recuperación de contraseña | 3 por email y 10 por IP por hora |
+| Reenvío de verificación | 3 por email por hora |
+| Consulta de pedido de invitado | 10 por IP en 15 minutos |
+| Colocar orden | 10 por usuario o carrito en 10 minutos |
+| Resto de endpoints | 100 solicitudes por minuto por IP |
+
+  - Se frena por tiempo; nunca se bloquean cuentas por intentos fallidos.
+  - Al exceder un límite se responde 429 con `Retry-After`.
+- **Alternativas consideradas:** Bloqueo de cuentas tras intentos fallidos (permite bloquear cuentas ajenas a propósito); almacén compartido desde el inicio.
+- **Consecuencias:**
+  - Los contadores se reinician al reiniciar la API (aceptado).
+  - Si la API se escala a varias instancias, los contadores deben pasar a un almacén compartido.
+  - Si la API queda detrás de un proxy, habrá que configurar qué IP se toma (depende del hosting, P-06).
+- **Estado:** Aceptada. Implementada en ADR-0102. ADR-0154: el login ya no limita por email, sino solo 20 intentos fallidos por IP; el límite general por IP cuenta también en los endpoints con límite propio; se agregan 5 órdenes de invitado por email de contacto por hora y 5 contraseñas actuales incorrectas por usuario en 15 minutos.
+
+---
+
+## ADR-0066 — Modelo de datos y convenciones de persistencia
+
+- **Fecha:** 2026-09-24
+- **Contexto:** T-004. El detalle de cada tabla está en `DATABASE.md`.
+- **Decisión:**
+  - **Tablas por contexto:** 38 tablas, sin FK entre contextos (ADR-0005). Única excepción: FK hacia el catálogo geográfico del INEGI, que es dato de referencia y nunca se borra (ADR-0057).
+  - **Nombres:** tablas y columnas en `snake_case`, tablas en plural; modelos de Prisma en `camelCase` con `@map`.
+  - **Identificadores:** `uuid` generado por la aplicación. UUIDv7 por defecto (ordenable por tiempo, mejor para índices); UUIDv4 cuando el identificador actúa como credencial (`carts.id`, ADR-0059). Las tablas append-only (`audit_logs`, `stock_movements`) también usan UUIDv7, cuyo orden temporal sirve para la paginación por cursor.
+  - **Dinero:** `integer` en centavos con moneda `MXN` (máximo 21,474,836.47 por campo). **Tasas:** `integer` en puntos base (16% = 1600).
+  - **Fechas:** `timestamptz(3)` en UTC; `created_at` y `updated_at` en tablas mutables; solo `created_at` u `occurred_at` en tablas append-only.
+  - **Estados:** tipos `enum` de PostgreSQL gestionados por Prisma. Agregar un valor es una migración aditiva (ADR-0050).
+  - **Snapshots:** `jsonb` validado por el dominio (direcciones de órdenes y envíos, opciones de variante).
+  - **Integridad en la base, además del dominio:** `CHECK` de montos, cantidades, stock y formatos; restricción de exclusión con `btree_gist` que impide periodos de precio superpuestos; índices únicos parciales (una reserva activa por orden, un reembolso activo por pago, un carrito activo por cliente, una lista y un método de envío predeterminados); trigger que impide modificar `audit_logs`.
+  - **Tablas no creadas:** `permissions` (catálogo en código, ADR-0017) y `promotions` (fuera del MVP, ADR-0018; `orders.discount_total` existe desde el inicio).
+  - **Tokens de un solo uso** (verificación, recuperación, refresh) guardados solo como hash.
+- **Alternativas consideradas:** IDs `bigint` secuenciales (exponen volumen y son adivinables); `bigint` o `numeric` para dinero (`integer` basta para una tienda y evita conversiones de `BigInt` en JavaScript); texto con `CHECK` en lugar de `enum`; columnas planas en lugar de `jsonb` para los snapshots.
+- **Consecuencias:**
+  - Varias protecciones requieren SQL manual en las migraciones (extensiones, `CHECK`, exclusión, índices parciales y de expresión, secuencia, trigger). En T-110 hay que comprobar que la verificación de migraciones de la CI no los detecte como diferencias. Comprobado en T-110: Prisma no los detecta (ADR-0091).
+  - Si algún monto pudiera superar 21.4 millones de pesos, habrá que migrar ese campo a `bigint`.
+- **Pendientes que afectan al modelo, sin bloquearlo:** P-57 (envíos sin paquetería), P-58 (IVA del envío). Los ajustes por datos personales ya se incorporaron (ADR-0067).
+- **Estado:** Aceptada (aprobación formal 2026-09-25). Los pendientes P-57 y P-58 no la bloquean. Modificada por ADR-0076 (la unicidad de opciones de `product_variants` cuenta solo variantes activas), ADR-0078 (columna `own_delivery` en `shipments`), ADR-0079 (IVA del envío en `orders`), ADR-0081 (a lo sumo un almacén activo) y ADR-0083 (plazo de entrega estimado en `shipping_methods` y `orders`). Implementada en T-110 con los detalles de ADR-0091 (`order_number` como `BIGSERIAL`, forma del índice de almacén activo y borrado de carritos fusionados). ADR-0148 agrega `order_access_tokens` en Ordering: 39 tablas. ADR-0150 agrega `domain_events` y `event_deliveries`: 41 tablas.
+
+---
+
+## ADR-0067 — Datos personales: aviso de privacidad, derechos ARCO y anonimización
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-19 y P-60. Marco legal: Ley Federal de Protección de Datos Personales en Posesión de los Particulares, publicada el 20 de marzo de 2025 (con reforma de noviembre de 2025); autoridad: Secretaría Anticorrupción y Buen Gobierno. Este ADR cubre lo que el sistema debe soportar; el cumplimiento legal completo requiere validación de un especialista.
+- **Decisión:**
+  - **Aviso de privacidad:** su texto vive fuera de la API. La API guarda la versión del aviso presentada al registrarse (`users`) y al comprar como invitado (`orders`), y la exige en ambas operaciones.
+  - **Derechos ARCO:** acceso y rectificación se cubren con `/v1/me` para clientes registrados. Las solicitudes formales, incluida la cancelación (eliminación de cuenta), se reciben por un canal externo publicado en el aviso de privacidad, y el staff las ejecuta en el sistema (`customers.read`, `customers.manage`). El seguimiento de plazos queda fuera del sistema en el MVP. No hay autoservicio de eliminación de cuenta por ahora.
+  - **Anonimización de un cliente:**
+    - Cuenta: email, nombres, apellidos y hash de contraseña quedan en `NULL`; estado ANONYMIZED; el email queda libre.
+    - Se revocan y borran refresh tokens y tokens de verificación y recuperación; se borran direcciones y carritos.
+    - Órdenes y envíos: se conservan montos, líneas y estados; se eliminan el email de contacto y, en las direcciones snapshot, nombre, teléfono, calle, números y referencias. Se conservan estado, municipio y código postal.
+    - Pagos: sin cambios (no guardan datos personales).
+    - Si hay órdenes sin concluir, la anonimización espera a que terminen.
+    - Los compradores invitados pueden solicitarla por el mismo canal, identificándose con email y código de pedido; se anonimizan sus órdenes.
+  - **Auditoría:** los cambios de campos personales se registran sin sus valores, igual que los datos sensibles (ADR-0037). Así, anonimizar no requiere modificar registros de auditoría ni archivos.
+  - **Retención de datos personales en órdenes:** se conservan mientras sean necesarios y después se anonimizan con el mismo procedimiento. El plazo queda pendiente de validación legal (P-61); el mecanismo (job con plazo configurable) se prevé, pero no se implementa en el MVP.
+- **Alternativas consideradas:** Autoservicio de eliminación de cuenta; borrado físico de órdenes; conservar indefinidamente los datos personales en órdenes.
+- **Consecuencias:** Ajustes en el modelo de datos propuesto (ADR-0066): versión del aviso en `users` y `orders`; marca de anonimización en `orders` y `shipments`; email de contacto de `orders` vacío solo en órdenes anonimizadas.
+- **Estado:** Aceptada. La rectificación con `PATCH /v1/me` y la versión del aviso al registrarse se implementan en ADR-0117. La anonimización se implementó en T-132 (ADR-0145), que también borra las respuestas guardadas por idempotencia. ADR-0149 fija los plazos de conservación como variables con valores por defecto. ADR-0163: la anonimización conserva la nota del staff en los pagos y reembolsos manuales; el usuario acepta el riesgo, y la operación indica no escribir datos sensibles en ella.
+
+---
+
+## ADR-0068 — Edición de variantes
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-50. Stock, precios, carritos y órdenes hacen referencia a la variante por su identificador interno, y las órdenes guardan el SKU como snapshot, así que cambiar un SKU no rompe referencias; el riesgo es de significado (por ejemplo, stock contado como talla M registrado después como L).
+- **Decisión:**
+  - El SKU y las opciones de una variante son editables solo mientras su producto nunca se ha publicado. Al corregir el SKU en ese periodo, el valor anterior se libera, porque nunca estuvo en carritos ni órdenes.
+  - Después de la primera publicación, SKU y opciones quedan fijos; una corrección se hace descontinuando la variante y creando otra. Aplica la regla de no reutilizar SKU (BR-PRD-09).
+  - No se agregan nuevas dimensiones de opciones a un producto ya publicado.
+  - Peso, dimensiones y estado se pueden editar en cualquier momento.
+- **Alternativas consideradas:** SKU nunca editable; SKU siempre editable con historial de valores anteriores.
+- **Consecuencias:** `products` guarda la fecha de la primera publicación (`first_published_at`), que no cambia aunque el producto se archive o se vuelva a publicar.
+- **Estado:** Aceptada. Implementada en ADR-0123 (409 `field-locked` con los campos fijos).
+
+---
+
+## ADR-0069 — Motivos de movimientos de stock
+
+- **Fecha:** 2026-09-24
+- **Contexto:** Cierra P-51.
+- **Decisión:**
+  - Los ajustes y reintegros llevan un motivo obligatorio de una lista cerrada y una nota opcional; con el motivo "Otro", la nota es obligatoria. Las entradas de mercancía no llevan motivo, solo nota opcional.
+  - Catálogo:
+
+| Tipo de movimiento | Motivo (código) | Dirección |
+|---|---|---|
+| Ajuste | Conteo físico (`PHYSICAL_COUNT`) | Suma o resta |
+| Ajuste | Dañado (`DAMAGED`) | Resta |
+| Ajuste | Pérdida o robo (`LOSS_OR_THEFT`) | Resta |
+| Ajuste | Uso interno o muestra (`INTERNAL_USE`) | Resta |
+| Ajuste | Error de captura (`DATA_ENTRY_ERROR`) | Suma o resta |
+| Ajuste | Otro (`OTHER`), con nota obligatoria | Suma o resta |
+| Reintegro | Orden cancelada (`ORDER_CANCELLED`) | Suma |
+| Reintegro | Envío devuelto (`SHIPMENT_RETURNED`) | Suma |
+
+  - El catálogo vive en el código como `enum`, igual que los permisos (ADR-0017). Agregar un motivo es un cambio de código con una migración aditiva.
+  - El dominio valida que la dirección del movimiento corresponda al motivo; la base de datos lo verifica también con `CHECK`.
+- **Alternativas consideradas:** Texto libre (no analizable); lista cerrada sin nota; catálogo editable por el staff en una tabla.
+- **Consecuencias:** En `stock_movements`, el campo `reason` se reemplaza por `reason_code` y `note`.
+- **Estado:** Aceptada. ADR-0160 agrega el motivo de ajuste `WAREHOUSE_TRANSFER`, que suma o resta, para mover stock entre almacenes.
+
+---
+
+## ADR-0070 — Ciclo de conservación de datos personales en órdenes
+
+- **Fecha:** 2026-09-25
+- **Contexto:** Desarrolla P-61 sobre ADR-0067. La ley de datos personales de 2025 formaliza el plazo de conservación: los datos se suprimen cuando dejan de ser necesarios, previo bloqueo, y el bloqueo dura hasta la prescripción de las acciones derivadas de la relación con el titular. Por separado, el Código Fiscal de la Federación (art. 30) exige conservar la contabilidad y su documentación cinco años, y el Código de Comercio (art. 38) los comprobantes de las operaciones al menos diez años. El reglamento de la nueva ley aún está pendiente.
+- **Decisión:**
+  - Los datos personales de una orden y su envío pasan por tres fases, con plazos configurables:
+    1. **Operativa:** desde la creación de la orden; datos visibles para el cliente y el staff.
+    2. **Bloqueo:** al vencer el plazo operativo contado desde que la orden concluye (Delivered, Cancelled, Refunded o Expired). Los datos personales se ocultan en las respuestas normales de la API; solo se consultan con un permiso específico, reservado a administradores, para atender reclamaciones o requerimientos, y cada consulta se audita.
+    3. **Anonimización:** al vencer el plazo de bloqueo, con el procedimiento de ADR-0067; los datos de la operación (montos, líneas, impuestos, fechas, estados) se conservan.
+  - Los plazos no tienen valor por defecto hasta su validación legal.
+  - **Fuera del MVP:** el diseño queda registrado, pero no se implementan el permiso de consulta de datos bloqueados, el ocultamiento en la API ni el job de transición. Mientras tanto no se ejecuta ninguna anonimización automática; las solicitudes de los titulares se atienden por el canal de ADR-0067.
+- **Preguntas para la validación legal con un especialista:**
+  1. ¿Las obligaciones fiscales y mercantiles exigen conservar los datos personales del comprador, o basta con los datos de la operación, considerando que no se emiten facturas (ADR-0027)?
+  2. ¿Cuánto debe durar la fase operativa, considerando aclaraciones, garantías y reclamaciones de consumidores?
+  3. ¿Qué plazo de prescripción aplica para el bloqueo en una venta en línea al consumidor?
+  4. ¿Qué debe decir el aviso de privacidad sobre estos plazos?
+  5. ¿Qué tratamiento deben recibir las cuentas de clientes inactivas por largo tiempo?
+  - Además: validar los plazos de retención de la auditoría técnica (ADR-0037) y revisar este ADR cuando se publique el reglamento de la nueva ley.
+- **Alternativas consideradas:** Anonimizar directamente sin fase de bloqueo; conservar indefinidamente; implementar el ciclo en el MVP con plazos provisionales.
+- **Consecuencias:** P-61 queda abierta solo para los valores de los plazos y las respuestas del especialista. Cuando se validen, se implementa el ciclo (tarea T-232) y se actualiza el aviso de privacidad.
+- **Estado:** Aceptada. Para anonimizar, ADR-0145 precisa cuándo concluye una orden: una SHIPPED con su envío devuelto concluye, y una CANCELLED con pago espera su reembolso. Modificada por ADR-0149: los plazos tienen valores por defecto configurables (12 meses de fase operativa y 60 de bloqueo), el ciclo queda activo por defecto y la validación legal pasa a cada operador; P-61 se cierra y T-232 deja de estar diferida. Implementada en parte por ADR-0151 (T-232 parte a): la orden guarda cuándo concluyó, el bloqueo oculta sus datos al comprador y al staff, y un job diario bloquea y anonimiza; el permiso de consulta de los datos bloqueados llega en la parte b. ADR-0152 implementa la consulta de los datos bloqueados con `orders.read-blocked`, con motivo y auditada: el ciclo queda completo.
+
+---
+
+## ADR-0071 — Contratos REST y convenciones de la API
+
+- **Fecha:** 2026-09-25
+- **Contexto:** T-005. El detalle de cada endpoint está en `API_SPEC.md`; aquí se registran las convenciones que no estaban decididas en ADR anteriores.
+- **Decisión:**
+  - **Transiciones de estado** como `POST` sobre subrutas de acción (`/publish`, `/cancel`, `/dispatch`), nunca como `PATCH` del estado.
+  - **`PATCH`** con semántica de fusión: campo ausente no cambia, `null` borra un opcional. **`PUT`** solo para reemplazar conjuntos (roles, orden de imágenes, método de envío).
+  - **Concurrencia optimista:** los recursos versionados devuelven `version` y toda modificación administrativa la exige en el cuerpo (400 si falta, 409 `version-conflict` si difiere). El carrito del cliente no la exige.
+  - **Rutas separadas para invitados y clientes registrados** en carrito, cotización, colocación de orden, pago y recompra (`/v1/carts`, `/v1/checkout`, `/v1/orders` frente a `/v1/me/...`). Las rutas públicas de carrito solo operan sobre carritos sin dueño; un carrito con dueño responde 404.
+  - **Identificadores:** UUID en rutas; excepciones: `slug` del producto público y código público de la orden (aceptado con o sin guion y sin distinguir mayúsculas).
+  - **Datos personales fuera de la URL:** la consulta de pedido de invitado y la recompra de invitado envían email y código en el cuerpo (`POST /v1/orders/lookup`).
+  - **Recursos ajenos como inexistentes:** 404, nunca 403.
+  - **Pago de invitado** atado al `cartId` de origen de la orden, que prueba la compra y es el alcance de la llave de idempotencia (ADR-0063).
+  - **Representaciones:** dinero como objeto `Money` (`amount` en centavos y `currency`); opcionales sin valor como `null`; cuerpos con campos no declarados rechazados con 400; textos de error en español.
+  - **Encabezados:** `X-Correlation-Id` en todas las respuestas; `Cache-Control: no-store` en respuestas autenticadas o con datos personales o tokens.
+  - **Staff con cambio de contraseña pendiente:** solo puede usar `GET /v1/me`, `POST /v1/me/password` y `POST /v1/auth/logout`; el resto responde 403 `password-change-required`.
+  - **Contraseña temporal del staff** devuelta una sola vez en la respuesta de creación.
+  - **Lectura de pagos** con `orders.read` (no hay permiso de lectura de pagos).
+  - **Paginación por cursor** en auditoría y movimientos de stock; por página en el resto.
+  - **Nuevos tipos de error derivados de reglas existentes** (E-27 a E-33): `cart-not-active`, `address-limit-reached`, `last-superadmin`, `restock-not-allowed`, `active-orders-exist`, `field-locked`, `empty-cart`, todos 409 según ADR-0064.
+  - **Webhooks** fuera del rate limiting general; la ruta de PayPal responde 404 mientras el adaptador no esté habilitado.
+  - **Valores derivados sin decisión previa**, referenciados en `API_SPEC.md` a este ADR: longitudes máximas de campos, máximo de 3 atributos de opciones por variante, tope de 100,000 unidades por entrada de stock, rate limit de 3 por hora en el cambio de email, slug generado del título y bloqueado tras la primera publicación, sin dirección predeterminada al borrar la predeterminada, y que un staff no pueda suspenderse a sí mismo.
+- **Alternativas consideradas:** `PATCH` del campo `status`; `ETag` con `If-Match` para la concurrencia (requeriría el código 428, fuera del criterio de ADR-0064); rutas únicas de checkout con autenticación opcional; consulta de invitado con datos en la URL.
+- **Consecuencias:**
+  - Decisiones derivadas P-62 y P-63, resueltas en ADR-0072.
+  - `storeVisibility` del catálogo administrativo se calcula con la fachada de Pricing y no se ofrece como filtro.
+- **Estado:** Aceptada (aprobación formal 2026-09-25), incluidos los valores derivados. Los pendientes P-48, P-49, P-56 a P-58 y el formato de carga masiva (T-145) no la bloquean. `storeVisibility` no sale de la fachada de Pricing, que formaría un ciclo (ADR-0125), sino del servicio de consultas de la tienda (ADR-0129).
+
+---
+
+## ADR-0072 — Sesiones al cambiar la contraseña y slugs de categorías y marcas
+
+- **Fecha:** 2026-09-25
+- **Contexto:** Cierra P-62 y P-63, detectadas al diseñar los contratos (ADR-0071).
+- **Decisión:**
+  - **Cambio de contraseña:** al cambiar la contraseña desde la cuenta (incluido el cambio obligatorio del staff), se revocan todas las demás sesiones del usuario; la sesión desde la que se hizo el cambio se conserva. Se envía un correo avisando del cambio, igual que en el restablecimiento (ADR-0056).
+  - **Slugs de categorías y marcas:** se pueden cambiar. El slug anterior deja de funcionar y queda libre para reutilizarse.
+- **Riesgo aceptado:** cambiar el slug de una categoría o marca rompe los enlaces públicos que usaban el anterior (responden 404), y si el slug liberado se reutiliza, un enlace antiguo puede llevar a otra categoría o marca. No se implementan redirecciones.
+- **Alternativas consideradas:** Conservar las demás sesiones; revocar todas, incluida la actual; slugs inmutables; historial de slugs con redirección.
+- **Consecuencias:** La regla de slugs de productos no cambia: el slug de un producto se bloquea tras su primera publicación y nunca se reutiliza (BR-PRD-09, ADR-0071).
+- **Estado:** Aceptada. El cambio de contraseña se implementa en ADR-0115.
+
+---
+
+## ADR-0073 — Herramienta de lint
+
+- **Fecha:** 2026-09-25
+- **Contexto:** ADR-0030 dejó la herramienta de lint para T-104. El proyecto inicial de NestJS ya trae oxlint configurado (`oxlint.json`, script `npm run lint`).
+- **Decisión:** oxlint como herramienta de lint.
+- **Alternativas consideradas:** ESLint con `typescript-eslint`.
+- **Consecuencias:**
+  - El paso "lint y formato" de la CI (ADR-0030) ejecuta oxlint.
+  - oxlint no admite `eslint-plugin-boundaries`, así que la verificación de límites entre módulos (ADR-0005, T-103) se hace con otra herramienta, por ejemplo `dependency-cruiser`.
+  - La herramienta de formato sigue pendiente de confirmar en T-104 (el proyecto trae una configuración de Prettier). Resuelta en ADR-0084: Prettier.
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0074 — Notificaciones por correo del ciclo de la orden
+
+- **Fecha:** 2026-09-25
+- **Contexto:** Cierra P-45 (UC-NTF-01, T-215). Las notificaciones son un módulo que reacciona a eventos, sin dominio propio (ADR-0004). Condiciones que ya están decididas:
+  - El cliente no puede cancelar desde la API; solo el staff (ADR-0021). Sin correo, el cliente no se entera de una cancelación.
+  - Con el pago manual en tienda y un TTL de 20 minutos, el pago casi siempre llega después de que la orden expiró (ADR-0055).
+  - Los eventos se despachan después del commit y sin outbox; un correo puede perderse (riesgo aceptado en ADR-0014).
+  - Las órdenes anonimizadas no tienen email de contacto (ADR-0067).
+  - Los correos de cuenta (verificación, recuperación y aviso de cambio de contraseña) ya están decididos en ADR-0046, ADR-0056 y ADR-0072, y no forman parte de esta decisión.
+- **Decisión:**
+  - **Criterio:** se notifican la confirmación de la compra y los cambios de la orden que el cliente no provocó y de los que no se enteraría de otra forma: pago registrado por el staff, envío, cancelación y reembolso.
+  - **Correos que se envían:**
+
+    | Correo | Evento | Contenido mínimo |
+    |---|---|---|
+    | Orden recibida | `OrderPlaced` | Código público, líneas, totales, dirección de envío resumida, instrucciones de pago en tienda, plazo de la reserva y plazo de entrega estimado (agregado por ADR-0083) |
+    | Pago confirmado | `OrderPaid` | Código público y total pagado |
+    | Orden enviada | `ShipmentDispatched` | Código público; paquetería y guía, o "entrega de la tienda" (ADR-0078) |
+    | Orden cancelada | `OrderCancelled` | Código público; si hubo pago capturado, indica que el reembolso está en proceso |
+    | Reembolso completado | `RefundCompleted` | Código público y monto reembolsado |
+
+  - **Correos que no se envían en el MVP:**
+    - Orden entregada (`OrderDelivered`): por decisión del equipo (2026-09-25).
+    - Orden expirada (`OrderExpired`): con el pago en tienda llegaría en casi toda compra seguida de "pago confirmado", lo que confunde. Se revisa al habilitar pagos en línea.
+    - Pago tardío sin stock (AwaitingManualFulfillment): con el pago en tienda el cliente está presente cuando el staff lo registra; la resolución posterior genera "pago confirmado" o "orden cancelada". No hay evento para este estado y no se crea uno.
+    - Entrega fallida y devolución (`DeliveryFailed`, `ShipmentReturned`): se gestionan fuera del sistema (ADR-0053).
+    - Pago fallido (`PaymentFailed`): el pago manual no falla y PayPal no está habilitado (ADR-0040).
+    - Notificaciones al staff: el staff trabaja con las vistas administrativas (órdenes en AwaitingManualFulfillment y canceladas con reembolso pendiente).
+  - **Destinatario:** el email de contacto de la orden (en clientes registrados es el email de la cuenta al colocarla). Si la orden está anonimizada, no se envía.
+  - **Contenido:** en español; solo el código público, nunca el número interno (ADR-0049); sin datos de pago, tokens ni enlaces a la orden (ADR-0077). Son correos transaccionales, sin opción de baja ni contenido promocional.
+  - **Entrega:** asíncrona, al recibir el evento después del commit (ADR-0014). Como máximo un envío por evento; sin reintentos; los fallos se registran en logs sin el email del destinatario. No se agrega tabla de notificaciones: el modelo de datos aprobado (ADR-0066) no cambia.
+- **Alternativas consideradas:** Solo confirmación de compra y de envío (el cliente no se entera de cancelaciones ni reembolsos); notificar todo cambio de estado, incluidos expiración y entrega fallida; registro de notificaciones enviadas con reintentos (requiere tabla nueva y un job).
+- **Consecuencias:**
+  - T-215 queda desbloqueada. El módulo de notificaciones consume eventos de Ordering, Payments y Shipping, y obtiene el email de contacto y los datos de la orden mediante la fachada de Ordering (ADR-0005).
+  - El correo de orden recibida no es comprobante: el código público también se entrega en la respuesta de la API. Si el negocio llega a depender de él, se revisa ADR-0014.
+  - La mención de estos correos en el aviso de privacidad se valida junto con P-61.
+- **Revisar si:** se habilitan pagos en línea (expiración y pago fallido), se integra una paquetería (entrega fallida) o se implementa el enlace de acceso al pedido (ADR-0077).
+- **Estado:** Aceptada (aprobación formal 2026-09-25). Implementada en T-215 (ADR-0143): las instrucciones de pago en tienda van solo con el pago manual habilitado. ADR-0150: los correos ya no se pierden si la API se cae o el servidor de correo falla; se reintentan, y en un caso raro uno puede llegar dos veces.
+
+---
+
+## ADR-0075 — Permiso para configurar el costo de envío
+
+- **Fecha:** 2026-09-25
+- **Contexto:** Cierra P-48. El costo fijo y el umbral de envío gratis (ADR-0042) son valores monetarios que se aplican a cada orden. `shipping.manage` lo tiene también el Operador (ADR-0043), mientras que las operaciones con dinero (pagos manuales, reembolsos) y las cancelaciones quedan en Administrador y Superadministrador.
+- **Decisión:**
+  - Solo los usuarios administrativos (Superadministrador y Administrador) configuran el costo de envío y el umbral de envío gratis.
+  - Se implementa con un permiso nuevo en el catálogo de ADR-0043: `shipping.configure`. Los roles iniciales Superadministrador y Administrador lo incluyen; el Operador no.
+  - Como la autorización se basa en permisos (ADR-0017), no se comprueba el nombre del rol.
+  - Consultar el método de envío sigue con `shipping.manage`.
+- **Alternativas consideradas:** Usar `shipping.manage` (el Operador podría cambiar un valor monetario); reutilizar `payments.manage` u `orders.manage` (mezcla contextos, en contra de ADR-0017); comprobar el nombre del rol (los roles son editables y la autorización es por permisos).
+- **Consecuencias:**
+  - El catálogo de permisos pasa de 14 a 15.
+  - Como los roles se editan en base de datos, un rol creado después puede recibir `shipping.configure`; el cambio de permisos de un rol se audita (ADR-0037).
+- **Estado:** Aceptada.
+
+---
+
+## ADR-0076 — Reactivación de entidades suspendidas, archivadas o desactivadas
+
+- **Fecha:** 2026-09-25
+- **Contexto:** Cierra P-49. ADR-0038 define suspender, archivar, descontinuar y desactivar como alternativas al borrado, pero no el camino de regreso; hoy esas operaciones son irreversibles. Condiciones:
+  - Un error de operación (archivar el producto equivocado, suspender a otra persona) no tiene corrección, y la única salida es crear duplicados.
+  - El email de un usuario suspendido, el slug de un producto archivado y el SKU de una variante descontinuada siguen reservados (ADR-0038), así que reactivar no choca con otros registros por esos valores.
+  - Una cuenta de staff puede suspenderse por sospecha de que su contraseña está comprometida.
+  - La anonimización es irreversible (ADR-0067) y queda fuera de esta decisión.
+  - La restricción `UNIQUE (product_id, options)` de `product_variants` (ADR-0066) incluye las variantes descontinuadas. Con ella, la corrección que prevé ADR-0068 (descontinuar una variante y crear otra con las mismas opciones y el SKU correcto) es imposible.
+- **Decisión:**
+  - **Criterio general:** cada desactivación de P-49 se revierte con una acción explícita `POST …/reactivate`, con el mismo permiso que la desactivación. Se audita. No se emiten eventos nuevos (no tienen consumidor) y la cache refleja la reactivación al vencer su TTL (ADR-0028).
+
+    | Entidad | Transición | Permiso | Reglas |
+    |---|---|---|---|
+    | Staff | SUSPENDED → ACTIVE | `staff.manage` | Requiere motivo. Se genera una contraseña temporal nueva, devuelta una sola vez como en el alta, con cambio obligatorio en el siguiente inicio de sesión. Conserva sus roles |
+    | Cliente | SUSPENDED → ACTIVE | `customers.manage` | Requiere motivo. Conserva su contraseña y el estado de verificación del email; si no la recuerda, usa la recuperación. Un cliente anonimizado no se reactiva |
+    | Producto | ARCHIVED → DRAFT | `catalog.write` | No vuelve directo a la tienda: se publica con el flujo normal (BR-PRD-04). Conserva slug y `firstPublishedAt`, y con ello el bloqueo de SKU y opciones (ADR-0068) |
+    | Variante | DISCONTINUED → ACTIVE | `catalog.write` | Solo si ninguna variante activa del producto tiene la misma combinación de opciones. Vuelve a ser vendible cuando cumple BR-PRD-11 |
+    | Categoría | INACTIVE → ACTIVE | `catalog.write` | Solo si su categoría padre está activa o es raíz. No reactiva subcategorías |
+    | Marca | INACTIVE → ACTIVE | `catalog.write` | — |
+
+  - **Modelo de datos:** la restricción `UNIQUE (product_id, options)` pasa a índice único parcial `(product_id, options) WHERE status = 'ACTIVE'`. La combinación de opciones es única entre variantes activas (BR-PRD-02), lo que permite la corrección de ADR-0068 y hace que la base garantice la regla de reactivación de variantes.
+- **Alternativas consideradas:** Mantener las operaciones irreversibles; reactivar al staff con su contraseña anterior (riesgoso si la suspensión fue por compromiso); reactivar el producto directamente en PUBLISHED; permitir la reactivación solo al Superadministrador.
+- **Consecuencias:**
+  - Modifica el modelo de datos aprobado (ADR-0066) en un índice de `product_variants`; T-110 aún no crea migraciones, así que no hay datos que migrar.
+  - Nuevos endpoints, todos `POST` y con respuesta 200: `/v1/admin/identity/staff/{userId}/reactivate` (devuelve la contraseña temporal con `Cache-Control: no-store`), `/v1/admin/identity/customers/{userId}/reactivate`, `/v1/admin/catalog/products/{productId}/reactivate`, `…/variants/{variantId}/reactivate`, `/v1/admin/catalog/categories/{categoryId}/reactivate` y `/v1/admin/catalog/brands/{brandId}/reactivate`. Errores: 409 `invalid-state-transition` (estado de origen incorrecto o categoría padre inactiva) y 409 `duplicate-value` (combinación de opciones ocupada).
+  - Se retiran las notas "irreversible mientras P-49 esté abierta" (descontinuar variante) y "archivado mientras P-49 esté abierta" (publicar producto): un producto archivado primero se reactiva a DRAFT y luego se publica.
+  - La reactivación de staff y clientes es un evento de seguridad auditado, igual que la suspensión (ADR-0037).
+  - Fuera de alcance: almacenes y listas de precios desactivados (ADR-0038) tampoco tienen reactivación, pero no forman parte de P-49.
+- **Estado:** Aceptada (aprobación formal 2026-09-25), incluido el cambio del índice de `product_variants`. Reactivación del staff implementada en ADR-0116. ADR-0160: el staff desactiva almacenes para siempre, sin reactivación.
+
+---
+
+## ADR-0077 — Enlace de acceso al pedido por correo
+
+- **Fecha:** 2026-09-25
+- **Contexto:** Cierra P-56 (UC-ORD-05, T-186). ADR-0020 dejó el enlace por correo como mecanismo adicional "si su costo es bajo". Hechos relevantes:
+  - El invitado ya consulta su pedido con email y código público (UC-ORD-04, `POST /v1/orders/lookup`), con rate limiting.
+  - El código público se entrega en la respuesta de la API al colocar la orden y en el correo de orden recibida (ADR-0074).
+  - El contrato provisional de `API_SPEC.md` pide para solicitar el enlace **los mismos datos** que la consulta directa (email y código). Quien puede pedir el enlace ya puede consultar el pedido, así que el enlace solo agrega la prueba de que el solicitante controla el buzón.
+  - El caso que la consulta directa no resuelve es el invitado que perdió el código (borró o no recibió el correo de orden recibida, que puede perderse según ADR-0014).
+  - El staff puede buscar órdenes por email de contacto (ADR-0049) y atender ese caso por un canal externo.
+  - No hay frontend todavía: el enlace se armaría con la URL base del frontend, como la recuperación de contraseña (ADR-0056).
+- **Decisión:**
+  - No se implementa el enlace de acceso en el MVP. UC-ORD-05 y T-186 pasan a DEFERRED.
+  - Se retira del contrato el diseño provisional (`POST /v1/orders/access-links` y `POST /v1/orders/access`), porque duplica la consulta directa.
+  - Los correos de la orden no llevan enlaces a la orden; muestran el código público (ADR-0074).
+  - Un invitado que perdió su código se atiende por un canal externo: el staff busca la orden por email con `orders.read`.
+  - **Diseño previsto si se implementa después** (recuperación por email):
+    - `POST /v1/orders/access-links` con solo `{ "contactEmail" }`; responde 202 sin cuerpo exista o no una orden, y envía al buzón un enlace que da acceso a las órdenes de invitado de ese email.
+    - Token aleatorio de un solo uso, guardado como hash, vigente 30 minutos, con límite por email y por IP (como ADR-0056). Requiere una tabla nueva en Ordering.
+    - Lo usaría también un comprador que perdió el correo de orden recibida.
+- **Alternativas consideradas:**
+  - Implementar el contrato provisional (email y código): costo de tabla, token, correo y endpoints sin resolver el código perdido.
+  - Implementar ya la recuperación por email: resuelve el código perdido, pero agrega una tabla al modelo de datos aprobado, un tipo de token, un correo y dos endpoints, sin frontend para probar el flujo completo.
+  - Token firmado sin estado (lo que menciona ADR-0020): evita la tabla, pero no se puede invalidar ni usar una sola vez, a diferencia de los demás tokens del sistema.
+- **Consecuencias:**
+  - T-186 deja de estar bloqueada y pasa a DEFERRED; el MVP no depende de la entrega de correos para que un invitado consulte su pedido.
+  - Se actualizan ADR-0020 (el enlace queda fuera del MVP), BR-ORD-10 y ADR-0074 (sin enlaces en los correos).
+  - El modelo de datos aprobado (ADR-0066) no cambia.
+- **Revisar si:** el staff recibe solicitudes frecuentes de invitados que perdieron su código, o existe frontend y proveedor de correo real (P-24).
+- **Estado:** Reemplazada parcialmente por ADR-0148 (2026-10-03); aceptada con aprobación formal el 2026-09-25. A pedido del usuario, el enlace se implementa con el diseño previsto, y el invitado que perdió su código lo pide con su email en lugar de acudir al staff. Siguen vigentes el retiro del contrato provisional y los correos de la orden sin enlaces.
+
+---
+
+## ADR-0078 — Envíos sin paquetería
+
+- **Fecha:** 2026-09-25
+- **Contexto:** Cierra P-57 (T-195). BR-SHP-04 exige guía "cuando interviene una paquetería", lo que sugiere envíos sin ella. Son dos casos distintos:
+  - **Entrega propia:** la tienda lleva el pedido con su personal o un mensajero, a la dirección de la orden. Solo cambia quién entrega; el flujo de pago, envío y estados es el mismo.
+  - **Recoger en tienda:** el cliente elige no recibir envío. Cambia el checkout (dirección opcional, costo 0, elección del método), los estados (listo para recoger, recogido), la identificación de quien recoge y los correos.
+  - El modelo actual ya permite despachar sin paquetería: `carrier_name` y `tracking_number` son opcionales y la guía solo se exige si hay paquetería. Pero no distingue "entrega propia" de "olvidé capturar la paquetería", así que un envío por paquetería puede despacharse sin guía por error.
+  - Hay un solo método de envío activo (ADR-0042, índice único parcial en `shipping_methods`), y la dirección de envío es obligatoria en el checkout.
+- **Decisión:**
+  - **Entrega propia: sí en el MVP.** Es una decisión operativa del staff al despachar, no una opción del cliente. Aplican el mismo costo de envío (ADR-0042), los mismos estados (ADR-0050, ADR-0053) y la misma dirección de la orden.
+  - Al despachar, el staff indica una de dos formas:
+    - Paquetería: `carrierName` y `trackingNumber` obligatorios (BR-SHP-04).
+    - Entrega propia: `ownDelivery: true`, sin paquetería ni guía.
+  - Nueva columna `shipments.own_delivery boolean NOT NULL DEFAULT false`, con `CHECK (status = 'PENDING' OR own_delivery OR (carrier_name IS NOT NULL AND tracking_number IS NOT NULL))` y `CHECK (NOT own_delivery OR (carrier_name IS NULL AND tracking_number IS NULL))`. La base garantiza que no se despacha por paquetería sin guía, validación que hoy solo hace la aplicación.
+  - Las vistas de envío (`AdminShipment` y `shipment` de la orden del cliente) incluyen `ownDelivery`. El correo de orden enviada (ADR-0074) indica "entrega de la tienda" en lugar de paquetería y guía.
+  - **Recoger en tienda: fuera del MVP.** Se agrega a la lista de alcance excluido. Requiere su propia decisión: elección en el checkout, dirección opcional, costo, estados, identificación al recoger y correo de "listo para recoger".
+- **Alternativas consideradas:**
+  - Mantener la regla actual (sin paquetería no se exige guía): no requiere cambios, pero no distingue la entrega propia de un olvido.
+  - Registrar la entrega propia como texto en `carrierName` (por ejemplo, "Entrega propia"): evita la columna, pero no se puede validar ni distinguir de forma fiable.
+  - Implementar también recoger en tienda en el MVP: cambia checkout, órdenes, envíos, estados y correos.
+- **Consecuencias:**
+  - Modifica el modelo de datos aprobado (ADR-0066) en una columna y una restricción de `shipments`; aún no hay migraciones.
+  - Cambia el contrato de `POST …/shipments/{id}/dispatch` (acepta `ownDelivery`) y agrega `ownDelivery` a `AdminShipment` y a `shipment` de `Order`.
+  - `PATCH …/shipments/{id}` no puede capturar paquetería ni guía en un envío despachado como entrega propia.
+- **Revisar si:** el negocio quiere ofrecer recoger en tienda, o se integra una paquetería (ADR-0041).
+- **Estado:** Aceptada (aprobación formal 2026-09-26). Implementada en T-195 (ADR-0140, ADR-0141); la paquetería y la guía capturadas por error se quitan con el `PATCH` mientras el envío está pendiente. ADR-0161 (versión 1.2) agrega la entrega en la tienda de la venta de mostrador (`fulfillment` `IN_STORE`), sin dirección, costo de envío ni envío; recoger en tienda los pedidos en línea sigue fuera.
+
+---
+
+## ADR-0079 — IVA del costo de envío y base del umbral de envío gratis
+
+- **Fecha:** 2026-09-26
+- **Contexto:** Cierra P-58 (UC-SHI-01, T-196). Los precios incluyen IVA (ADR-0008), todo lleva IVA del 16% configurable (ADR-0027) y el total es subtotal + envío − descuento (BR-ORD-16). ADR-0042 no decía si el costo de envío incluye IVA ni contra qué monto se compara el umbral de envío gratis. Cuando el vendedor cobra el envío junto con la venta, ese cobro suele gravarse con el mismo IVA que la mercancía; el tratamiento fiscal lo confirma el contador del negocio.
+- **Decisión:**
+  - **IVA del envío:** el costo de envío configurado incluye IVA, igual que los precios de productos; el cliente paga el monto configurado.
+    - El IVA contenido en el envío se calcula con la misma tasa configurada (ADR-0027) y con la misma regla de redondeo por línea (ADR-0008), y se guarda como snapshot en la orden junto con la tasa aplicada.
+    - `taxTotal` de la orden es el IVA de las líneas más el del envío. La fórmula del total no cambia.
+  - **Umbral de envío gratis:** el envío es gratis cuando subtotal con IVA − descuento ≥ umbral. El costo de envío no cuenta para alcanzarlo. En el MVP el descuento siempre es 0 (ADR-0018).
+  - Con envío gratis, el costo de envío y su IVA son 0.
+  - **Ejemplo:** productos por $1,198.00 (IVA $165.24) y envío de $99.00 (IVA $13.66): total $1,297.00 e IVA total $178.90. Con un umbral de $1,500, un carrito de $1,600 con IVA tiene envío gratis.
+- **Alternativas consideradas:** Sumar el IVA al costo configurado ($99 + $15.84); envío sin IVA; comparar el umbral contra el subtotal sin IVA (un cliente que ve $1,600 en su carrito pagaría envío con un umbral anunciado de $1,500).
+- **Consecuencias:**
+  - Modifica el modelo de datos aprobado (ADR-0066): columnas `shipping_tax_amount` y `shipping_tax_rate_bp` en `orders`; la restricción `tax_total <= subtotal` pasa a `tax_total <= subtotal + shipping_cost`, y se agrega `shipping_tax_amount <= shipping_cost`.
+  - `CheckoutQuote` y `Order` agregan `shippingTaxAmount`, un cambio compatible dentro de `v1`.
+  - El tratamiento del IVA del envío se valida con el contador antes de operar con clientes reales (P-69).
+- **Revisar si:** el contador indica otro tratamiento, se emiten facturas (ADR-0027) o se habilitan promociones (ADR-0018).
+- **Estado:** Aceptada (aprobación formal 2026-09-26).
+
+---
+
+## ADR-0080 — Efecto de desactivar categorías y marcas en la tienda
+
+- **Fecha:** 2026-09-26
+- **Contexto:** Cierra P-66, detectada en la revisión integral de la documentación. ADR-0038 permite desactivar categorías y marcas con productos, y ADR-0076 permite reactivarlas, pero no se definía qué pasa en el catálogo público mientras están inactivas.
+- **Decisión:**
+  - **Categoría visible:** activa y con todos sus ancestros activos. Solo las categorías visibles aparecen en el árbol público.
+  - **Desactivar una categoría** la oculta junto con todas sus subcategorías, aunque estas sigan activas. Al reactivarla (ADR-0076), sus subcategorías activas vuelven a verse.
+  - **Los productos de una categoría oculta siguen publicados y visibles** en listados, búsqueda y detalle, pero dejan de mostrarse como parte de esa categoría: el detalle del producto solo lista categorías visibles y la búsqueda por texto no usa el nombre de categorías ocultas.
+  - **Desactivar una marca** la quita del listado público de marcas; sus productos siguen visibles y siguen mostrando la marca.
+  - **Filtros:** filtrar el catálogo público por una categoría oculta o por una marca inactiva responde 400 `validation-error`.
+- **Alternativas consideradas:** Ocultar los productos de categorías o marcas inactivas; mantener visibles las subcategorías activas de una categoría desactivada.
+- **Consecuencias:**
+  - La aplicación recalcula el `search_vector` de los productos afectados al desactivar o reactivar una categoría.
+  - Nueva regla BR-PRD-17.
+- **Estado:** Aceptada (aprobación formal 2026-09-26). Los 400 de los filtros llevan `unknownCategory` y `unknownBrands`, iguales para lo oculto y lo que no existe (ADR-0129).
+
+---
+
+## ADR-0081 — Un solo almacén en el MVP
+
+- **Fecha:** 2026-09-26
+- **Contexto:** Cierra P-67, detectada en la revisión integral de la documentación. Operar varios almacenes ya está fuera del MVP (BR-INV-08, ADR-0011, `PROJECT.md`), y el seed crea un almacén predeterminado (`DATABASE.md`, sección 13). Sin embargo, la API permite crear y desactivar almacenes (UC-INV-01), el modelo no marca cuál es el predeterminado y no se define qué almacén usa una reserva si hay varios activos.
+- **Decisión:**
+  - En el MVP existe exactamente un almacén, creado por el seed. Es el predeterminado y el único que usan las reservas, las entradas, los ajustes y los envíos.
+  - La API de almacenes queda en consulta y edición: `GET /v1/admin/inventory/warehouses` y `PATCH …/{warehouseId}` (nombre y dirección). Se retiran del MVP la creación (`POST /v1/admin/inventory/warehouses`) y la desactivación (`POST …/{warehouseId}/deactivate`).
+  - La base garantiza a lo sumo un almacén activo con un índice único parcial `((true)) WHERE status = 'ACTIVE'`.
+  - Las entradas y los ajustes conservan `warehouseId` en la solicitud, para no cambiar el contrato cuando haya varios almacenes; en el MVP solo se acepta el almacén activo.
+  - La asignación de almacén sigue como domain service (ADR-0011). Al habilitar varios almacenes se definirán el almacén predeterminado o la prioridad y las reglas de asignación.
+- **Alternativas consideradas:** Mantener la creación de almacenes con un indicador de predeterminado; permitir almacenes inactivos adicionales sin uso.
+- **Consecuencias:** Modifica los contratos aprobados (ADR-0071) en dos endpoints y el modelo de datos (ADR-0066) en un índice; aún no hay implementación ni migraciones.
+- **Revisar si:** se decide operar más de un almacén.
+- **Estado:** Reemplazada por ADR-0160 en T-162 parte a (versión 1.1): puede haber varios almacenes activos, cada orden se reserva en uno por prioridad, y la migración `20261006120000_inventory_warehouse_priority` quita el índice de un solo almacén activo. El primer almacén lo creó una migración en T-160 (ADR-0127).
+
+---
+
+## ADR-0082 — Recompra del staff cuando el carrito original ya no existe
+
+- **Fecha:** 2026-09-26
+- **Contexto:** Cierra P-68, detectada en la revisión integral de la documentación. Cuando el staff copia una orden cancelada de un invitado, las líneas van al carrito original de la orden (ADR-0054, ADR-0055). Los carritos de invitado sin actividad se borran a los 30 días (BR-CRT-06), así que ese carrito puede ya no existir.
+- **Decisión:**
+  - Si el carrito original ya no existe, la recompra no se realiza: responde 409 `source-cart-unavailable`, con un `detail` que indica que el carrito de la orden ya no existe. No se crea un carrito nuevo.
+  - El invitado conserva la recompra por su cuenta (`POST /v1/orders/reorder`), que crea un carrito si no envía uno.
+- **Alternativas consideradas:** Crear un carrito nuevo y devolver su `cartId` al staff para que lo comunique al cliente.
+- **Consecuencias:** Nuevo error E-34 (`source-cart-unavailable`, 409 según ADR-0064).
+- **Estado:** Aceptada (aprobación formal 2026-09-26). Implementada en T-181 parte b (ADR-0139), también para un carrito original que pasó a una cuenta.
+
+---
+
+## ADR-0083 — Plazo de entrega estimado
+
+- **Fecha:** 2026-09-26
+- **Contexto:** Cierra P-64 (BR-SHP-08). El sistema no informaba al cliente cuándo recibiría su pedido. La Ley Federal de Protección al Consumidor obliga al proveedor a informar y respetar los plazos de entrega que ofrece (art. 7) y a informar las condiciones antes de la compra en el comercio electrónico (art. 76 BIS), así que el plazo que se muestra funciona como compromiso. Los envíos son manuales (ADR-0041, ADR-0078), con un solo método de envío y costo fijo para todo México (ADR-0042).
+- **Decisión:**
+  - Se informa al cliente un **plazo de entrega estimado**, no una fecha comprometida: un rango en días hábiles (mínimo y máximo), contado desde la confirmación del pago.
+  - El rango se configura en el método de envío, con el permiso `shipping.configure` (ADR-0075). Valor inicial: 3 a 7 días hábiles.
+  - Se muestra en la cotización del checkout y en el correo de orden recibida (ADR-0074), y la orden lo guarda como snapshot al colocarse; un cambio posterior del rango no afecta a órdenes colocadas.
+  - No se calcula una fecha: al ser un rango en días hábiles, no se necesita calendario de festivos ni hora de corte.
+  - Un retraso no dispara acciones automáticas, igual que una entrega fallida (ADR-0053).
+  - Sin plazo interno de despacho para el staff ni indicador de envíos atrasados en el MVP: la lista de envíos pendientes ya muestra primero los más antiguos.
+- **Alternativas consideradas:** Texto informativo fuera de la API (la orden no guardaría lo prometido); fecha comprometida calculada con calendario de festivos y hora de corte; plazo interno de despacho con indicador de atrasados.
+- **Consecuencias:**
+  - Modifica el modelo de datos aprobado (ADR-0066): columnas `delivery_min_business_days` y `delivery_max_business_days` en `shipping_methods` y en `orders`.
+  - `ShippingMethod`, `CheckoutQuote` y `Order` agregan el rango, un cambio compatible dentro de `v1`.
+  - La forma de presentar el plazo al cliente se valida con el especialista legal junto con P-61.
+- **Revisar si:** se integra una paquetería (plazos por servicio o zona), se ofrecen varios métodos de envío o se requiere una fecha comprometida.
+- **Estado:** Aceptada (aprobación formal 2026-09-26).
+
+---
+
+## ADR-0084 — Formato de código, ramas y mensajes de commit
+
+- **Fecha:** 2026-09-26
+- **Contexto:** Cierra P-70. ADR-0030 exige "lint y formato" en la CI y ADR-0073 eligió oxlint para el lint, pero faltaban la herramienta de formato y las convenciones de ramas y commits. El proyecto ya traía Prettier configurado, y el historial mezclaba mensajes en inglés y en español.
+- **Decisión:**
+  - **Formato:** Prettier, con la configuración existente (comillas simples y coma final) y fin de línea LF.
+    - Alcance: código y configuración (`.ts`, `.js`, `.json`, `.yml`). La documentación Markdown queda fuera mediante `.prettierignore`, porque alinear columnas reescribiría tablas completas en cada cambio.
+    - Scripts: `npm run format` (escribe) y `npm run format:check` (verifica; es el que usa la CI).
+  - **Ramas:** `tipo/T-xxx-descripcion-corta`, en minúsculas y con guiones, con los mismos tipos que los commits. Se incluye el ID de la tarea cuando existe; si el cambio resuelve una decisión, su ID (`p-xx`).
+  - **Commits:** Conventional Commits: `tipo: descripción` en imperativo, en una línea corta, con cuerpo opcional y pie opcional con referencias (`Refs: T-100, ADR-0084`). Tipos: `feat`, `fix`, `docs`, `refactor`, `test`, `chore` y `ci`.
+  - **Idioma:** ramas, commits y pull requests (título y descripción) en inglés a partir del 2026-09-26. El historial anterior no se reescribe. La documentación del proyecto sigue en español.
+  - **Verificación automática:** sin hooks de Git por ahora; la convención queda documentada y se revisa al configurar la CI (T-106), donde se puede agregar una comprobación de los mensajes.
+- **Alternativas consideradas:** Biome (formatea y hace lint, pero se solapa con oxlint); oxfmt (más reciente); Prettier también sobre Markdown; commits en español; hooks con husky y commitlint desde el inicio.
+- **Consecuencias:**
+  - T-104 queda sin decisiones pendientes; `.prettierignore` y los scripts de formato ya existen.
+  - El paso "lint y formato" de la CI ejecuta `npm run lint` y `npm run format:check`.
+- **Estado:** Aceptada (aprobación formal 2026-09-26). La CI comprueba los mensajes de commit y el título del pull request desde ADR-0105.
+
+---
+
+## ADR-0085 — CORS
+
+- **Fecha:** 2026-09-26
+- **Contexto:** Cierra P-65. CORS solo aplica a clientes que corren en un navegador desde otro origen (un frontend web); las aplicaciones móviles, los servicios y los webhooks no pasan por él. Hechos relevantes:
+  - La API no usa cookies: el token de acceso viaja en `Authorization: Bearer` (ADR-0023). Por eso no se necesita `Access-Control-Allow-Credentials`, que es la configuración más riesgosa de CORS, y otro sitio no puede usar la sesión de un usuario.
+  - El frontend aún no existe y el proyecto solo corre en local (ADR-0031), así que los orígenes concretos no se conocen.
+  - CORS no es control de acceso: un origen no permitido no recibe los encabezados CORS y el navegador bloquea la respuesta, pero la autorización sigue dependiendo del token y de los permisos.
+  - El navegador solo deja leer al código del frontend los encabezados de respuesta básicos; `Location`, `Retry-After` y `X-Correlation-Id` (sección 2.4 de `API_SPEC.md`) deben exponerse explícitamente.
+- **Decisión:**
+  - **Lista de orígenes permitidos** en una variable de entorno (`CORS_ALLOWED_ORIGINS`), con orígenes exactos separados por coma (esquema, host y puerto; por ejemplo, `http://localhost:5173`), declarada en `.env.example` con un valor de ejemplo no real.
+  - **Vacía por defecto:** sin orígenes configurados, la API no permite acceso desde navegadores de otros orígenes.
+  - **Sin comodín:** la validación de configuración al arrancar rechaza `*` y los orígenes mal formados, y la API no inicia (ADR-0032).
+  - **Una sola lista** para todos los grupos de rutas (público, cuenta y administración); los webhooks no dependen de CORS.
+  - **Configuración fija:**
+
+    | Parámetro | Valor |
+    |---|---|
+    | Credenciales | No (`Access-Control-Allow-Credentials` ausente) |
+    | Métodos | `GET`, `POST`, `PUT`, `PATCH`, `DELETE` |
+    | Encabezados de solicitud | `Authorization`, `Content-Type`, `Idempotency-Key` |
+    | Encabezados expuestos | `Location`, `Retry-After`, `X-Correlation-Id` |
+    | Caché de la solicitud previa (preflight) | 600 segundos |
+
+  - La URL base del frontend para los enlaces de correo (ADR-0056) es otra variable; su origen normalmente también estará en la lista, pero no se deriva automáticamente.
+- **Alternativas consideradas:** Comodín `*` (aceptable sin cookies, pero deja el acceso abierto a cualquier sitio y no se puede combinar con credenciales si algún día se usan); listas separadas para rutas públicas y administrativas (más configuración sin ganancia real mientras la autorización sea por token); posponer la decisión hasta tener frontend (el mecanismo no depende de los orígenes concretos).
+- **Consecuencias:**
+  - La implementación forma parte de T-100 (configuración validada al arrancar).
+  - Cuando exista el frontend, habilitarlo es un cambio de configuración, no de código.
+  - Si algún día se usan cookies, hay que revisar este ADR y la protección contra CSRF (`SECURITY.md`).
+- **Revisar si:** se usan cookies, se agrega un encabezado de solicitud o de respuesta nuevo, o el panel de administración necesita una lista propia.
+- **Estado:** Aceptada (aprobación formal 2026-09-26).
+
+---
+
+## ADR-0086 — Encabezados de seguridad de las respuestas HTTP
+
+- **Fecha:** 2026-09-26
+- **Contexto:** Cierra P-71. Solo estaba decidido `Cache-Control: no-store` en respuestas autenticadas o con datos personales (ADR-0071). La API responde casi siempre JSON; las excepciones son Swagger UI, que solo se sirve en local (ADR-0031), y las imágenes de productos si las sirve la API (ADR-0024, P-06). HTTPS lo termina quien se elija con el hosting.
+- **Decisión:**
+  - **Encabezados que pone la API en todas sus respuestas:**
+
+    | Encabezado | Valor |
+    |---|---|
+    | `X-Content-Type-Options` | `nosniff` |
+    | `Content-Security-Policy` | `default-src 'none'; frame-ancestors 'none'` |
+    | `X-Frame-Options` | `DENY` |
+    | `Referrer-Policy` | `no-referrer` |
+    | `X-Powered-By` | Se elimina |
+    | `Cache-Control` | `no-store` donde lo exige ADR-0071 |
+
+  - **A cargo de quien termine HTTPS**, definido con el hosting (P-06): HSTS, configuración TLS y redirección de HTTP a HTTPS. La API no envía HSTS.
+  - **Swagger UI:** política CSP más permisiva solo en su ruta, que existe únicamente en local.
+  - **Implementación:** `helmet` con configuración explícita, no la de fábrica. En particular, no se envía `Cross-Origin-Resource-Policy: same-origin`, porque bloquearía las imágenes que la tienda cargue desde otro origen, ni HSTS, que corresponde al proxy.
+- **Alternativas consideradas:** `helmet` con su configuración de fábrica (bloquea imágenes entre orígenes y duplica HSTS); middleware propio (menos dependencias, pero hay que mantener lo que `helmet` ya resuelve); HSTS desde la API.
+- **Consecuencias:**
+  - Los encabezados se configuran en T-100; la política de Swagger UI, en T-114.
+  - Al elegir hosting (P-06) se configuran HSTS, TLS y la redirección a HTTPS, y se revisa que las imágenes lleven `X-Content-Type-Options: nosniff` las sirva quien las sirva.
+- **Revisar si:** la API empieza a servir HTML, se usan cookies o cambia quién sirve las imágenes.
+- **Estado:** Aceptada (aprobación formal 2026-09-26). ADR-0153 pone helmet antes del rechazo de tipos de contenido, así que el 415 también lleva los encabezados.
+
+---
+
+## ADR-0087 — Validación de entrada y de configuración con class-validator
+
+- **Fecha:** 2026-09-26
+- **Contexto:** T-100 necesita validar las variables de entorno al arrancar (ADR-0032), y los endpoints necesitarán validar sus DTOs de entrada (T-113), incluido el rechazo de campos no declarados (ADR-0071). Faltaba elegir la librería, que afecta a todo el proyecto.
+- **Decisión:**
+  - `class-validator` con `class-transformer` para validar y transformar tanto la configuración como los DTOs de Presentation.
+  - Configuración: `@nestjs/config` con una función de validación. Si una variable obligatoria falta o una variable es inválida, la API no arranca; el mensaje nombra la variable y la regla, nunca el valor, para no exponer secretos en los logs. El resto del código lee la configuración tipada con `ConfigService`, nunca `process.env`.
+  - DTOs: `ValidationPipe` de NestJS con rechazo de campos no declarados (se configura en T-113).
+- **Alternativas consideradas:** zod (esquemas con tipos inferidos, pero requiere adaptadores de terceros para NestJS y Swagger); Joi (sin tipos de TypeScript, y habría que usar otra librería para los DTOs).
+- **Consecuencias:**
+  - El plugin de Swagger de NestJS puede leer los decoradores de los DTOs (T-114). Se usa desde T-114 (ADR-0096).
+  - Domain no depende de estas librerías: los DTOs y la configuración viven fuera del dominio (ADR-0003).
+- **Estado:** Aceptada (aprobación formal 2026-09-26).
+
+---
+
+## ADR-0088 — Estructura de carpetas y convenciones de nombres
+
+- **Fecha:** 2026-09-26
+- **Contexto:** T-101. ADR-0003 fija un módulo de NestJS por bounded context con cuatro capas, pero la estructura concreta de carpetas quedaba pendiente (`ARCHITECTURE.md`). T-100 había dejado `src/config/` y `src/http/` en ubicaciones provisionales, y el proyecto conservaba el ejemplo "Hello World" de NestJS.
+- **Decisión:**
+  - **Carpetas de primer nivel en `src/`:**
+    - `platform/`: infraestructura técnica transversal, sin reglas de negocio (configuración, políticas HTTP y, después, persistencia, eventos, jobs, logs y cache).
+    - `shared-kernel/`: `Money`, tipos de ID, error de dominio, forma de los eventos y puerto `Clock` (T-112), y los puertos `TransactionManager` (T-111, ADR-0093), `DomainEventPublisher` (T-116, ADR-0098), `AuditTrail` (T-127, ADR-0100), `EmailSender` y `FrontendLinks` (T-122, ADR-0110). TypeScript puro, sin NestJS.
+    - `modules/<contexto>/`: un módulo por bounded context, con nombre en inglés y kebab-case: `identity-access`, `catalog`, `pricing`, `inventory`, `shopping`, `ordering`, `payments` y `shipping`.
+  - **Cada contexto** tiene las carpetas `domain/`, `application/`, `infrastructure/` y `presentation/`, un `<contexto>.module.ts` que conecta las capas y un `index.ts` que es su API pública: solo exporta el módulo de NestJS, la fachada y sus tipos públicos (ADR-0005).
+  - **Capacidades transversales** (auditoría, notificaciones y catálogo geográfico): módulos bajo `modules/` con solo las capas que necesiten, creados en sus tareas (T-127, T-215 y T-124).
+  - **Imports relativos**, sin alias de rutas: con ESM y `nodenext`, TypeScript no reescribe los alias y habría que agregar otra herramienta de compilación.
+  - **Nombres de archivo** en kebab-case con sufijo de rol: `order.ts` (aggregate o entidad), `order.repository.ts` (interfaz en `domain`), `prisma-order.repository.ts` (implementación en `infrastructure`), `place-order.use-case.ts`, `ordering.facade.ts`, `order.controller.ts`, `place-order.dto.ts`. Los tests unitarios van junto al código como `*.spec.ts`.
+  - Se retira el ejemplo "Hello World" (`AppController` y `AppService`), que no forma parte de la API.
+- **Alternativas consideradas:** Carpetas por capa en la raíz con subcarpetas por contexto (dispersa cada contexto); alias de rutas (`@modules/...`); crear desde ahora los módulos transversales vacíos.
+- **Consecuencias:**
+  - T-103 verifica automáticamente las dependencias entre capas y que un módulo solo importe de otro a través de su `index.ts`. Hecho en ADR-0103.
+  - Las carpetas de capa vacías se conservan en Git con un archivo `.gitkeep` hasta tener código.
+- **Estado:** Aceptada (aprobación formal 2026-09-26).
+
+---
+
+## ADR-0089 — Uso de Docker: desarrollo local e imagen de producción
+
+- **Fecha:** 2026-09-26
+- **Contexto:** T-102. ADR-0002 incluye Docker en el stack, pero su uso concreto estaba pendiente (`PROJECT.md`). El entorno local necesita PostgreSQL 18 y un capturador de correos (ADR-0045), y la CI construirá una imagen (ADR-0030, paso 10).
+- **Decisión:**
+  - **`Dockerfile` con dos etapas** sobre `node:24-bookworm-slim` (ADR-0025):
+    - `development`: la usa Docker Compose; el proyecto se monta en el contenedor y la API corre con `npm run start:dev` (recarga automática).
+    - `production`: solo el código compilado, las dependencias de producción y `package.json`; corre como usuario `node` con `NODE_ENV=production`. La construye la CI (T-106).
+  - **`docker-compose.yml` para desarrollo local** con tres servicios:
+    - `postgres`: `postgres:18`, datos en un volumen con nombre y chequeo de salud con `pg_isready`.
+    - `mailpit`: `axllent/mailpit:v1`, bandeja web en el puerto 8025 y SMTP en el 1025.
+    - `api`: etapa `development`; arranca cuando PostgreSQL está sano.
+  - **Versiones:** se fija la versión mayor de cada imagen y se usa la última menor, igual que en ADR-0025.
+  - **Alternativa documentada:** la API puede correr en el equipo (`npm run start:dev`) con solo PostgreSQL y Mailpit en contenedores.
+  - **Credenciales:** `POSTGRES_USER`, `POSTGRES_PASSWORD` y `POSTGRES_DB` en `.env`, con valores de ejemplo en `.env.example`. `docker-compose.yml` no tiene valores por defecto para ellas: si faltan, Compose se detiene con un mensaje.
+  - **Recarga automática en el contenedor:** detección de cambios por sondeo (`TSC_WATCHFILE` y `TSC_WATCHDIRECTORY`) solo dentro del contenedor, porque los cambios hechos desde Windows o macOS no siempre se detectan.
+  - **`node_modules` del contenedor** en un volumen anónimo, separado del `node_modules` del equipo, para que `docker compose up --build -V` lo regenere tras cambiar dependencias.
+- **Alternativas consideradas:** `Dockerfile` solo de desarrollo (la CI necesitaría otro después); la API solo en el equipo (no cumple T-102); imágenes Alpine (musl puede dar problemas con módulos nativos); `node_modules` en un volumen con nombre (no se actualiza al cambiar dependencias).
+- **Consecuencias:**
+  - T-106 construye la etapa `production`; pesaba unos 400 MB, con el cliente de Prisma pesó unos 510 MB (ADR-0091) y con el CLI de Prisma pesa unos 880 MB (ADR-0093). Se puede reducir más adelante.
+  - La API todavía no usa Mailpit: la configuración SMTP llega con T-122. PostgreSQL se usa desde T-110 (`DATABASE_URL`, ADR-0091).
+  - `docker compose down -v` borra los datos locales de PostgreSQL.
+- **Estado:** Aceptada (aprobación formal 2026-09-26). ADR-0147 agrega el target `migrate` y reduce la imagen de producción a 557 MB.
+
+---
+
+## ADR-0090 — Base de datos de los tests de integración con Testcontainers
+
+- **Fecha:** 2026-09-27
+- **Contexto:** T-105. ADR-0033 exige tests de integración contra PostgreSQL 18 real en Docker, localmente y en la CI, sin mocks de base de datos. Faltaba decidir de dónde sale esa base: un contenedor temporal por ejecución o una base de pruebas dentro del PostgreSQL de Docker Compose (ADR-0089).
+- **Decisión:**
+  - Los tests de integración levantan un contenedor `postgres:18` temporal con Testcontainers (`@testcontainers/postgresql`) al iniciar la ejecución, y lo destruyen al terminar. La URL de conexión se expone en `DATABASE_URL`.
+  - Cada ejecución empieza con una base vacía. Cuando exista el esquema (T-110), las migraciones se aplican al inicio y cada archivo de test limpia sus tablas. Desde T-110 (ADR-0091), el inicio aplica todas las migraciones y cada test deja la base como la encontró (por ejemplo, dentro de una transacción que se revierte).
+  - **Tres tipos de test**, con su propio comando:
+
+    | Tipo | Archivos | Comando | Docker |
+    |---|---|---|---|
+    | Unitarios | `*.spec.ts`, junto al código | `npm test` | No |
+    | Integración | `*.int-spec.ts`, junto al código de `infrastructure` (la infraestructura común vive en `test/integration/`) | `npm run test:int` | Sí |
+    | End-to-end | `test/*.e2e-spec.ts` | `npm run test:e2e` | Sí, desde T-110 (ADR-0091) |
+
+  - Los tests de integración corren en serie (`--runInBand`), porque comparten una base; así también quedan controladas las pruebas de concurrencia (ADR-0011).
+  - Driver `pg` para las conexiones directas de los tests.
+- **Alternativas consideradas:** Una base `_test` en el PostgreSQL de Docker Compose (hay que crearla y mantener la URL en cada equipo, los datos persisten entre ejecuciones y la CI necesita otra configuración); servicio de PostgreSQL en GitHub Actions (configuración distinta de la local).
+- **Consecuencias:**
+  - `npm run test:int` necesita Docker en marcha; si no lo está, falla con un mensaje que lo indica. `npm test` no necesita Docker. Desde T-110, `npm run test:e2e` también necesita Docker: la aplicación completa requiere una base (ADR-0091).
+  - Cambia el criterio de T-106: los runners de GitHub Actions ya traen Docker, así que la CI no declara un servicio de PostgreSQL.
+  - Levantar el contenedor suma unos segundos a cada ejecución de integración.
+- **Revisar si:** los tests de integración se vuelven lentos (base por worker o por archivo) o la CI no puede ejecutar Docker.
+- **Estado:** Aceptada (aprobación formal 2026-09-27). Modificada por ADR-0091 (los tests end-to-end también usan Testcontainers).
+
+---
+
+## ADR-0091 — Prisma: configuración, esquema por contexto y primera migración
+
+- **Fecha:** 2026-09-27
+- **Contexto:** T-110. ADR-0033 eligió Prisma Migrate y ADR-0066 aprobó el modelo de datos (`DATABASE.md`), que incluye objetos que el esquema de Prisma no expresa. `DATABASE.md` (sección 13) dejaba como riesgo que Prisma detectara esos objetos como diferencias e intentara borrarlos. Faltaban la versión de Prisma, la organización de archivos, la conexión de la aplicación y la forma de probar las migraciones.
+- **Decisión:**
+  - **Versión:** Prisma 7.10 (`prisma`, `@prisma/client` y `@prisma/adapter-pg`), limitado a la versión mayor 7 (`^7.10.0`). La versión 8 todavía es candidata y se evaluará cuando sea estable. La aplicación se conecta con el driver adapter `@prisma/adapter-pg`, sobre el driver `pg`, como requiere Prisma 7.
+  - **Archivos:**
+    - `prisma.config.ts`: ubicación del esquema y de las migraciones, y URL de la base (`DATABASE_URL`). Prisma 7 no lee `.env`; este archivo lo carga para usar el CLI en local, sin sobrescribir las variables que ya tenga el proceso (CI, tests).
+    - `prisma/schema/`: `schema.prisma` (generador, datasource y el enum compartido `catalog_status`), un archivo por contexto (`identity-access`, `catalog`, `pricing`, `inventory`, `shopping`, `ordering`, `payments`, `shipping`) y `transversal.prisma` (auditoría, idempotencia y catálogo geográfico).
+    - `prisma/migrations/`: migraciones versionadas.
+    - Cliente generado (generador `prisma-client`, ESM) en `src/platform/persistence/prisma/generated/`. No se versiona; se genera al instalar dependencias (`postinstall`) o con `npm run db:generate`.
+    - `PrismaService` y `PersistenceModule` (global) en `src/platform/persistence/`. Solo los usa la infraestructura (ADR-0003); la verificación automática llega con T-103.
+  - **Índices parciales en el esquema**, con la función en vista previa `partialIndexes`, para que Prisma los conozca. El índice GIN de búsqueda (`products.search_vector`) también está en el esquema.
+  - **SQL manual en la migración**, solo para lo que el esquema no expresa: extensiones `unaccent` y `btree_gist` (al inicio), 57 restricciones `CHECK`, la restricción de exclusión de `price_periods`, los índices únicos de expresión sobre `lower(name)` de marcas y categorías, y el trigger que impide modificar `audit_logs` (al final).
+  - **Riesgo de `DATABASE.md` validado:** `prisma migrate diff` entre la base migrada y el esquema responde "No difference detected". Prisma no detecta los objetos manuales como diferencias ni intenta borrarlos. Lo comprueban un test de integración y el script `npm run db:diff`.
+  - **Primera migración `20260927000000_init`:** el modelo aprobado completo (38 tablas y 18 enums), con los cambios de ADR-0076, ADR-0078, ADR-0079, ADR-0081 y ADR-0083.
+  - **Detalles derivados del modelo:**
+    - `orders.order_number` es `BIGSERIAL` (`@default(autoincrement())`): Prisma crea y conoce la secuencia. La secuencia manual `order_number_seq` aparecía como diferencia en cada verificación. El comportamiento es el mismo: consecutivo, sin reutilizar números (ADR-0049).
+    - El índice único de almacén activo es `(status) WHERE status = 'ACTIVE'` en lugar de `((true)) WHERE …`: el efecto es el mismo (a lo sumo un almacén activo, ADR-0081) y se puede expresar en el esquema.
+    - `carts.merged_into_cart_id` con `ON DELETE CASCADE`: al borrar un carrito se borran los carritos fusionados en él, que ya no tienen uso. Con `SET NULL` se violaría el `CHECK` del estado `MERGED`, y con `RESTRICT` la limpieza de carritos quedaría bloqueada.
+  - **Configuración:** `DATABASE_URL` es obligatoria; la API no arranca sin ella ni con una URL que no sea de PostgreSQL, y el error no muestra el valor (ADR-0087). En Docker Compose, el contenedor de la API recibe su propia URL con host `postgres`.
+  - **Arranque:** `PrismaService` ejecuta `SELECT 1` al iniciar, con 5 segundos de espera de conexión, así que la API no arranca si la base no responde. Con el driver adapter, `$connect()` no abre ninguna conexión.
+  - **Scripts:** `db:generate`, `db:migrate:dev` (crear migraciones en desarrollo), `db:migrate:deploy` (aplicar las pendientes) y `db:diff` (verificar que base y esquema coinciden).
+  - **Tests:** el inicio de los tests de integración y end-to-end aplica todas las migraciones con `prisma migrate deploy` al contenedor de Testcontainers. Los end-to-end también usan Testcontainers, porque la aplicación completa necesita una base (modifica ADR-0090).
+  - **Imagen de producción sin el CLI de Prisma:** `prisma` es dependencia opcional de `@prisma/client`, así que `npm prune` omite también las dependencias opcionales. Ninguna dependencia de ejecución es opcional; la única, `pg-cloudflare`, es para Cloudflare Workers. La imagen pasa de unos 400 MB a unos 510 MB por el cliente de Prisma y el driver; con el CLI pesaría unos 880 MB. **Reemplazado por ADR-0093:** desde T-111 la imagen incluye el CLI (unos 880 MB).
+  - **Dependencias vulnerables del CLI:** `overrides` de npm para `deepmerge-ts` y `mysql2`, dependencias transitivas del CLI de Prisma con vulnerabilidades altas. Con ellos, `npm audit` queda sin vulnerabilidades. Se quitan cuando Prisma actualice sus dependencias.
+  - **Sin datos iniciales (seed) en T-110:** cada tarea crea los suyos: roles en T-130, lista de precios en T-145, almacén en T-160 y método de envío en T-196.
+- **Alternativas consideradas:**
+  - Prisma 8: todavía no es estable.
+  - Un solo archivo `schema.prisma`: con 38 tablas es difícil de revisar, y el modelo está organizado por contexto (ADR-0006).
+  - Índices parciales como SQL manual: sin la función `partialIndexes`, Prisma no puede representarlos en el esquema y los compararía como índices distintos.
+  - Secuencia manual `order_number_seq`: aparece como diferencia en cada verificación.
+  - Conectar solo con `$connect()`: la API arrancaba sin base y fallaba en la primera petición.
+  - Tests end-to-end sin base: la aplicación completa no arranca sin PostgreSQL.
+  - CLI de Prisma en la imagen de producción: suma unos 370 MB; cómo se aplican las migraciones al desplegar se decide con P-05.
+- **Consecuencias:**
+  - Los objetos manuales se mantienen a mano: cambiarlos o quitarlos requiere SQL en una migración nueva, porque Prisma no lo genera. El flujo está en `DEVELOPMENT_GUIDE.md`.
+  - `partialIndexes` está en vista previa y puede cambiar entre versiones menores; hay que revisarlo al actualizar Prisma.
+  - Instalar dependencias necesita el esquema (`postinstall`). Una instalación solo de producción (`--omit=dev`) debe usar `--ignore-scripts`, porque no incluye el CLI.
+  - `npm run test:e2e` necesita Docker en marcha.
+  - La imagen de producción no puede aplicar migraciones; se resuelve con P-05 (T-330). Desde ADR-0093 incluye el CLI, así que podrá aplicarlas como paso aparte (`DATABASE.md`, sección 13).
+  - La base local de Docker Compose se migra con `npm run db:migrate:deploy` cada vez que llegan migraciones nuevas.
+  - T-106 puede usar `npm run db:diff` en el paso de verificación de migraciones (ADR-0030).
+  - Queda pendiente P-72: los valores iniciales del costo fijo de envío y del monto mínimo para envío gratis, necesarios para el método de envío de T-196. Cerrada por ADR-0092.
+- **Estado:** Aceptada (plan de T-110 aprobado el 2026-09-27; los detalles derivados del modelo se revisan en el pull request). Modificada por ADR-0093 (la imagen de producción incluye el CLI de Prisma). Desde ADR-0147, la imagen de producción ya no lo incluye, y las migraciones corren con la imagen `migrate`.
+
+---
+
+## ADR-0092 — Valores iniciales del método de envío
+
+- **Fecha:** 2026-09-27
+- **Contexto:** Cierra P-72 (T-196). ADR-0042 define un costo fijo por orden y envío gratis a partir de un monto mínimo, ambos configurables por el administrador (ADR-0075), pero no sus valores. El único método de envío se crea con los datos iniciales (seed) de T-196 y necesita valores desde el primer arranque. Todavía no hay costos reales de paquetería (los envíos son manuales, ADR-0041) ni ticket promedio.
+- **Decisión:**
+  - Valores iniciales **provisionales** del método de envío:
+    - Nombre: "Envío Estándar". Solo lo ve el staff.
+    - Costo fijo: $99.00 (9900 centavos), con IVA incluido; el IVA contenido es $13.66 (ADR-0079).
+    - Umbral de envío gratis: $1,500.00 (150000 centavos), comparado con el subtotal con IVA menos el descuento (ADR-0079).
+    - Plazo de entrega estimado: 3 a 7 días hábiles (ADR-0083).
+    - Activo.
+  - Son los valores que ya usan los ejemplos de `API_SPEC.md` y de ADR-0079.
+  - Antes de operar con clientes reales, el administrador confirma o ajusta los valores con costos reales de paquetería y el ticket promedio. Se sigue junto con la validación fiscal del envío, en P-69.
+  - El seed crea el método solo si no existe: nunca sobrescribe los valores que configure el administrador con `PUT /v1/admin/shipping/method` (`shipping.configure`).
+- **Alternativas consideradas:** Sin envío gratis al inicio (nunca regala el envío por accidente, pero en desarrollo no se prueba el envío gratis sin configurarlo antes); valores definitivos desde ahora (no hay costos reales de paquetería ni ticket promedio); valores en variables de entorno (repite una configuración que ya existe en la API).
+- **Consecuencias:**
+  - T-196 deja de depender de P-72.
+  - Mientras nadie los cambie, la tienda cobra $99.00 por envío y lo da gratis desde $1,500.00. El umbral se muestra al cliente en la cotización (`freeShippingThreshold`); un cambio posterior solo afecta a cotizaciones y órdenes nuevas (ADR-0042).
+  - Los tests no dependen de estos valores: cada test crea sus propios datos.
+- **Revisar si:** se contrata una paquetería con tarifas conocidas, se conoce el ticket promedio o se habilitan promociones (ADR-0018).
+- **Estado:** Aceptada (aprobación formal 2026-09-27). El método se crea con la migración `20260930120000_shipping_initial_method` (ADR-0122).
+
+---
+
+## ADR-0093 — Contexto transaccional con `nestjs-cls`
+
+- **Fecha:** 2026-09-27
+- **Contexto:** T-111. ADR-0033 eligió `nestjs-cls` con su plugin transaccional para Prisma, para que los repositorios obtengan la transacción activa sin que Application ni Domain dependan de Prisma. Faltaban el adaptador de Prisma, cómo delimita Application una transacción, el anidamiento y los límites de tiempo.
+- **Decisión:**
+  - **Librerías:** `nestjs-cls` 7, `@nestjs-cls/transactional` 4 y el adaptador oficial `@nestjs-cls/transactional-adapter-prisma` 2.
+  - **Adaptador oficial:** declara el CLI de Prisma (`prisma`) como dependencia obligatoria, así que `prisma` pasa a dependencia de producción y la imagen de producción lo incluye. Pesa unos 880 MB en lugar de 510 MB (modifica ADR-0091). A cambio, la imagen puede ejecutar `prisma migrate deploy` como paso aparte, que es la opción candidata para P-05 (`DATABASE.md`, sección 13).
+  - **Puerto `TransactionManager`** en `src/shared-kernel/`: clase abstracta en TypeScript puro con `run(work)`. Confirma la transacción si `work` termina bien, la revierte si falla y propaga el error. Application la usa para delimitar transacciones, sin importar Prisma ni `nestjs-cls`; su implementación, `ClsTransactionManager`, está en `src/platform/persistence/`. Se agrega al shared kernel de ADR-0088.
+  - **Repositories:** inyectan `TransactionHost<PrismaTransactionAdapter>` y usan su propiedad `tx`, que es el cliente de la transacción activa o, fuera de una transacción, el `PrismaService` normal. No reciben la transacción como parámetro.
+  - **Anidamiento:** un `run` dentro de otro se une a la transacción externa (propagación `Required`). Sin savepoints: se agregan si algún caso los necesita.
+  - **Opciones de cada transacción:** aislamiento Read Committed, declarado explícitamente (ARCHITECTURE.md); espera máxima de 2 s para iniciar y límite de 5 s, los valores por defecto de Prisma. Una transacción que pasa el límite se revierte y `run` falla.
+  - **Registro:** `ClsModule.forRoot` una sola vez en el módulo raíz, sin middleware HTTP: `run` crea su propio contexto. `PersistenceModule` registra el plugin. T-118 agregará el identificador de correlación al mismo contexto.
+- **Alternativas consideradas:**
+  - Adaptador propio de unas 30 líneas: mantenía la imagen en 510 MB y sin el CLI, pero era código propio que mantener.
+  - Decorador `@Transactional()` en los casos de uso: exige el plugin inicializado incluso en los tests unitarios.
+  - Pasar la transacción como parámetro a los repositories: expone Prisma a Application.
+  - Savepoints para transacciones anidadas: ningún caso los necesita todavía.
+- **Consecuencias:**
+  - Los tests unitarios de casos de uso reemplazan `TransactionManager` por un doble que solo ejecuta el trabajo.
+  - Todo repository debe usar `txHost.tx`; si usara `PrismaService` directamente, quedaría fuera de la transacción. La revisión de código lo vigila y T-103 puede agregar una regla.
+  - Una transacción no puede incluir llamadas externas ni trabajo de más de 5 s.
+  - T-116 (despacho de eventos después del commit) amplía este mecanismo. Hecho en ADR-0098: la transacción más externa ejecuta acciones después de confirmar.
+  - La imagen de producción pesa unos 880 MB e incluye el CLI de Prisma y sus dependencias; `npm audit` sigue sin vulnerabilidades gracias a los `overrides` de ADR-0091.
+- **Revisar si:** el adaptador deja de exigir el CLI (la imagen podría volver a 510 MB), un caso necesita savepoints o el límite de 5 s resulta corto.
+- **Estado:** Aceptada (aprobación formal 2026-09-27). ADR-0116: una ejecución anidada corre en la transacción de afuera sin volver a pedirla a `nestjs-cls`. ADR-0133 agrega `runNested`, un paso que deshace solo lo suyo con un `SAVEPOINT`. Modificada por ADR-0147: el CLI pasa a `devDependencies`, y la imagen de producción no lo instala aunque el adaptador lo declare como dependencia par.
+
+---
+
+## ADR-0094 — Shared kernel: dinero, IVA contenido, identificadores, errores, eventos y reloj
+
+- **Fecha:** 2026-09-27
+- **Contexto:** T-112. ADR-0003 definió un shared kernel mínimo (`Money`, tipos de ID con marca de tipo, error de dominio base y forma común de domain event) y ADR-0088 le sumó el puerto `Clock`. Faltaba su diseño concreto, y el modo de redondeo del IVA (ADR-0008 y ADR-0079 dicen que se redondea por línea, pero no cómo).
+- **Decisión:**
+  - **`Money`**, value object inmutable:
+    - Centavos enteros de 0 a 2,147,483,647, el máximo de una columna `integer` (ADR-0066). Sin negativos, porque ningún monto del modelo lo es; un monto fuera de rango falla en el dominio con `InvalidValueError` en lugar de fallar al guardar.
+    - Moneda como tipo con un solo valor, `'MXN'` (ADR-0026). Combinar monedas distintas es un error de programación.
+    - Operaciones `add`, `subtract` (falla si el resultado queda negativo), `multiply(cantidad)` y comparaciones. `toJSON()` produce `{ amount, currency }` (`API_SPEC.md`, sección 8.1).
+  - **IVA contenido:** `containedTax(tasaEnPuntosBase)` calcula `monto × tasa / (10000 + tasa)` con aritmética entera exacta y redondea al centavo **con las mitades hacia arriba**. Lo usan Ordering (líneas) y Shipping (envío), una vez por línea (ADR-0008, ADR-0079). Con la tasa del 16% nunca resulta una mitad exacta, así que el modo solo importa con otras tasas. La validación con el contador se suma a P-69.
+  - **Identificadores:** `Id<'Entidad'>`, un texto con marca de tipo para que el compilador no confunda identificadores de entidades distintas; cada contexto declara los suyos.
+    - `newId()` crea UUIDv7 con el paquete `uuid`, que garantiza orden creciente incluso dentro del mismo milisegundo. `crypto.randomUUIDv7()` de Node no lo garantiza, y el orden importa en `stock_movements` y `audit_logs`.
+    - `newCredentialId()` crea UUIDv4 para identificadores que funcionan como credencial (ADR-0059).
+    - `toId()` valida y normaliza a minúsculas un UUID recibido de fuera.
+  - **`DomainError`**, clase base abstracta:
+    - `code` es el `type` estable del catálogo de `API_SPEC.md` (sección 6.2).
+    - `category` es `invalid`, `forbidden`, `not-found` o `conflict`; T-113 la traduce a 400, 403, 404 o 409 y el dominio no conoce HTTP (ADR-0035). Todos los errores de negocio del catálogo caen en esas cuatro; los 401, 413, 415, 422 y 429 vienen de autenticación, archivos, idempotencia y rate limiting.
+    - `details` opcionales, que se convierten en extensiones de Problem Details (ADR-0064) y nunca llevan datos sensibles ni personales.
+    - `InvalidValueError` (`validation-error`, categoría `invalid`) para valores que rompen las reglas de un value object.
+  - **`DomainEvent`**: interfaz con `eventId` (UUIDv7, para que los handlers ignoren repeticiones, ADR-0014), `eventType` (el nombre de `DOMAIN_MODEL.md`) y `occurredAt`. Cada evento la extiende con sus datos; `eventMetadata()` crea los campos comunes. El despacho es de T-116.
+  - **`Clock`**: clase abstracta con `now()`, en el shared kernel porque es un solo puerto para todos los contextos, igual que `TransactionManager` (ADR-0093). Aclara ADR-0003, que ubicaba el puerto del reloj en Application. Su implementación, `SystemClock`, está en `src/platform/clock/` y se registra de forma global.
+  - Todo se importa desde `src/shared-kernel/index.ts`.
+- **Alternativas consideradas:**
+  - Montos negativos en `Money`: ningún campo del modelo los admite.
+  - Calcular el IVA en cada contexto: duplica una regla fiscal.
+  - Redondeo bancario (mitad al par): reduce el sesgo acumulado, pero es menos intuitivo.
+  - `crypto.randomUUIDv7()` de Node: sin dependencias, pero sin orden garantizado dentro del mismo milisegundo.
+  - Un mapa de código a estado HTTP en T-113 sin categorías: cada error nuevo obligaría a tocar la presentación.
+  - Un puerto de reloj por contexto: duplicación sin beneficio.
+- **Consecuencias:**
+  - Nueva dependencia de producción: `uuid`.
+  - Los contextos declaran sus tipos de ID y sus errores de dominio como subclases de `DomainError`.
+  - Ningún código llama a `new Date()` para la hora actual; los tests unitarios usan un reloj fijo.
+  - BR-TAX-02 queda con el modo de redondeo; P-69 suma su validación.
+- **Revisar si:** se opera con otra moneda, un monto necesita superar el máximo de `integer`, el contador indica otro redondeo o se ejecuta más de una instancia (el orden de UUIDv7 solo se garantiza dentro de cada proceso).
+- **Estado:** Aceptada (aprobación formal 2026-09-27). Modificada por ADR-0121: dos categorías más, `too-large` (413) y `unsupported` (415), para las reglas de archivos del dominio (BR-PRD-08).
+
+---
+
+## ADR-0095 — Respuestas de error, validación de entrada e identificador de correlación
+
+- **Fecha:** 2026-09-27
+- **Contexto:** T-113. ADR-0035 y ADR-0064 fijaron Problem Details, los códigos HTTP y el catálogo de tipos (`API_SPEC.md`, sección 6); ADR-0071 pidió textos de error en español y `X-Correlation-Id` en todas las respuestas; ADR-0094 dio a `DomainError` un código y una categoría. Faltaba cómo se construyen las respuestas, cómo se validan las entradas y de dónde sale el identificador de correlación.
+- **Decisión:**
+  - **Filtro global** (`src/platform/http/problem-details/`), registrado como provider para que también aplique en los tests, que convierte todo error en Problem Details con `application/problem+json`:
+    - `DomainError`: estado según su categoría (400, 403, 404 o 409), `type` `/problems/{code}` y sus `details` como extensiones.
+    - `ProblemException(code, extensiones, encabezados)`: para errores que no son de dominio (autenticación, idempotencia, rate limiting, validación); el estado sale del catálogo.
+    - Errores HTTP del framework y del lector del cuerpo: ruta inexistente → 404 `not-found`; JSON mal formado → 400 `validation-error`; cuerpo demasiado grande → 413; codificación no admitida → 415.
+    - Cualquier otro error, o un estado HTTP fuera del catálogo: 500 `internal-error`, solo con el identificador de correlación. El error se registra en el log con su stack trace y el identificador.
+    - Las extensiones no pueden reemplazar `type`, `title`, `status`, `detail`, `instance` ni `correlationId`. `instance` es la ruta sin la cadena de consulta.
+  - **Catálogo** de los 36 tipos de `API_SPEC.md` (sección 6.2), cada uno con estado, `title` y `detail` fijos en español. Un test compara el catálogo con `API_SPEC.md`.
+  - **Mensajes internos fuera de las respuestas:** el mensaje de un error de dominio (en inglés, para desarrolladores) va al log; el cliente recibe el `detail` del catálogo. Un código de dominio que falte en el catálogo responde con los textos de su categoría y deja una advertencia en el log.
+  - **Sin stack traces en ninguna respuesta, en ningún entorno**, no solo en producción.
+  - **Validación de entrada:** `ValidationPipe` global con `whitelist`, `forbidNonWhitelisted`, `transform` y solo la primera regla que falla por campo. Un campo o parámetro no declarado responde 400 (`API_SPEC.md`, sección 5.3).
+    - `errors` es una lista de `{ field, code, message }`: `field` en notación de ruta (`lines[2].quantity`), `code` con el nombre de la regla de class-validator (`isInt`, `matches`, `whitelistValidation`) y `message` en español.
+    - Los mensajes salen de una tabla por regla; un DTO puede dar un texto propio con `context: { message }`; si no hay ninguno, "El valor no es válido.". Los mensajes en inglés de class-validator y los valores rechazados nunca llegan a la respuesta.
+  - **Identificador de correlación:** lo genera siempre el servidor por solicitud (UUIDv7) en un middleware de `nestjs-cls` montado antes del lector del cuerpo; se guarda en el contexto y se devuelve en `X-Correlation-Id` de todas las respuestas. Uno enviado por el cliente se ignora. T-118 lo agrega a los logs.
+  - **Tipo de contenido:** un cuerpo que no es `application/json` ni `multipart/form-data` responde 415 `unsupported-media-type`, como pide `API_SPEC.md` (sección 2). Las solicitudes sin cuerpo pasan con cualquier `Content-Type`.
+- **Alternativas consideradas:**
+  - Exponer el mensaje del error de dominio en `detail`: mezcla idiomas y podría revelar datos internos.
+  - Códigos de validación propios en lugar de los de class-validator: requieren una tabla de traducción sin beneficio para el cliente.
+  - Traducir los mensajes decorador por decorador: repetitivo y fácil de olvidar.
+  - Aceptar el identificador de correlación del cliente: permite falsificarlo e inyectar texto en los logs.
+  - Stack traces en desarrollo: una configuración más que puede llegar a producción por error.
+  - Registrar el filtro en `main.ts`: los tests que construyen `AppModule` no lo tendrían.
+- **Consecuencias:**
+  - Los controladores no construyen respuestas de error; lanzan `DomainError` o `ProblemException`.
+  - Un tipo de error nuevo se agrega a la vez al catálogo y a `API_SPEC.md`.
+  - El identificador de correlación y el rechazo por tipo de contenido se montan en `configureHttp`; una aplicación de test que no lo llame no los tiene, y el filtro genera un identificador para la respuesta de error.
+  - `API_SPEC.md` actualiza el ejemplo de `errors[].code`, `instance` sin la cadena de consulta y el origen de `X-Correlation-Id`.
+- **Estado:** Aceptada (aprobación formal 2026-09-27). ADR-0130 cambia cuál se reporta cuando fallan varias reglas de un campo: primero la presencia y el tipo, sin importar el orden de los decoradores.
+
+---
+
+## ADR-0096 — Versionado por ruta y documentación OpenAPI en local
+
+- **Fecha:** 2026-09-27
+- **Contexto:** T-114. ADR-0034 fijó el prefijo `/v1` en todas las rutas y la especificación OpenAPI de `v1`; ADR-0031 limita Swagger al entorno local; ADR-0086 pidió una CSP más permisiva solo en la ruta de Swagger UI; ADR-0087 anticipó el plugin de Swagger para los DTOs, y `API_SPEC.md` pide documentar los `type` de error de cada endpoint.
+- **Decisión:**
+  - **Versionado por ruta de NestJS** con versión por defecto `1`, activado en `configureHttp`: todos los controladores quedan bajo `/v1` sin declararlo, y una versión futura convive declarando `@Version('2')` en el controlador o la ruta.
+  - **Swagger solo con `NODE_ENV=development`**, sin variable propia, para que en producción no pueda activarse por error:
+    - Swagger UI en `/docs/v1` y el documento OpenAPI en `/docs/v1/openapi.json`, fuera del prefijo de la API. Una futura `v2` tendría `/docs/v2`.
+    - El documento declara el título, la versión `1` y la autenticación `bearer`.
+  - **CSP propia de Swagger UI**, solo bajo `/docs/v1` (ADR-0086): scripts, estilos, imágenes, fuentes y conexiones del mismo origen, estilos en línea (Swagger UI los aplica), imágenes y fuentes `data:`, y `frame-ancestors 'none'`. El resto de la API conserva `default-src 'none'`. Verificado en el navegador: Swagger UI carga sin errores de CSP.
+  - **Plugin de Swagger** (`@nestjs/swagger`, con `classValidatorShim` e `introspectComments`) en `nest build` y en los tests end-to-end (`test/swagger-plugin.cjs`): documenta los DTOs de los archivos `*.dto.ts` a partir de sus tipos, sus reglas de class-validator y sus comentarios. Genera `import` en lugar de `require`, compatible con ESM.
+  - **Comentarios de las propiedades de los DTOs en español:** se publican como descripciones en OpenAPI, como `API_SPEC.md`. El resto de los comentarios del código sigue en inglés.
+  - **Errores en OpenAPI:** esquema común `ProblemDetails` (con `FieldError`) cuyo `type` admite solo los tipos del catálogo de ADR-0095, y decorador `@ApiProblemResponses(...códigos)` que agrupa por estado HTTP los errores del endpoint más los comunes (`validation-error`, `rate-limit-exceeded`, `internal-error`).
+- **Alternativas consideradas:**
+  - Prefijo global `/v1`: obligaría a reorganizar rutas al llegar `v2`.
+  - Variable propia para activar Swagger: más flexible, pero puede quedar encendida en producción.
+  - `@ApiProperty` en cada campo: explícito, pero repetitivo y fácil de desalinear de las reglas de validación.
+  - Documentar los errores endpoint por endpoint sin esquema común.
+- **Consecuencias:**
+  - `@nestjs/swagger` y `swagger-ui-dist` son dependencias de producción, aunque Swagger UI no se sirve ahí: el plugin agrega metadatos a los DTOs que se leen al cargar.
+  - Las opciones del plugin se repiten en `nest-cli.json` y en `test/swagger-plugin.cjs`; cambian juntas.
+  - Una aplicación de test que no llama a `configureHttp` no tiene el prefijo `/v1`.
+  - Cuando existan endpoints, el documento generado debe coincidir con `API_SPEC.md` (sección OpenAPI).
+- **Estado:** Aceptada (aprobación formal 2026-09-27). ADR-0109 agrega una convención: la respuesta de éxito y los campos que contienen otros DTO se declaran de forma explícita. Desde el paso 0 del Sprint 6, el documento se construye y se revisa en todo entorno salvo producción (que cada `$ref` tenga su esquema), y solo se sirve en desarrollo. ADR-0155: el documento de `v1` se guarda en `docs/openapi/v1.json`, y una prueba lo compara con el generado, con `API_SPEC.md` y con la matriz de rutas; `@ApiProblemResponses` de un controlador se suma al de cada manejador.
+
+---
+
+## ADR-0097 — Logs de la aplicación
+
+- **Fecha:** 2026-09-27
+- **Contexto:** T-118. ADR-0032 fijó logs en consola con nivel configurable por variable de entorno; ADR-0033 y ADR-0095, el identificador de correlación de cada solicitud; `SECURITY.md` prohíbe registrar secretos y datos personales. Las herramientas de métricas, trazas y seguimiento de errores siguen pendientes (P-07).
+- **Decisión:**
+  - **`AppLogger`**, una extensión del `ConsoleLogger` de NestJS, sin dependencias nuevas. `main.ts` la instala con `bufferLogs`, así que también los logs del arranque salen con su formato, y todo `new Logger(Contexto)` la usa.
+  - **Nivel:** variable opcional `LOG_LEVEL` (`fatal`, `error`, `warn`, `log`, `debug` o `verbose`; por defecto `log`), validada al arrancar y declarada en `.env.example`. Activa su nivel y todos los más graves.
+  - **Formato según `NODE_ENV`**, sin variable nueva: texto con colores en desarrollo y tests; una línea JSON por evento en producción, lista para la herramienta que se elija en P-07.
+  - **Identificador de correlación** en cada log escrito durante una solicitud, tomado del contexto de `nestjs-cls`: en texto como `[id]` después del contexto; en JSON, como el campo `correlationId`. Los logs fuera de una solicitud (arranque, jobs) no lo llevan.
+  - **Línea por solicitud** de nivel `log` al terminar la respuesta: método, ruta sin la cadena de consulta, estado y duración en milisegundos. Nunca cuerpos, encabezados ni cadenas de consulta.
+  - **Red de seguridad contra datos sensibles:** el logger reemplaza por `[redacted]` los correos, los JWT y los tokens `Bearer` que aparezcan en mensajes y stack traces. En formato texto escapa los saltos de línea, para que un mensaje no pueda simular otras entradas del log.
+- **Alternativas consideradas:**
+  - `nestjs-pino`: más rápido y con redacción y log de solicitudes integrados, pero agrega tres dependencias sin necesidad de ese rendimiento.
+  - Una variable propia para el formato: `NODE_ENV` ya distingue producción.
+  - Registrar cuerpos o encabezados con campos ocultos: cualquier campo nuevo con datos personales quedaría expuesto hasta que alguien lo agregue a la lista.
+- **Consecuencias:**
+  - El código registra con `new Logger(Clase.name)` y nunca con `console.log`; la guía de desarrollo indica qué nivel usar y qué nunca registrar.
+  - La redacción solo reconoce correos, JWT y tokens `Bearer`: no sustituye la regla de no registrar datos personales.
+  - Una aplicación de test que no instala `AppLogger` escribe con el logger de NestJS, sin identificador ni redacción.
+  - T-116 y T-117 registran sus fallos con este logger.
+- **Revisar si:** se elige una herramienta de observabilidad (P-07) o el volumen de logs afecta el rendimiento.
+- **Estado:** Aceptada (aprobación formal 2026-09-27). Modificada por ADR-0101: cada ejecución de un job tiene su propio identificador, que sus logs llevan igual que los de una solicitud.
+
+---
+
+## ADR-0098 — Bus de eventos en proceso con despacho en segundo plano
+
+- **Fecha:** 2026-09-27
+- **Contexto:** T-116. ADR-0014 decidió despachar los eventos en proceso después del commit, sin outbox, con handlers idempotentes, fallos en el log y conciliación como red de seguridad; ADR-0093 dejó a T-116 ampliar el contexto transaccional, y ADR-0094 fijó la forma de los eventos. Faltaban el mecanismo, cuándo corren los handlers respecto de la respuesta y dónde viven.
+- **Decisión:**
+  - **Bus propio** en `src/platform/events/`, sin `@nestjs/event-emitter`: el despacho después del commit, el aislamiento de cada handler y el registro de cuál falló habría que construirlos encima de todas formas.
+  - **Publicación:** puerto `DomainEventPublisher` en el shared kernel, con `publish(...eventos)`. Dentro de `TransactionManager.run`, los eventos se acumulan en una cola por transacción y se despachan cuando confirma la más externa; con rollback se descartan. Fuera de una transacción se despachan de inmediato. Para lograrlo, `ClsTransactionManager` abre un `TransactionScope` en la transacción más externa, con acciones que corren después del commit; Application no lo ve.
+  - **Despacho en segundo plano:** `run` y `publish` no esperan a los handlers. Se acepta que otros contextos se actualicen con una demora breve, sin tiempo garantizado. `API_SPEC.md` (sección 2.5) lista esos efectos para que el cliente advierta la demora, y cada endpoint afectado lo indica.
+  - **Orden y aislamiento:** los eventos de una transacción se despachan en el orden de publicación, y los handlers de cada evento corren uno tras otro, en el orden en que se registraron. El error de un handler no llega a quien publicó ni detiene a los demás: se registra en el log con el tipo de evento, el `eventId`, el handler, el stack y el identificador de correlación, que se conserva porque el despacho ocurre en el contexto asíncrono de la solicitud.
+  - **Sin reintentos automáticos** (ADR-0014): la conciliación de pagos es la red de seguridad de `PaymentCaptured`; los demás fallos requieren revisión. Los handlers son idempotentes por el estado de su dominio.
+  - **Handlers:** adaptadores de entrada en la capa `infrastructure` del contexto que consume, como los controladores. Son métodos de un provider marcados con `@OnDomainEvent('Evento')`, en archivos `*.event-handler.ts`, que el despachador descubre al arrancar. Cada uno llama a un caso de uso de su contexto con su propia transacción; los eventos que ese caso de uso publique se despachan igual, así que las cadenas funcionan. Los tipos de los eventos los exporta el contexto productor desde su `index.ts` (ADR-0005).
+  - **Cierre ordenado:** `main.ts` activa `enableShutdownHooks`; al cerrar, el despachador espera a los handlers en curso (`beforeApplicationShutdown`) y Prisma se desconecta al final (`onApplicationShutdown`).
+- **Alternativas consideradas:**
+  - `@nestjs/event-emitter`: si un handler falla, su despacho asíncrono rechaza la promesa completa sin decir cuál.
+  - Esperar a los handlers antes de responder: el cliente vería el estado final, pero cada respuesta esperaría a todos los handlers, incluidos los correos.
+  - Handlers en Application con un decorador del shared kernel: el shared kernel no depende de NestJS.
+  - Reintentos automáticos o outbox: descartados en ADR-0014.
+- **Consecuencias:**
+  - Consistencia eventual entre contextos: el cliente debe volver a consultar el recurso en lugar de suponer su estado. Requisito no funcional agregado en `REQUIREMENTS.md`.
+  - Riesgo aceptado, ampliado respecto de ADR-0014: si la aplicación se cae antes de que un handler termine, o si un handler falla, el efecto no ocurre. Solo `PaymentCaptured` tiene conciliación automática; por ejemplo, un envío que no se creó tras `OrderPaid` hay que detectarlo en los logs.
+  - Todo efecto nuevo en segundo plano se agrega a `API_SPEC.md` (sección 2.5).
+  - Los tests de integración esperan a los handlers con `DomainEventDispatcher.whenIdle()`.
+  - Corregido `DOMAIN_MODEL.md`: Shopping no reacciona a `OrderPlaced`; el checkout marca el carrito dentro de su transacción (ADR-0019).
+- **Revisar si:** los logs muestran fallos frecuentes de handlers, un efecto en segundo plano necesita garantía de entrega, o se ejecuta más de una instancia.
+- **Estado:** Aceptada (aprobación formal 2026-09-27). ADR-0133: el publicador registra un callback por publicación, así que un paso deshecho con `runNested` descarta sus eventos. ADR-0148: un contexto también publica un evento para sí mismo cuando la respuesta no debe esperar el efecto (`OrderAccessRequested`). Modificada por ADR-0150: `publish` guarda los eventos con el cambio y cada manejador tiene su entrega, que se reintenta hasta 8 veces; `publishVolatile` conserva el despacho sin guardar ni reintentar.
+
+---
+
+## ADR-0099 — Mecanismo de idempotencia HTTP
+
+- **Fecha:** 2026-09-27
+- **Contexto:** T-115. ADR-0063 fijó el comportamiento de `Idempotency-Key` en colocar orden e iniciar pago: llave ligada a quien la envía y al endpoint, 400, 422 y 409, respuestas guardadas 24 horas, sin guardar 5xx, 401 ni 429. La tabla `idempotency_keys` existe desde T-110 (`DATABASE.md`, sección 11.2). Faltaban el mecanismo, qué significa "mismo contenido" y qué pasa con una solicitud que quedó a medias.
+- **Decisión:**
+  - **Uso:** decorador `@Idempotent(alcance)` en el controlador, con un interceptor en `src/platform/http/idempotency/`. `cartScope` toma el `cartId` del cuerpo (rutas de invitado); `userScope`, el usuario autenticado, que T-120 dejará en `request.user.id`. Si el alcance no se puede resolver, la solicitud es inválida y la rechazan la validación o la autenticación.
+  - **Identidad de la solicitud:** el endpoint es la ruta declarada (por ejemplo, `POST /v1/orders/:publicCode/payments`), no la URL concreta. La huella es un SHA-256 de los parámetros de la ruta y el cuerpo, con las claves ordenadas: el orden de los campos no importa, y reutilizar la llave para pagar otra orden responde 422 en lugar de devolver la respuesta de la primera.
+  - **Registro atómico:** la llave se reclama con `INSERT … ON CONFLICT` sobre la llave primaria, fuera de la transacción del caso de uso, que corre después. De dos solicitudes simultáneas, solo una se ejecuta; la otra recibe 409 `idempotency-request-in-progress` con `Retry-After: 2`.
+  - **Qué se guarda:** los éxitos (estado, cuerpo y `Location`) y los errores de negocio (`DomainError` del catálogo), que se repiten con un identificador de correlación nuevo. Los errores de validación, porque la operación no llegó a ejecutarse, y los errores inesperados liberan la llave: el cliente puede reintentar con la misma. Los 401 y 429 los rechazan los guards antes del interceptor.
+  - **Sin cambios en la base:** `response_body` guarda un sobre con el tipo de respuesta (`success` o `problem`), que incluye `Location`.
+  - **Llaves vencidas y abandonadas:** una llave con más de 24 horas se reutiliza como nueva; la borra el job diario de limpieza (T-231). Una llave que sigue "en proceso" después de **60 segundos** se considera abandonada (por ejemplo, porque el servidor se reinició) y la toma la siguiente solicitud con la misma huella; con otra huella sigue respondiendo 422.
+  - **Validación de la llave:** ausente o vacía, 400 `idempotency-key-missing`; más de 255 caracteres, 400 `validation-error` con el campo `Idempotency-Key`.
+- **Alternativas consideradas:**
+  - Endpoint como URL concreta: los mismos datos con otro formato de la ruta contarían como otro endpoint.
+  - Huella solo del cuerpo: la misma llave para pagar dos órdenes devolvería la respuesta de la primera.
+  - Guardar también los errores de validación: el cliente no podría corregir y reintentar con la misma llave.
+  - Nunca retomar una llave abandonada: el cliente recibiría 409 durante 24 horas.
+  - Registrar la respuesta en la transacción del caso de uso: iniciar un pago llama al proveedor fuera de la transacción (ADR-0019).
+  - Una columna nueva para `Location`: el sobre en `response_body` evita la migración.
+- **Consecuencias:**
+  - Las reglas del dominio deben impedir duplicados por sí mismas (carrito ya marcado, un pago por orden), porque una llave abandonada puede volver a ejecutarse.
+  - T-120 debe dejar el usuario autenticado en `request.user.id` para `userScope`.
+  - La limpieza de llaves vencidas queda en el job diario (T-231).
+- **Estado:** Aceptada (aprobación formal 2026-09-27). ADR-0114 deja el usuario autenticado en `request.user.id`. ADR-0132 libera la llave también con los errores de validación que encuentra el dominio. ADR-0134 guarda el código de respuesta que dejó el controlador.
+
+---
+
+## ADR-0100 — Mecanismo de registro de auditoría
+
+- **Fecha:** 2026-09-27
+- **Contexto:** T-127. ADR-0037 fijó qué se audita (toda modificación del staff y los eventos de seguridad), qué guarda cada registro y que se escribe en la misma transacción que el cambio, salvo los intentos denegados y los inicios de sesión fallidos. ADR-0067 prohíbe guardar datos personales. La tabla `audit_logs` y su trigger existen desde T-110. Faltaba el mecanismo reutilizable; la consulta y el archivo son de T-220.
+- **Decisión:**
+  - **Puerto `AuditTrail` en el shared kernel**, implementado en el módulo transversal `src/modules/audit/` (ADR-0088). Es la única integración con un puerto compartido en lugar de un puerto por contexto (ADR-0005): los ocho contextos lo necesitan con la misma forma.
+  - **Transacción:** `record()` se une a la transacción activa y se revierte con el cambio. `recordIndependently()` confirma por su cuenta, para los intentos denegados y los inicios de sesión fallidos que ocurren dentro de una transacción que se revierte.
+  - **Contexto de la solicitud:** quien registra indica la acción, el recurso, el resultado y los cambios. El resto sale de la solicitud guardada en el contexto de `nestjs-cls`: identificador de correlación, IP (solo si es una dirección válida), agente de usuario (hasta 512 caracteres) y usuario autenticado (el contrato de T-120, `request.user.id`).
+  - **Actor:** el indicado por quien registra (por ejemplo, ANONYMOUS en un login fallido); si no, el usuario autenticado; ANONYMOUS en una solicitud sin usuario; SYSTEM fuera de una solicitud, como en un job.
+  - **Cambios sin datos personales ni sensibles:**
+    - `changesBetween(antes, después, { personal })` guarda solo los campos modificados, como `{ "status": { "from": "PAID", "to": "CANCELLED" } }`, con los valores como los enviaría JSON.
+    - Los campos declarados en `personal` quedan como `{ "changed": true }`.
+    - Red de seguridad: una lista fija de nombres (contraseña, hash, token, secreto, correo, teléfono, nombres, apellidos, dirección) se oculta aunque no se declare, también dentro de valores anidados.
+  - **Código de acción** con el formato `<área>.<acción>` en minúsculas (por ejemplo, `orders.cancel`); otro formato es un error de programación.
+  - **Accesos denegados automáticos:** el filtro de errores (ADR-0095) registra todo 403 en `/v1/admin` como `http.access-denied`, resultado DENIED, con la ruta declarada como recurso. Si esa escritura falla, se registra en el log y la respuesta no cambia. Los 401 no se auditan: no hay un actor conocido y los cubren el rate limiting y los logs.
+- **Alternativas consideradas:**
+  - Un puerto de auditoría por contexto (ADR-0005): ocho puertos y adaptadores idénticos.
+  - Que cada caso de uso pase la IP, el agente y el actor: mete datos de HTTP en Application.
+  - Solo la lista fija, sin declaración por caso de uso: no reconoce todos los datos personales, como los nombres de contacto.
+  - Auditar también los 401: llenaría la tabla con intentos anónimos.
+- **Consecuencias:**
+  - Los casos de uso del staff y los eventos de seguridad de T-120 en adelante registran con `AuditTrail`.
+  - La IP es la de la conexión directa; detrás de un proxy (P-06) habrá que configurar Express para confiar en él.
+  - La lista fija puede ocultar de más (por ejemplo, `addressId`); se acepta a cambio de no filtrar datos personales.
+  - La consulta con `audit.read` y el archivo de registros antiguos quedan en T-220.
+- **Estado:** Aceptada (aprobación formal 2026-09-27). Modificada por ADR-0112: columna `reason` para el motivo del staff.
+
+---
+
+## ADR-0101 — Base de los jobs programados
+
+- **Fecha:** 2026-09-27
+- **Contexto:** T-117. ADR-0029 eligió `@nestjs/schedule` en el proceso de la API y fijó reglas para todos los jobs: son puntos de entrada que llaman a un caso de uso, no se superponen, procesan por lotes con una transacción por elemento, son idempotentes, registran sus fallos y usan la hora de México en los jobs diarios. Faltaba la base común; los jobs concretos llegan con sus tareas.
+- **Decisión:**
+  - **Decorador `@ScheduledJob(nombre, expresiónCron)`** en `src/platform/jobs/`, que envuelve el `@Cron` de NestJS y garantiza para todo job:
+    - **Sin superposición:** si la ejecución anterior sigue en curso, la nueva se omite con un aviso (`warn`) en el log.
+    - **Fallos en el log:** un error se registra con el nombre del job y el stack, y nunca detiene el scheduler.
+    - **Contexto propio:** cada ejecución corre en su contexto asíncrono con un identificador nuevo (UUIDv7) que llevan todos sus logs. Las transacciones y los eventos funcionan igual que en una solicitud, y la auditoría registra el actor SYSTEM. Modifica ADR-0097, que dejaba sin identificador los logs de los jobs.
+    - **Hora de México:** toda expresión cron se interpreta en America/Mexico_City, sin importar la zona horaria del servidor o del contenedor.
+  - **`JOBS_ENABLED`:** variable opcional, `true` por defecto y validada al arrancar. Con `false` no se registra el scheduler. Los tests la ponen en `false` para que ningún job toque sus datos; el test del scheduler la activa. `JobsModule.forRoot()` la lee cada vez que arranca una aplicación.
+  - **Cierre ordenado:** al cerrar la aplicación se dejan de aceptar ejecuciones y se espera a las que están en curso antes de desconectar la base (`beforeApplicationShutdown`, igual que ADR-0098).
+  - **Lotes y transacción por elemento:** quedan como regla de la guía para el caso de uso de cada job, sin una utilidad genérica por ahora.
+- **Alternativas consideradas:**
+  - `@Cron` directo con su opción `waitForCompletion`: omite la superposición, pero cada job tendría que atrapar sus errores y crear su contexto.
+  - Correr siempre el scheduler: un job de cada minuto podría tocar los datos de los tests end-to-end.
+  - Una utilidad genérica de procesamiento por lotes: se agrega si varios jobs repiten el mismo patrón.
+- **Consecuencias:**
+  - Los jobs concretos (expiración de reservas y órdenes y conciliación de pagos en T-230, limpieza diaria en T-231, archivo de auditoría en T-220) usan `@ScheduledJob`. La conciliación pasó a T-192, con PayPal, en la Sprint Review del Sprint 3.
+  - El registro de ejecuciones en curso es del proceso completo, coherente con una sola instancia (ADR-0029); con varias instancias harán falta bloqueos en PostgreSQL.
+  - Un test de un job llama a su método directamente, porque el scheduler está apagado.
+- **Estado:** Aceptada (aprobación formal 2026-09-27). El primer job es `ordering.expire-orders` (ADR-0136).
+
+---
+
+## ADR-0102 — Mecanismo de rate limiting
+
+- **Fecha:** 2026-09-27
+- **Contexto:** T-126. ADR-0065 eligió `@nestjs/throttler` con contadores en memoria, fijó los límites por endpoint (configurables por variables de entorno), pidió frenar por tiempo sin bloquear cuentas y responder 429 con `Retry-After`; ADR-0071 dejó fuera los webhooks. Los endpoints todavía no existen, así que faltaba el mecanismo y su configuración.
+- **Decisión:**
+  - **Guard global** sobre `@nestjs/throttler` (`RateLimitGuard`):
+    - excluye las rutas `/v{n}/webhooks`;
+    - al exceder un límite responde `rate-limit-exceeded` (Problem Details) con `Retry-After` en segundos, sin encabezados `X-RateLimit-*`, que `API_SPEC.md` no contempla y CORS no expone.
+  - **Límite general** por IP en todo endpoint sin límite específico. **Límites específicos** con `@RateLimit(...)` en el endpoint, que reemplazan al general. Cada límite es un presupuesto por clave compartido por los endpoints que lo usan: por ejemplo, la consulta y la recompra de invitado comparten el contador por IP.
+
+    | Límite | Clave |
+    |---|---|
+    | `register`, `password-reset-ip`, `guest-order` | IP |
+    | `password-reset-email` | huella SHA-256 del correo del cuerpo |
+    | `email-verification` | usuario autenticado o, si no hay, huella del correo |
+    | `place-order` | usuario autenticado o, si no hay, el `cartId` |
+
+    Si falta el campo de la clave, se cuenta por IP; la validación rechaza la solicitud de todas formas.
+  - **Login: solo intentos fallidos.** `FailedAttemptLimiter`, también en memoria, cuenta fallos por correo y por IP en una ventana deslizante. Autenticación (T-120) llama a `assertAllowed` antes de validar las credenciales y a `recordFailure` cuando no son válidas. Un login correcto no gasta el límite, y nunca se bloquean cuentas. Las claves se guardan como huella y las vencidas se barren para que la memoria no crezca sin límite.
+  - **Configuración:** nueve variables opcionales `RATE_LIMIT_*`, una por límite, con el formato `<cantidad>/<duración>` (`s`, `m` o `h`), los valores de ADR-0065 por defecto y validación al arrancar.
+  - **Orden de los guards:** la autenticación debe ejecutarse antes del guard de rate limiting, para que los límites por usuario vean quién llama (requisito para T-120).
+  - **Jest:** `@nestjs/throttler` se publica como CommonJS y requiere los módulos ESM de NestJS. Jest rechaza ese ciclo al enlazar el grafo de un test, así que un archivo de preparación (`test/setup-esm-interop.ts`) carga `@nestjs/common` y `@nestjs/core` antes de cada test. Node no tiene el problema: la aplicación compilada funciona sin cambios.
+- **Alternativas consideradas:**
+  - Contar todos los intentos de login con el throttler: frenaría también los logins correctos.
+  - Dos variables por límite (cantidad y segundos): 18 variables en lugar de 9.
+  - Contar por endpoint: los endpoints que comparten un límite en `API_SPEC.md` tendrían presupuestos separados.
+  - Implementar el limitador sin `@nestjs/throttler`: contradice ADR-0065 para los límites por solicitud.
+- **Consecuencias:**
+  - Los contadores se reinician con la API y no se comparten entre instancias (ADR-0065).
+  - Una ruta inexistente responde 404 antes de los guards, así que no gasta el límite general.
+  - La IP es la de la conexión directa; detrás de un proxy (P-06) habrá que configurar Express para confiar en él.
+  - Los endpoints de T-120, T-130, T-180 y siguientes declaran su límite con `@RateLimit`, y el login usa `FailedAttemptLimiter`.
+- **Estado:** Aceptada (aprobación formal 2026-09-27). ADR-0114 conecta `FailedAttemptLimiter` al login y ejecuta la autenticación antes del rate limiting. ADR-0154: los límites específicos se suman al general en lugar de reemplazarlo, `FailedAttemptLimiter` deja de contar el login por email y cuenta el cambio de contraseña por usuario, y se agrega `place-order-email`.
+
+---
+
+## ADR-0103 — Verificación automática de límites entre módulos y capas
+
+- **Fecha:** 2026-09-27
+- **Contexto:** T-103. ADR-0003 y ADR-0005 piden verificar automáticamente los límites entre módulos (por ejemplo, con `dependency-cruiser` o `eslint-plugin-boundaries`); ADR-0088 fijó qué capa puede depender de cuál, y `ARCHITECTURE.md` agregó que `platform` solo lo usan `infrastructure` y `presentation`, y el shared kernel, todas las capas. El proyecto usa oxlint, no ESLint (ADR-0073).
+- **Decisión:**
+  - **Herramienta:** `dependency-cruiser`, que funciona sin ESLint, entiende TypeScript ESM con imports `.js` a través del `tsconfig` y detecta dependencias circulares. Reglas en `.dependency-cruiser.cjs`.
+  - **Reglas estrictas según la tabla de ADR-0088:**
+
+    | Desde | Solo puede importar | Regla |
+    |---|---|---|
+    | `domain` | su propio `domain`, el shared kernel y módulos nativos de Node | `domain-depends-only-on-shared-kernel` |
+    | `application` | su `domain` y su `application`, el shared kernel y `@nestjs/common` | `application-depends-on-domain-and-shared-kernel` |
+    | `infrastructure` | cualquier cosa salvo `presentation` | `infrastructure-not-presentation` |
+    | `presentation` | cualquier cosa salvo `domain` e `infrastructure` | `presentation-not-domain-or-infrastructure` |
+    | un módulo | otro módulo solo por su `index.ts` | `modules-only-through-public-api` |
+    | todo el código | Prisma y su cliente generado solo desde `platform` e `infrastructure` | `prisma-only-in-infrastructure` |
+    | `shared-kernel` | nada de `src` fuera de sí mismo, ni NestJS, Prisma o `nestjs-cls` | `shared-kernel-stays-pure` |
+    | `platform` | nada de `modules` | `platform-not-modules` |
+    | todo el código | sin dependencias circulares | `no-circular` |
+
+  - **Prisma también en `platform`:** `platform` es infraestructura técnica transversal. El almacén de idempotencia (ADR-0099) accede a la base desde `platform/http`, además de `platform/persistence`.
+  - **Tests fuera de las reglas:** los tests de integración combinan capas a propósito. También se incluyen los imports de solo tipos, porque acoplan igual.
+  - **Ejecución:** `npm run lint` corre oxlint (`lint:code`) y los límites (`lint:boundaries`); la CI (T-106) puede llamarlos como pasos separados, igual que los enumera ADR-0030.
+  - **Prueba de las reglas:** `test/boundaries/` contiene un proyecto de ejemplo con una violación por regla junto a imports permitidos. Un test comprueba que se detectan exactamente esas violaciones y que `src` no tiene ninguna.
+  - **Excepción de ADR-0060:** que el servicio de consultas del catálogo público lea tablas de Pricing e Inventory no se ve en los imports, porque todos los contextos usan el mismo cliente de Prisma. Queda como convención revisada en el code review.
+- **Alternativas consideradas:**
+  - `eslint-plugin-boundaries`: obliga a instalar y mantener ESLint junto a oxlint.
+  - Reglas menos estrictas (presentation con acceso a domain, domain con paquetes npm): se apartan de la tabla de ADR-0088.
+  - Prisma solo en `platform/persistence`: obligaría a mover el almacén de idempotencia a persistencia, mezclando HTTP con la base.
+  - Verificar la excepción de ADR-0060 con análisis de los modelos de Prisma: fuera del alcance de una herramienta de imports.
+- **Consecuencias:**
+  - Una violación hace fallar `npm run lint` y, desde T-106, la CI. La solución es mover el código, no relajar la regla; cambiar una regla requiere un ADR.
+  - T-119 agrega a estas reglas la que impide usar el cache desde Domain y Application.
+  - La regla de ADR-0093 (usar `txHost.tx` y no `PrismaService` en los repositories) sigue en el code review: los dos se importan desde `platform/persistence`.
+- **Estado:** Aceptada (aprobación formal 2026-09-27). ADR-0129 verifica la excepción de ADR-0060 con un test que lee el SQL y las llamadas de Prisma de cada módulo.
+
+---
+
+## ADR-0104 — Base del cache con espacios de nombres
+
+- **Fecha:** 2026-09-27
+- **Contexto:** T-119. ADR-0028 eligió `@nestjs/cache-manager` con almacén en memoria del proceso y TTL de 120 s configurable. El cache solo vive en Infrastructure o Presentation, nunca para decisiones que requieren consistencia, y cachea solo lecturas públicas del catálogo, con invalidación inmediata por `ProductPublished`, `ProductArchived` y `VariantDiscontinued`. Los endpoints del catálogo llegan con T-140.
+- **Decisión:**
+  - **`@nestjs/cache-manager`** registrado global con el TTL configurado, para cachear respuestas con su interceptor cuando no haya nada que invalidar.
+  - **`AppCache`** en `src/platform/cache/`, con espacios de nombres. Cada espacio (`catalog`, `geo`…) tiene su propio almacén en memoria (`cache-manager` con Keyv), así que se vacía por separado. Ofrece `getOrLoad(clave, carga)`, `delete(clave)` y `clear()`, y todo valor vence con el TTL.
+  - **`CACHE_TTL_SECONDS`:** variable opcional, 120 por defecto, entero de 1 a 86400, validada al arrancar.
+  - **Invalidación del catálogo:** `PublicCatalogCacheInvalidation`, en la infraestructura de Catalog (adaptador de entrada, ADR-0098), vacía **todo** el espacio `catalog` con cualquiera de los tres eventos. Un producto aparece en muchos listados, filtros y páginas, así que borrar claves sueltas sería frágil. Los casos de uso de T-140 publicarán esos eventos.
+  - **Regla de límites:** las reglas de ADR-0103 ya impiden usar el cache desde Domain (solo shared kernel) y desde Application (sin `platform` ni paquetes fuera de `@nestjs/common`). El proyecto de ejemplo de `test/boundaries/` suma una violación de cada una, para probarlo.
+- **Alternativas consideradas:**
+  - Un solo almacén con prefijos de clave: vaciar un espacio exigiría seguir sus claves a mano.
+  - Invalidar solo las claves del producto afectado: frágil, porque es fácil olvidar un listado o un filtro.
+  - Solo el interceptor de NestJS: cachea por URL y no permite invalidar el catálogo por eventos.
+  - Una regla de límites nueva para el cache: repetiría lo que ya impiden las reglas de ADR-0103.
+- **Consecuencias:**
+  - Tras publicar o archivar un producto, las siguientes consultas del catálogo vuelven a leer de la base hasta llenar el cache otra vez.
+  - Con despacho en segundo plano (ADR-0098), la invalidación ocurre un instante después del cambio.
+  - El cache se pierde al reiniciar y no se comparte entre instancias (ADR-0028).
+  - T-140 cachea el árbol de categorías, el detalle de producto y los listados sin `q` en el espacio `catalog`; T-124 puede cachear el catálogo geográfico en su propio espacio.
+- **Estado:** Aceptada (aprobación formal 2026-09-27). ADR-0129 limita cada espacio a 1 000 valores con un almacén LRU, y cachea en `catalog` el detalle, los listados sin búsqueda y las marcas.
+
+---
+
+## ADR-0105 — Pipeline de CI en GitHub Actions
+
+- **Fecha:** 2026-09-28
+- **Contexto:** T-106. ADR-0030 fijó los 10 pasos del pipeline y su orden, y dejó para T-106 la herramienta de detección de secretos. ADR-0084 dejó aquí la posible comprobación de los mensajes de commit, y ADR-0090 pide Testcontainers con el Docker del runner, sin servicio de PostgreSQL. El repositorio es público y ya tiene activos el secret scanning y la protección de push de GitHub.
+- **Decisión:**
+  - **Workflow** `.github/workflows/ci.yml` ("CI"): corre en cada pull request hacia `main`, en cada push a `main` y a mano (`workflow_dispatch`).
+  - **Job `Pipeline`:** un solo job en `ubuntu-24.04` con los 10 pasos en el orden de ADR-0030; se detiene en el primero que falle. Node.js sale de `.nvmrc`, siempre la última 24.x (ADR-0025), con caché de npm.
+    1. `npm ci`.
+    2. `npm run lint:code` y `npm run format:check`.
+    3. `npm run lint:boundaries` (ADR-0103).
+    4. `npx tsc --noEmit`: compila el código y los tests.
+    5. `npm test`.
+    6. `npm run test:int` y `npm run test:e2e`, contra `postgres:18` con Testcontainers. ADR-0030 no nombra las e2e, pero también usan PostgreSQL real.
+    7. Sin paso aparte: la preparación de `npm run test:int` aplica todas las migraciones desde cero, y `database-schema.int-spec.ts` comprueba que el esquema de Prisma no difiere de ellas (`prisma migrate diff --exit-code`, T-110). El nombre del paso 6 lo indica.
+    8. `npm audit --audit-level=high`: falla con vulnerabilidades altas y críticas; las demás solo se reportan.
+    9. Detección de secretos con gitleaks.
+    10. `docker build --target production`. La imagen no se publica, porque el despliegue continuo está pospuesto (ADR-0031).
+  - **Detección de secretos:** gitleaks 8.30.1 con su imagen oficial de Docker, fijada por digest. Revisa todo el historial sin conexión, así que no envía nada a terceros, y usa `--redact` para que un hallazgo no aparezca en el log público.
+    - Los falsos positivos revisados van en `.gitleaksignore`, cada uno con su huella y un comentario. Al crearlo se registraron tres: el token de ejemplo del README inicial de NestJS, una `Idempotency-Key` de ejemplo en `API_SPEC.md` y el JWT inventado del test de redacción de logs.
+    - Un secreto real nunca se ignora: se rota y se saca del historial.
+    - El secret scanning y la protección de push de GitHub siguen activos como primera barrera.
+  - **Job `Commit messages`,** solo en pull requests: comprueba el título del pull request y los commits de la rama, sin contar merges, contra `tipo: descripción` con los tipos de ADR-0084.
+    - Lo hace `.github/scripts/check-commit-messages.sh`, en bash y sin dependencias; sus pruebas (`check-commit-messages.test.sh`) corren antes en el mismo job.
+    - El título llega por variable de entorno, nunca interpolado en el script, para evitar inyección de comandos.
+    - El historial anterior a la convención no se revisa.
+  - **Seguridad del workflow:**
+    - Permisos de solo lectura (`contents: read`).
+    - Actions de terceros fijadas por SHA, con la versión en un comentario.
+    - Checkout sin credenciales persistidas.
+    - Un push nuevo a un pull request cancela su ejecución anterior; las de `main` siempre terminan.
+    - Límite de 20 minutos para `Pipeline` y 5 para `Commit messages`.
+  - Los nombres de los jobs (`Pipeline` y `Commit messages`) son los checks obligatorios de la rama principal (ADR-0106); cambiarlos exige actualizar la protección.
+- **Alternativas consideradas:**
+  - Jobs en paralelo: más rápidos, pero repiten `npm ci` en cada job y suman checks obligatorios.
+  - TruffleHog: para verificar un hallazgo lo prueba contra el servicio correspondiente, así que envía lo encontrado a terceros.
+  - Solo el secret scanning de GitHub: no es un paso del pipeline y en repositorios privados es de pago.
+  - La action oficial de gitleaks: pide licencia si el repositorio pasa a una organización.
+  - Un paso de migraciones aparte: repetiría la comprobación de T-110 con otro contenedor.
+  - commitlint: suma dependencias para una comprobación de una línea.
+  - Servicio de PostgreSQL en el workflow: descartado por ADR-0090.
+- **Consecuencias:**
+  - Todo pull request pasa por la CI antes de fusionarse. Desde T-107, la rama principal lo exige.
+  - Cada paso se puede repetir en local con el mismo comando (`DEVELOPMENT_GUIDE.md`).
+  - Una vulnerabilidad alta publicada en una dependencia hace fallar la CI aunque el pull request no la toque. Se actualiza la dependencia, o se registra la decisión si no hay arreglo.
+  - Un commit con otro formato hace fallar `Commit messages`: se corrige reescribiendo los commits de la rama antes de fusionar. Dependabot (T-107) debe usar el prefijo `chore`.
+  - Dependabot puede actualizar las actions fijadas por SHA. La imagen de gitleaks, por estar en una variable del workflow, se actualiza a mano.
+- **Estado:** Aceptada (plan de T-106 aprobado el 2026-09-28). Modificada por ADR-0119: el paso 9 corre `npm run secrets:scan`, que también revisa los cambios preparados, y la imagen de gitleaks se fija en `package.json`, no en el workflow. ADR-0147: el paso 10 construye también la imagen `migrate` y prueba que las dos arranquen contra un PostgreSQL 18. ADR-0157: los pasos 5 y 6 miden la cobertura, y el 6 termina comprobando la de toda la suite contra sus umbrales.
+
+---
+
+## ADR-0106 — Protección de la rama principal y Dependabot
+
+- **Fecha:** 2026-09-28
+- **Contexto:** T-107. ADR-0030 exige que la rama principal solo reciba pull requests con el pipeline en verde y que Dependabot proponga actualizaciones agrupadas cada semana. ADR-0105 dejó los checks `Pipeline` y `Commit messages`. Hasta ahora `main` no tenía protección y Dependabot estaba desactivado. La cuenta dueña del repositorio es administradora.
+- **Decisión:**
+  - **Ruleset `main`**, definido en `.github/rulesets/main.json` y aplicado con la API de GitHub. Se aplica a la rama por defecto:
+    - Pull request obligatorio: no se puede hacer push directo.
+    - 0 aprobaciones, porque GitHub no permite que el autor apruebe su propio pull request.
+    - Checks obligatorios `Pipeline` y `Commit messages`, solo si los publica GitHub Actions (aplicación 15368).
+    - La rama debe estar al día con `main` antes de fusionar.
+    - Ni force push ni borrado de `main`.
+    - Sin excepciones, ni para administradores.
+  - **Dependabot** (`.github/dependabot.yml`), con revisión semanal los lunes a las 06:00 (America/Mexico_City):
+    - **npm:** un pull request agrupa las versiones menores y los parches, y cada versión mayor va en su propio pull request. Las versiones mayores de `@types/node` se ignoran, porque debe seguir a Node.js 24 (ADR-0025). Prefijo `chore`.
+    - **GitHub Actions:** todas en un solo pull request, con prefijo `ci`.
+    - **Espera de 7 días** (`cooldown`) antes de proponer una versión recién publicada, contra paquetes comprometidos. No aplica a las actualizaciones de seguridad.
+    - **Sin imágenes de Docker:** siguen su versión mayor (`node:24`, `postgres:18`) y toman la última al construir.
+  - **Otros ajustes del repositorio:**
+    - Se activan las alertas de Dependabot y las actualizaciones de seguridad automáticas, que abren un pull request en cuanto se publica una vulnerabilidad, sin esperar al lunes.
+    - Las ramas se borran automáticamente al fusionar.
+    - Se mantienen el secret scanning y la protección de push.
+  - `test/repository/github-settings.spec.ts` comprueba varias cosas:
+    - que los checks obligatorios del ruleset son exactamente los jobs de `ci.yml`;
+    - que el ruleset no tiene excepciones y exige rama al día;
+    - que los prefijos de Dependabot pasan la comprobación de `Commit messages`.
+- **Alternativas consideradas:**
+  - Protección clásica de rama: equivalente, pero más difícil de exportar y versionar.
+  - Exigir una aprobación: bloquearía todos los merges de un único desarrollador.
+  - Excepción para administradores: permitiría saltarse la CI.
+  - No exigir rama al día: se fusionaría código probado contra un `main` anterior.
+  - Dependabot sin grupos: demasiados pull requests.
+  - Dependabot sin espera: propondría versiones recién publicadas.
+  - Dependabot con Docker: no hay versiones fijas que actualizar.
+- **Consecuencias:**
+  - Nada llega a `main` sin la CI en verde, ni siquiera de los administradores. En una emergencia se desactiva el ruleset a mano; queda registrado en GitHub y hay que volver a activarlo.
+  - Si `main` avanzó mientras un pull request estaba abierto, hay que actualizar la rama ("Update branch") y esperar a la CI.
+  - Renombrar un job de la CI exige actualizar `.github/rulesets/main.json` y volver a aplicarlo; el test lo detecta antes.
+  - El archivo del ruleset no se sincroniza solo: un cambio hecho en la interfaz de GitHub debe copiarse al archivo, y un cambio en el archivo se aplica con `gh api` (`DEVELOPMENT_GUIDE.md`).
+  - Los pull requests de Dependabot pasan por la CI como cualquier otro; los de versión mayor pueden requerir cambios de código.
+- **Estado:** Aceptada (plan de T-107 aprobado el 2026-09-28; ruleset y ajustes aplicados ese mismo día). ADR-0107 suma `typescript` a las versiones mayores ignoradas. Modificada por ADR-0158: las actualizaciones de versión están en pausa mientras el MVP esté cerrado; las de seguridad siguen activas.
+
+---
+
+## ADR-0107 — TypeScript se mantiene en 6.x
+
+- **Fecha:** 2026-09-28
+- **Contexto:** Dependabot propuso actualizar TypeScript de 6.0.3 a 7.0.2 (pull request #31), y la CI falló en `npm ci` por un conflicto de dependencias. La última versión de ts-jest (29.4.14) solo admite `typescript` menor que 7, y ninguna versión de ts-jest, ni siquiera en prueba, admite la 7. Además, TypeScript 7 es el compilador reescrito en Go: su paquete de npm ya no expone la API de compilador para JavaScript, solo el número de versión y APIs marcadas como inestables. De esa API dependen ts-jest, la CLI de Nest (el build) y el plugin de Swagger (ADR-0096), así que forzar la instalación tampoco serviría.
+- **Decisión:**
+  - El proyecto se queda en TypeScript 6.x. Dependabot sigue proponiendo sus versiones menores y parches.
+  - `.github/dependabot.yml` ignora las versiones mayores de `typescript`, igual que las de `@types/node` (ADR-0106).
+  - El test de configuración del repositorio comprueba que solo se ignoran las versiones mayores con un motivo registrado.
+  - El pull request #31 se cierra con un comentario que explica el motivo.
+- **Alternativas consideradas:**
+  - Instalar TypeScript 7 con `--legacy-peer-deps`: rompería los tests, el build y el plugin de Swagger.
+  - Cambiar ts-jest por otro transformador (SWC o esbuild): no resuelve el build de Nest ni el plugin de Swagger, y cambia cómo corren los tests.
+  - Ignorar la versión con un comentario a Dependabot en el pull request: la regla quedaría fuera del repositorio y no se vería en la revisión.
+- **Consecuencias:**
+  - Seguimos recibiendo correcciones de TypeScript 6.x, pero no las mejoras de rendimiento del compilador nuevo.
+  - Hay que revisar de vez en cuando si las herramientas ya lo admiten.
+- **Revisar si:** ts-jest, la CLI de Nest y el plugin de Swagger admiten TypeScript 7 (o TypeScript 7 publica una API estable que ellos usen). Entonces se quita la regla de `dependabot.yml` y se prueba la actualización con la CI completa.
+- **Estado:** Aceptada (aprobada el 2026-09-28).
+
+---
+
+## ADR-0108 — Scripts de instalación de las dependencias
+
+- **Fecha:** 2026-09-28
+- **Contexto:** Paso 0 del Sprint 2. npm 11.19 avisa que 8 dependencias tienen scripts de instalación sin revisar en `allowScripts`, pero todavía los ejecuta: durante un `npm ci`, el de `cpu-features` compiló código nativo en el equipo local. Los scripts de instalación son la vía más común del malware en npm, y uno de ellos, el de `@scarf/scarf` (a través de `@nestjs/swagger` y `swagger-ui-dist`), envía estadísticas de uso a un servicio externo en cada instalación. Ninguno hace falta:
+  - `prisma` y `protobufjs` solo comprueban versiones.
+  - `@prisma/engines` descarga el motor de migraciones, que el `prisma generate` del propio proyecto también descarga.
+  - `@parcel/watcher` y `unrs-resolver` (de Jest) compilan o revisan binarios que ya llegan precompilados.
+  - `cpu-features` y `ssh2` (de Testcontainers) compilan aceleraciones opcionales para conexiones SSH a Docker, que el proyecto no usa.
+  - `@scarf/scarf` es telemetría.
+- **Decisión:**
+  - `package.json` declara `allowScripts` y **niega los 8 scripts**, con entradas por nombre, sin versión fija. Así una versión nueva de un paquete ya revisado conserva la decisión y los pull requests de Dependabot no fallan por eso.
+  - `.npmrc` activa `strict-allow-scripts=true`: una dependencia nueva con scripts sin revisar **hace fallar la instalación**, en local, en la CI y en Docker, en vez de ejecutarse con un aviso.
+  - El `Dockerfile` copia `.npmrc` antes de cada `npm ci`.
+  - Los scripts del propio proyecto, como el `postinstall` que ejecuta `prisma generate`, no se ven afectados.
+  - Aprobar un script requiere revisarlo, registrar el motivo en este ADR o en uno nuevo y actualizar `test/repository/install-scripts.spec.ts`, que hoy exige que no haya ninguno aprobado.
+- **Alternativas consideradas:**
+  - Aprobar todos los scripts (`npm install-scripts approve --all`): silencia el aviso, pero sigue ejecutando código que no hace falta, incluida la telemetría.
+  - Negar los scripts sin modo estricto: una dependencia nueva con scripts se ejecutaría con solo un aviso.
+  - `--ignore-scripts` en cada instalación: también bloquea el `prisma generate` del proyecto, y hay que recordarlo en cada comando.
+  - Entradas con versión fija (el comportamiento por defecto de npm): cada actualización del paquete obligaría a revisarlo otra vez y haría fallar los pull requests de Dependabot.
+  - Desactivar solo la telemetría con `SCARF_ANALYTICS=false`: no cubre el resto.
+- **Consecuencias:**
+  - Ninguna dependencia ejecuta código al instalarse, y la telemetría de scarf deja de enviarse. Las instalaciones no compilan código nativo, así que son más rápidas.
+  - Si una actualización (por ejemplo, de Dependabot) trae un paquete nuevo con scripts, `npm ci` falla con `ESTRICTALLOWSCRIPTS` hasta decidir si se aprueba o se niega (`DEVELOPMENT_GUIDE.md`).
+  - Con una versión de npm anterior a 11.19, `allowScripts` se ignora y los scripts vuelven a ejecutarse; el proyecto usa la que trae Node.js 24 (ADR-0025).
+  - Verificado con instalaciones limpias en Windows y Linux: tests unitarios, de integración (con las migraciones) y end-to-end, build, e imágenes de Docker de desarrollo y producción. La imagen de producción queda igual que antes, de 913 MB y con el mismo motor de Prisma.
+- **Estado:** Aceptada (aprobada el 2026-09-28).
+
+---
+
+## ADR-0109 — Catálogo geográfico del INEGI y scripts de operación
+
+- **Fecha:** 2026-09-28
+- **Contexto:** T-124 (UC-IAM-21 y UC-IAM-22). ADR-0057 decidió cargar el catálogo de estados y municipios del INEGI con un script manual e idempotente a partir del archivo descargado, sin que la API descargue nada. `ARCHITECTURE.md` lo define como capacidad transversal. El proyecto no tenía todavía ningún script de operación, y T-131 necesitará otro para crear el primer superadministrador.
+- **Decisión:**
+  - **Módulo transversal `src/modules/geo/`**, con dominio, aplicación, infraestructura y presentación:
+    - `GeoCatalogSnapshot` valida el archivo completo antes de escribir nada.
+    - `planGeoCatalogImport` calcula qué se crea, se renombra, se desactiva o se reactiva.
+    - `ImportGeoCatalog` es el caso de uso de importación.
+    - `GeoCatalog` es la fachada de solo lectura que exporta su `index.ts`, para las direcciones (T-130) y el checkout de invitados.
+    - `PrismaGeoCatalogRepository` escribe con una sentencia SQL por tabla (`INSERT … SELECT unnest(…) ON CONFLICT DO UPDATE`), porque 2,478 escrituras una a una podrían pasar del límite de 5 s por transacción (ADR-0093).
+  - **Archivo de entrada:** el CSV en UTF-8 del "Catálogo de Municipios Nacional" (`AGEEML_…_utf8.csv` dentro de `catun_municipio.zip`). Trae el nombre de cada estado, así que no hace falta el catálogo de entidades. Se lee con un lector CSV (RFC 4180) propio, sin dependencias. Un archivo que no es UTF-8, como el CSV sin sufijo del mismo ZIP, o que no tiene las columnas `CVE_ENT`, `NOM_ENT`, `CVE_MUN` y `NOM_MUN`, se rechaza.
+  - **Reglas de la importación:**
+    - Aborta sin cambiar nada si el archivo no trae exactamente 32 estados, si tiene claves mal formadas, municipios repetidos o un estado con dos nombres.
+    - Todo va en una transacción.
+    - Los municipios que faltan en el archivo se desactivan, nunca se borran, y los que vuelven se reactivan.
+    - Importar dos veces el mismo archivo no cambia nada.
+    - `--dry-run` informa los cambios sin escribir.
+    - Cada importación real deja una entrada de auditoría `geo.catalog-imported`, a nombre de SYSTEM, con los conteos de antes y después.
+  - **Catálogo versionado:** el archivo del INEGI se guarda sin cambios en `data/inegi/municipios-2026-06.csv`, con su fecha de corte (2026/06), procedencia, checksum y el crédito que piden los términos de libre uso del INEGI (`data/inegi/README.md`). `.gitattributes` conserva sus bytes (CRLF).
+  - **Scripts de operación:**
+    - Viven en `src/scripts/` y se compilan con la API.
+    - Cada uno arranca un contexto de aplicación de Nest con solo los módulos que necesita: sin servidor HTTP, sin scheduler y sin bus de eventos.
+    - La operación corre en su propio contexto asíncrono con identificador, como un job (ADR-0101).
+    - Terminan con código 0 si todo salió bien y 1 ante un error de argumentos o de datos, y cada línea del resultado va al log.
+    - `npm run geo:import -- <archivo> [--dry-run]` compila y ejecuta el script.
+    - Donde el código ya está compilado se usa `node dist/scripts/import-geo-catalog.js <archivo>`: en el contenedor de desarrollo, cuyo `start:dev` compila sin parar, y en la imagen de producción.
+  - **Consulta pública (UC-IAM-22):** `GET /v1/geo/states` y `GET /v1/geo/states/{stateCode}/municipalities`, con solo los municipios activos, ordenados por nombre.
+    - Una clave de estado inexistente o mal formada responde 404 `not-found`.
+    - Las respuestas se cachean en el espacio `geo` (ADR-0104) durante el TTL. La importación corre en otro proceso y no puede vaciar ese cache, así que un catálogo nuevo se ve en la API a más tardar al vencer el TTL (120 s por defecto).
+  - **Convención de OpenAPI** (complementa ADR-0096): la respuesta de éxito de cada endpoint se declara con `@ApiOkResponse` (o `@ApiCreatedResponse`), y los campos de un DTO que contienen otros DTO, con `@ApiProperty({ type })`. El plugin de Swagger solo los deduce con el análisis de tipos de `nest build`; en los tests (ts-jest compila archivo por archivo) no, y el documento de los tests quedaría incompleto.
+- **Alternativas consideradas:**
+  - Cargar el catálogo como datos iniciales (`prisma db seed`): no permite actualizarlo de forma idempotente ni desactivar municipios.
+  - Leer el ZIP directamente: sumaría una dependencia; el operador lo descomprime.
+  - No versionar el archivo: cada desarrollador y la CI tendrían que descargarlo.
+  - Escribir municipio por municipio: lento y cerca del límite de la transacción.
+  - Dejar que el plugin documente las respuestas: los tests no verían el mismo documento que producción.
+- **Consecuencias:**
+  - La base local se carga una vez con `npm run geo:import -- data/inegi/municipios-2026-06.csv`. Actualizar el catálogo es reemplazar el archivo versionado e importarlo (`data/inegi/README.md`).
+  - T-131 (primer superadministrador) usa el mismo mecanismo de scripts.
+  - Para ejecutar el script en producción, la imagen necesitará el archivo del catálogo, igual que `prisma/` para las migraciones (P-05).
+- **Estado:** Aceptada (plan de T-124 aprobado el 2026-09-28). ADR-0112 amplía la convención de OpenAPI a listas, fechas y campos nulos. El lector CSV pasa a `src/platform/files/csv.ts` para compartirlo con la carga masiva de precios (ADR-0126).
+
+---
+
+## ADR-0110 — Envío de correos y enlaces al frontend
+
+- **Fecha:** 2026-09-28
+- **Contexto:** T-122. ADR-0045 pide enviar los correos a través de un puerto, con un adaptador al capturador local (Mailpit) en desarrollo y el proveedor real cuando se decida P-24. ADR-0056 pide armar los enlaces de verificación y de recuperación con la URL base del frontend, configurable. Los usan la verificación de email (T-121), la recuperación de contraseña (T-123) y las notificaciones de la orden (T-215), así que el puerto no puede pertenecer a un solo contexto.
+- **Decisión:**
+  - **Puertos en el shared kernel**, como `AuditTrail`, para que Application los use desde cualquier contexto:
+    - `EmailSender.send({ to, subject, text, html? })` envía de inmediato. Si el servidor no acepta el mensaje, rechaza con `EmailDeliveryError`, cuyo mensaje nunca lleva el destinatario.
+    - No se llama dentro de una transacción: se envía después del commit, como hacen los handlers de eventos. Un correo fallido no se reintenta (ADR-0014).
+    - `FrontendLinks.link(ruta, parámetros)` devuelve la URL absoluta de una página del frontend, con los parámetros en la query codificados. Dónde va el token en cada enlace lo deciden T-121 y T-123.
+  - **Adaptador SMTP con nodemailer** en `src/platform/mail/`, con un módulo global.
+    - Protege contra la inyección de encabezados y codifica UTF-8 en asunto y cuerpo.
+    - Límites de tiempo: 10 s para conectar, 10 s para el saludo del servidor y 20 s de inactividad.
+    - El puerto 465 usa TLS desde el inicio; en los demás, nodemailer pasa a TLS (STARTTLS) si el servidor lo ofrece.
+    - El log registra solo el identificador del mensaje enviado, o el código de error SMTP, nunca el destinatario ni el contenido.
+    - Se instaló nodemailer 10.0.10 (sin dependencias ni scripts de instalación) y no la 10.0.12, publicada el mismo día: se respeta la misma espera de 7 días de Dependabot (ADR-0106).
+  - **Configuración** en `.env.example`:
+    - `SMTP_HOST` (por defecto `localhost`), `SMTP_PORT` (1025), `MAIL_FROM` (`base-shop <no-reply@base-shop.test>`) y `FRONTEND_BASE_URL` (`http://localhost:5173`).
+    - `MAIL_FROM` es una dirección, o `Nombre <dirección>` en una sola línea.
+    - `FRONTEND_BASE_URL` es `http` o `https`, con ruta opcional, sin query, fragmento, credenciales ni barra final.
+    - **Con `NODE_ENV=production` las cuatro son obligatorias**, para que nunca se envíe a Mailpit ni con enlaces a `localhost`.
+    - En Docker Compose, el contenedor de la API recibe `SMTP_HOST=mailpit`.
+  - **Tests** contra Mailpit real, con Testcontainers: envío con acentos y versión HTML, un asunto con saltos de línea que no agrega encabezados, y un log sin el destinatario. `testcontainers` pasa a ser dependencia de desarrollo directa.
+- **Alternativas consideradas:**
+  - Puerto dentro de Identity & Access: las notificaciones (T-215) no podrían usarlo sin depender de ese contexto.
+  - Cliente SMTP propio o la API HTTP de un proveedor: más código, y el proveedor todavía no está decidido (P-24).
+  - Mocks en lugar de Mailpit: no probarían la codificación ni el protocolo.
+  - Valores por defecto también en producción: los enlaces apuntarían a `localhost` sin que nadie lo note.
+- **Consecuencias:**
+  - T-121, T-123 y T-215 solo arman el mensaje; no conocen el mecanismo de envío.
+  - Cambiar de proveedor (P-24) es otro adaptador de `EmailSender` y otras variables SMTP. Si el proveedor pide usuario y contraseña, se agregan como variables nuevas.
+  - Los correos de desarrollo se leen en http://localhost:8025.
+- **Estado:** Aceptada (plan de T-122 aprobado el 2026-09-28). Primer uso en ADR-0117: el token va en la query del enlace. ADR-0154: en producción el SMTP exige TLS con certificado verificado y `FRONTEND_BASE_URL` debe usar `https`; la autenticación SMTP queda para P-24.
+
+---
+
+## ADR-0111 — Autorización, catálogo de permisos y base de Identity & Access
+
+- **Fecha:** 2026-09-28
+- **Contexto:** T-130 (UC-IAM-11 y 14 a 19). Sus endpoints necesitan un usuario autenticado, pero la autenticación llega con T-120, que depende de T-130 porque necesita los usuarios. Además, la anonimización (UC-IAM-19) toca órdenes, envíos y carritos, que todavía no existen, y la reactivación del staff genera una contraseña temporal, como el alta de staff de T-131. ADR-0017 pide un catálogo de permisos en código declarado por cada módulo, y ADR-0036 fija la paginación de los listados, que aún no tenía implementación.
+- **Decisión:**
+  - **Reparto de T-130** en tres pull requests: (a) base, (b) administración de roles, staff y clientes, y (c) direcciones. Salen de T-130:
+    - la anonimización de clientes e invitados (UC-IAM-19), a una tarea nueva, T-132, que depende de Shopping, Ordering y Shipping;
+    - la reactivación del staff, a T-131, que ya genera contraseñas temporales;
+    - revocar las sesiones al suspender, a T-120, en la misma transacción que la suspensión, porque las sesiones nacen allí.
+
+    `orderCount` del detalle de cliente responde 0 hasta que T-180 conecte Ordering.
+  - **Catálogo de permisos en el shared kernel** (`PERMISSIONS`, `PermissionCode`, `isPermissionCode`):
+    - Los 15 permisos de ADR-0043 y ADR-0075, con su descripción en español, agrupados por contexto. Cada contexto es dueño de sus entradas.
+    - Precisa ADR-0017. Si Identity importara el catálogo de cada módulo, habría dependencias circulares en cuanto otros módulos usen su fachada.
+    - El plan aprobado lo ubicaba en `platform/auth`, pero el dominio y la aplicación de Identity tienen que validar los roles contra él (BR-USR-04), y las reglas de límites solo les permiten importar el shared kernel.
+  - **Rol superadministrador:** tiene todos los permisos del catálogo de forma implícita y no guarda filas en `role_permissions`. Un permiso nuevo en el código le llega sin migración, y sus permisos no se editan.
+  - **Roles iniciales** de ADR-0043 en la migración `20260928120000_identity_initial_roles`:
+    - Superadministrador, con todos los permisos implícitos.
+    - Administrador: todos menos `staff.manage`.
+    - Operador: `catalog.*`, `pricing.*`, `inventory.*`, `orders.read`, `shipping.manage` y `customers.read`.
+
+    Después se editan en la base (UC-IAM-15). No se crea ningún usuario.
+  - **Autorización** en `src/platform/auth/`, con el guard global `AuthorizationGuard`:
+    - `@RequirePermissions(...códigos)` marca una ruta de `/v1/admin`: exige una cuenta de staff con todos los permisos indicados.
+    - `@RequireAccount({ customerOnly?, allowPendingPasswordChange? })` marca una ruta de `/v1/me`.
+    - Lee el usuario de `request.user` (`AuthenticatedUser`: `id`, `type`, `permissions` y `mustChangePassword`), que T-120 llenará desde el JWT, con los permisos de `IdentityAccessFacade.permissionsOf`.
+    - Sin usuario, o con uno mal formado, responde 401 `unauthenticated`.
+    - A un staff con contraseña temporal le responde 403 `password-change-required`, salvo en las rutas que lo permiten.
+    - A un cliente en `/v1/admin`, o a un staff sin los permisos, le responde 403 `forbidden`, que se audita (ADR-0100). También 403 `forbidden` a un staff en una ruta solo para clientes.
+    - **Falla cerrado:** una ruta de `/v1/admin` o `/v1/me` sin su decorador responde 500, así un olvido no deja la ruta pública.
+    - Corre después del rate limiting; la autenticación de T-120 irá antes de ambos.
+    - `@RequirePermissions` documenta el Bearer y los permisos (`x-required-permissions`) en OpenAPI.
+    - Hasta T-120, esas rutas responden 401. Los tests e2e usan un autenticador que solo existe en `test/support/`.
+  - **Paginación (ADR-0036):**
+    - `PageQueryDto` (`page` desde 1, `pageSize` de 1 a 100, 20 por defecto), que extiende el DTO de consulta de cada listado.
+    - `@IsSortOf(campos)`, que acepta el campo con `-` opcional; si no, responde 400 con un mensaje en español.
+    - `toSortOrder`, y `toPageResponse` para devolver `{ data, meta }`.
+    - `Page`, `PageRequest` y `SortOrder` en el shared kernel, para los repositorios.
+  - **Errores genéricos del shared kernel:** `VersionConflictError` (409, con `currentVersion`) e `InvalidStateTransitionError` (409, con `currentStatus`).
+  - **Agregados y persistencia:**
+    - `User` (suspender, reactivar clientes, reemplazar roles) y `Role` (crear, renombrar, reemplazar permisos) guardan su estado en un snapshot.
+    - Los repositorios de Prisma aplican bloqueo optimista con `updateMany … where version`; si otra modificación ganó, rechazan con `VersionConflictError` y la versión actual.
+    - Las asignaciones de roles registran quién las hizo.
+- **Alternativas consideradas:**
+  - Esperar a T-120 para hacer T-130: T-120 necesita los usuarios.
+  - Catálogo de permisos en cada módulo: dependencias circulares con Identity.
+  - Guardar los permisos del superadministrador como filas: un permiso nuevo necesitaría una migración.
+  - Guard que deja pasar las rutas sin decorador: un olvido publicaría una ruta de administración.
+  - Paginación por cursor: ADR-0036 la reserva para listados muy grandes.
+- **Consecuencias:**
+  - T-120 solo tiene que autenticar y llenar `request.user`; la autorización ya existe.
+  - Cada endpoint nuevo de `/v1/admin` y `/v1/me` declara su requisito, o falla con 500 en los tests.
+  - Un permiso nuevo se agrega al catálogo en el shared kernel y a los roles que lo necesiten. El superadministrador lo recibe solo.
+  - Un validador propio de class-validator necesita un mensaje por defecto para que su mensaje en español (`context.message`) llegue a la respuesta.
+- **Estado:** Aceptada (plan de T-130 aprobado el 2026-09-28; ubicación del catálogo ajustada durante la implementación, ver arriba). ADR-0112 corrige el ordenamiento (varios campos, `API_SPEC.md` §5.3) y agrega `Cache-Control: no-store` en las respuestas autenticadas. ADR-0114 llena `request.user` y revoca las sesiones al suspender. ADR-0132 quita `orderCount` del detalle de cliente en T-180 parte b, porque Ordering usa a Identity. ADR-0153 compara las rutas sin distinguir mayúsculas, como enruta Express, y una matriz revisada comprueba en la CI cómo se protege cada ruta. ADR-0161 agrega `orders.place` al catálogo y siembra el rol Vendedor por migración; si un operador ya creó un rol con ese nombre, no lo toca. ADR-0162: el catálogo marca los permisos que solo tiene el rol superadministrador (`SUPERADMIN_ONLY_PERMISSIONS`); el rol los tiene implícitos, como los demás.
+
+---
+
+## ADR-0112 — Administración de roles, staff y clientes, y motivo en la auditoría
+
+- **Fecha:** 2026-09-28
+- **Contexto:** T-130, parte (b): endpoints de `API_SPEC.md` §9.15 a §9.18, salvo el alta y la reactivación del staff (T-131) y la anonimización (T-132), que ADR-0111 dejó fuera. Suspender y reactivar exigen un motivo, pero ninguna tabla tenía dónde guardarlo. El contrato no fija qué pasa si se intenta cambiar los permisos del rol superadministrador, ni cómo se evita que dos cambios simultáneos dejen el sistema sin superadministrador. Al implementarlo apareció, además, que `API_SPEC.md` §5.3 permite ordenar por varios campos y filtrar con listas de valores, y que ADR-0071 pide `Cache-Control: no-store` en toda respuesta autenticada.
+- **Decisión:**
+  - **Endpoints:**
+    - `GET /v1/admin/identity/permissions`.
+    - Roles: listado, alta (201 con `Location`), detalle, `PATCH` y `DELETE`.
+    - Staff: listado, detalle, `PUT …/roles` y `POST …/suspend`.
+    - Clientes: listado, detalle, `POST …/suspend` y `POST …/reactivate`.
+
+    Todos con el permiso de su fila en §9.1 y auditados con `roles.create`, `roles.update`, `roles.delete`, `staff.roles-replace`, `staff.suspend`, `customers.suspend` y `customers.reactivate`.
+  - **Motivo en la auditoría** (modifica ADR-0100):
+    - `audit_logs` gana una columna `reason` (texto de 1 a 500 caracteres, `CHECK`), y `AuditEntry` gana `reason`.
+    - Guarda por qué actuó el staff, aparte de `changes`, que sigue siendo solo "qué cambió".
+    - La API pide el motivo con esas longitudes y la documentación advierte que no lleve datos personales.
+    - Agregar la columna no modifica filas, así que no choca con el trigger que rechaza las modificaciones.
+  - **Rol superadministrador:**
+    - Se puede renombrar y describir.
+    - Un `PATCH` con `permissions` responde 400 `validation-error` en ese campo ("El rol superadministrador siempre tiene todos los permisos."), en lugar de ignorarlo.
+    - `DELETE` siempre responde 409 `last-superadmin`.
+  - **Nunca sin superadministrador** (BR-USR-03):
+    - Se cuenta el staff ACTIVE que tiene el rol superadministrador.
+    - Quitarle el rol, o suspender, al último responde 409 `last-superadmin`.
+    - Esos cambios bloquean antes la fila del rol superadministrador (`SELECT … FOR UPDATE`), así que dos de ellos se validan uno después del otro. Un test de concurrencia lo comprueba.
+    - Nadie se suspende a sí mismo: 409 `invalid-state-transition`.
+  - **Lecturas:**
+    - Un puerto de solo lectura en la aplicación (`IdentityQueries`), implementado con Prisma en la infraestructura, sin cargar agregados.
+    - `q` es una búsqueda parcial que no distingue mayúsculas.
+    - El detalle de cliente incluye sus direcciones (la predeterminada primero) y `orderCount: 0` hasta T-180.
+  - **Listados según `API_SPEC.md` §5.3** (corrige la parte a):
+    - `sort` acepta varios campos separados por comas, sin repetir.
+    - Los filtros de estado aceptan listas separadas por comas (`status=ACTIVE,SUSPENDED`).
+    - Una fecha sola como fin de rango (`createdTo`) incluye todo el día.
+  - **Otras convenciones:**
+    - `Cache-Control: no-store` en toda respuesta de `/v1/admin` y `/v1/me`, errores incluidos, puesto por el guard de autorización (ADR-0071).
+    - Un ID de la ruta que no es UUID responde 404, como cualquier recurso inexistente.
+    - `version` desactualizada: 409 `version-conflict` con `currentVersion`.
+    - Descripción de rol: 1 a 250 caracteres (valor derivado, ADR-0071).
+  - **Shared kernel:** `NotFoundError`, `DuplicateValueError` (con `field`), `ResourceInUseError` y `assertVersion`. `platform/persistence/prisma-errors.ts` reconoce las violaciones de unicidad y de llave foránea.
+  - **OpenAPI** (amplía ADR-0109): también se declaran con `@ApiProperty` las listas, las fechas y los campos que pueden ser `null`.
+- **Alternativas consideradas:**
+  - El motivo en `changes.reason`: rompe el significado de `changes` y la base no lo valida.
+  - Ignorar en silencio los permisos del superadministrador: el cliente no sabría que no se aplicaron.
+  - Validar el último superadministrador sin bloqueo: dos cambios simultáneos podrían dejar el sistema sin ninguno.
+  - Listados a través de los agregados: cargan más de lo necesario y no cuentan usuarios.
+- **Consecuencias:**
+  - T-120 revoca las sesiones dentro de las transacciones de suspensión que ya existen.
+  - T-131 agrega el alta y la reactivación del staff sobre `StaffUser` y el mismo control de superadministrador.
+  - T-132 usará `reason` para la referencia de la solicitud ARCO.
+  - Otras acciones que pidan motivo (cancelaciones, reintegros, ajustes) usan la misma columna.
+- **Estado:** Aceptada (plan de T-130 parte b aprobado el 2026-09-28). ADR-0154: con `staff.manage` solo se dan roles y permisos que uno tiene, el rol superadministrador solo lo asigna otro superadministrador, y reactivar a un miembro del staff exige poder darle sus roles (BR-USR-20). ADR-0162: un permiso reservado al rol superadministrador en otro rol responde 400 `validation-error` con `superadminOnly` en `permissions` (BR-USR-21).
+
+---
+
+## ADR-0113 — Direcciones de clientes y uso del catálogo geográfico desde Identity
+
+- **Fecha:** 2026-09-28
+- **Contexto:** T-130, parte (c): la libreta de direcciones del cliente (UC-IAM-11, `API_SPEC.md` §9.14, ADR-0057). Hay que controlar el máximo configurable (BR-ADR-04) y una sola dirección predeterminada frente a cambios simultáneos, y validar el estado y el municipio con el catálogo del módulo `geo` (BR-ADR-02, BR-ADR-03). Es la primera vez que un contexto usa otro módulo, y la capa de aplicación de Identity no puede importarlo (ADR-0103).
+- **Decisión:**
+  - **Agregado `AddressBook`:** las direcciones de un cliente, cargadas con la fila del cliente bloqueada (`SELECT … FOR UPDATE`). Así el máximo y la predeterminada se mantienen con cambios simultáneos; un test de concurrencia lo comprueba. Sus reglas:
+    - hasta `MAX_ADDRESSES_PER_CUSTOMER` direcciones (entero de 1 a 100, 10 por defecto); si no, 409 `address-limit-reached` con `limit`;
+    - la primera dirección es la predeterminada;
+    - marcar otra como predeterminada desmarca la anterior;
+    - `isDefault: false` sobre la predeterminada, o borrarla, deja al cliente sin predeterminada.
+  - **Escritura:** solo se escriben las direcciones creadas, modificadas o borradas. Las que dejan de ser predeterminadas se escriben antes que la nueva, porque el índice único parcial de la predeterminada se comprueba en cada sentencia.
+  - **Uso del catálogo geográfico** (primera aplicación de ADR-0005: el consumidor define su puerto y un adaptador en su infraestructura):
+    - Identity declara el puerto `AddressLocations` en su aplicación.
+    - `GeoAddressLocations`, en su infraestructura, lo responde con la fachada `GeoCatalog` a través del `index.ts` de `geo`. La fachada gana `findState`.
+    - `IdentityAccessModule` importa `GeoModule`.
+  - **Validación de la ubicación:**
+    - Una dirección nueva, o un cambio de estado o municipio, exige un municipio vigente del estado.
+    - Si no lo es, responde 400 `validation-error` en el campo, con `isState`, `isMunicipalityOfState` o `isActiveMunicipality`.
+    - Una dirección que conserva su municipio lo mantiene aunque el INEGI lo haya retirado (BR-ADR-03).
+  - **En dos pasos:** primero se valida el DTO y, si pasa, el catálogo. Un error de formato y uno de catálogo llegan en dos respuestas 400 sucesivas, con el mismo formato, en lugar de juntos como en el ejemplo de `API_SPEC.md` §6.1. Así el acceso a la base queda fuera de la validación del DTO.
+  - **Contrato:**
+    - `POST` responde 201 con `Location: /v1/me/addresses/{id}`.
+    - En `PATCH` solo cambian los campos enviados. Los obligatorios no aceptan `null`; los opcionales (`interiorNumber`, `city`, `references`) se borran con `null`. Cambiar `stateCode` exige `municipalityCode`.
+    - La dirección de otro cliente, o un ID mal formado, responde 404.
+    - Teléfono y código postal se validan solo por formato, sin normalizar.
+- **Alternativas consideradas:**
+  - Relajar la regla de límites para que la aplicación importe fachadas de otros módulos: acopla la aplicación a otro contexto.
+  - Validar la ubicación con un validador asíncrono en el DTO: mete el acceso a la base en la presentación.
+  - Responder 400 a `isDefault: false`: el cliente no tendría forma de quedarse sin predeterminada salvo borrando.
+  - Controlar el máximo sin bloqueo: dos altas simultáneas podrían pasarlo.
+- **Consecuencias:**
+  - El checkout de invitados (Ordering) usará el mismo patrón para validar su dirección.
+  - Toda integración futura entre contextos sigue este puerto con su adaptador.
+  - Las órdenes guardan su propia copia de la dirección, así que borrar o cambiar una dirección no las afecta.
+- **Estado:** Aceptada (plan de T-130 parte c aprobado el 2026-09-28).
+
+---
+
+## ADR-0114 — Sesiones: login, renovación, cierre y autenticación de cada solicitud
+
+- **Fecha:** 2026-09-29
+- **Contexto:** T-120, parte (a). ADR-0022 y ADR-0023 fijaron Passport, un JWT de acceso de 15 minutos, un refresh token opaco rotado con detección de reutilización y Argon2id. ADR-0048 pidió desenlaces y una respuesta de login preparados para 2FA. ADR-0099, ADR-0100 y ADR-0102 esperan el usuario en `request.user.id` y la autenticación antes del rate limiting, y ADR-0111 dejó la autorización lista, a la espera de `request.user`. Faltaban el mecanismo concreto, qué se comprueba en cada solicitud, la clave de firma y la implementación de Argon2id.
+- **Decisión:**
+  - **Reparto de T-120** en dos pull requests: (a) sesiones, esta decisión; (b) contraseñas, con la política de ADR-0047, la lista de contraseñas comunes y `POST /v1/me/password` (UC-IAM-09).
+  - **Login sin la estrategia local de Passport** (modifica ADR-0023). El controlador valida el cuerpo como en cualquier otra ruta, así que un campo desconocido o un email mal formado responden 400, y después llama al caso de uso `SignIn`. En NestJS los guards corren antes de la validación, y la estrategia local habría leído el cuerpo sin validar. Passport queda para el token de acceso (ADR-0022).
+  - **Desenlaces (ADR-0048):**
+    - `SignIn` devuelve `AUTHENTICATED`, `INVALID_CREDENTIALS` o `ACCOUNT_DISABLED`, y la API responde a los dos últimos igual: 401 `invalid-credentials` (ADR-0062).
+    - El staff con contraseña temporal recibe tokens (`API_SPEC.md` §9.5), así que su desenlace es `AUTHENTICATED` con `mustChangePassword`. Un segundo factor sería otro desenlace, sin tokens.
+    - Un email inexistente se compara contra un hash de reemplazo, para que la respuesta tarde lo mismo que con una cuenta real.
+  - **Token de acceso:** JWT firmado con HS256, que lleva solo `sub` (el usuario) y `sid` (la sesión), además de `iat` y `exp`. La verificación acepta solo HS256.
+  - **Cada solicitud autenticada lee la cuenta** (modifica ADR-0023 y el criterio de UC-IAM-06):
+    - El guard global `AccessTokenGuard` usa la estrategia JWT de Passport.
+    - Con un token válido, `ResolveSignedInAccount` comprueba que la cuenta siga ACTIVE y que la sesión tenga un refresh token usable, y lee los permisos y `mustChangePassword` actuales. Los permisos salen de la misma función que `IdentityAccessFacade.permissionsOf`, sobre la cuenta ya leída.
+    - Así, una suspensión, un cierre de sesión, una sesión revocada o un cambio de roles aplican desde la siguiente solicitud, no al vencer el token.
+    - Cuesta tres consultas indexadas por solicitud autenticada.
+    - El guard nunca rechaza: sin `Authorization`, o con un token inválido o vencido, la solicitud sigue sin usuario. `AuthorizationGuard` responde 401 en las rutas que lo exigen, y las públicas ignoran el token.
+  - **Orden de los guards:** `IdentityAccessModule` registra el guard de autenticación, y `AppModule` lo importa antes que `RateLimitingModule` y `AuthorizationModule`. Corren autenticación, rate limiting (los límites por usuario ven quién llama) y autorización.
+  - **`AuthenticatedUser` gana `sessionId`**, para conservar la sesión actual al cambiar la contraseña (ADR-0072).
+  - **Refresh token:**
+    - Es `rt_` más 256 bits aleatorios en base64url. Se guarda solo su SHA-256: con esa entropía, un hash rápido basta.
+    - Al renovar se bloquea su fila (`SELECT … FOR UPDATE`), se crea uno nuevo en la misma sesión y el anterior queda con `revoked_at` y `replaced_by_id`.
+    - Una sesión está activa mientras tenga un token sin revocar y sin vencer.
+    - Presentar un token ya rotado revoca la sesión y audita `auth.refresh-token-reuse`, y eso se confirma aunque la respuesta sea 401. Dos renovaciones simultáneas con el mismo token cuentan como reutilización; un test de concurrencia lo comprueba.
+    - Un token vencido, revocado o desconocido, o de una cuenta que ya no puede entrar, responde 401 `invalid-refresh-token`.
+  - **Cierre de sesión:** revoca la sesión del refresh token si es del usuario autenticado; si no, responde 204 igual. Se permite con la contraseña temporal pendiente.
+  - **Suspensión:** `SuspendStaff` y `SuspendCustomer` revocan todas las sesiones de la cuenta en la misma transacción (ADR-0111).
+  - **Argon2id de `node:crypto`** (Node 24.7 o posterior; `engines` lo exige), sin dependencia nativa:
+    - costo mínimo recomendado por OWASP: 19 MiB, 2 pasadas y 1 carril; sal de 16 bytes y hash de 32;
+    - formato PHC, compatible con la implementación de referencia (un test verifica un hash de argon2-cffi), con el costo en cada hash para poder subirlo después;
+    - las contraseñas se normalizan a NFKC antes del hash (NIST SP 800-63B);
+    - un hash guardado mal formado, o con un costo fuera de límites (más de 1 GiB de memoria), nunca coincide.
+  - **Auditoría:** `auth.login` (éxito, con el usuario como actor; fallo, DENIED, con actor ANONYMOUS y registrado aparte), `auth.logout` y `auth.refresh-token-reuse`. `last_login_at` se guarda sin cambiar la versión de la cuenta, así que no provoca conflictos con un administrador que la edita.
+  - **Intentos fallidos:** el controlador de login consulta `FailedAttemptLimiter` por email y por IP antes de verificar las credenciales, y registra el fallo cuando no son válidas (ADR-0102). Login, renovación y cierre también cuentan en el límite general por IP.
+  - **`Cache-Control: no-store`** en las respuestas de login y renovación, que llevan tokens.
+  - **Configuración** en `.env.example`:
+    - `JWT_SECRET`, de al menos 32 caracteres, obligatoria en producción. En desarrollo y en tests, si falta, se usa una clave aleatoria por proceso (con un aviso en el log de desarrollo) y las sesiones terminan al reiniciar.
+    - `ACCESS_TOKEN_TTL` (15m por defecto, de 1m a 1h) y `REFRESH_TOKEN_TTL` (7d, de 1h a 90d), con el formato `<cantidad><s|m|h|d>`.
+  - **`GET /v1/me`**, que no tenía tarea, entra aquí; `PATCH /v1/me` pasa a T-121.
+  - **Dependencias:** `@nestjs/passport` 12.0.0, `@nestjs/jwt` 12.0.2, `passport` 0.7.0 y `passport-jwt` 4.0.1, sin scripts de instalación. `PassportModule` se registra con `register({})`, porque Nest 12 no hereda el `@Optional()` del guard de Passport en una subclase.
+- **Alternativas consideradas:**
+  - Estrategia local de Passport para el login: lee el cuerpo antes de validarlo.
+  - Permisos y estado dentro del token: sin consultas, pero una suspensión o un cambio de roles tardarían hasta 15 minutos en aplicar.
+  - Revisar la cuenta pero no la sesión: el cierre de sesión dejaría vivo el token de acceso hasta 15 minutos.
+  - Paquete `argon2`, nativo y con script de instalación (ADR-0108), o `@node-rs/argon2`.
+  - Firma asimétrica (EdDSA o RS256): solo esta API firma y verifica.
+  - Periodo de gracia para renovaciones simultáneas: ADR-0023 pide revocar ante cualquier reutilización.
+  - Exigir `JWT_SECRET` también en desarrollo: obligaría a llenar `.env` antes de levantar Docker Compose.
+- **Consecuencias:**
+  - El frontend debe renovar de una en una: dos renovaciones simultáneas con el mismo refresh token cierran la sesión.
+  - Cambiar `JWT_SECRET` invalida los tokens de acceso vigentes; los refresh tokens siguen sirviendo para obtener otros.
+  - Una sesión dura mientras se renueve antes de que venza su refresh token; no hay duración máxima absoluta.
+  - Hasta T-121 y T-131 nadie puede iniciar sesión fuera de los tests: todavía no existen el registro de clientes ni el alta de staff.
+  - La API de Argon2 de Node está en fase "release candidate"; si cambiara, el adaptador es el único punto que hay que tocar.
+  - Los tests de autorización siguen con el autenticador de prueba de `test/support/`; los de autenticación inician sesión de verdad.
+- **Estado:** Aceptada (plan de T-120 aprobado el 2026-09-29). La parte (b) de T-120 se decide en ADR-0115. ADR-0154: el login solo consulta el límite por IP antes de las credenciales; el límite por email se elimina.
+
+---
+
+## ADR-0115 — Política de contraseñas, lista de contraseñas comunes y cambio de contraseña
+
+- **Fecha:** 2026-09-29
+- **Contexto:** T-120, parte (b). ADR-0047 fijó la política de 15 a 64 caracteres, sin reglas de composición, con los caracteres aceptados y una lista local de contraseñas comunes elegida al implementar. ADR-0072 pidió que el cambio de contraseña desde la cuenta revoque las demás sesiones, conserve la actual y avise por correo. `API_SPEC.md` §9.12 fijó el contrato de `POST /v1/me/password`. Faltaban cómo se miden la longitud y los caracteres, qué lista usar y dónde vive, la forma del error y el contenido del correo.
+- **Decisión:**
+  - **Longitud y caracteres:**
+    - La contraseña se normaliza a Unicode NFKC, como en el hash (ADR-0114), y la longitud se cuenta en caracteres (code points) de la forma normalizada. Así, una letra acentuada cuenta como uno aunque se haya escrito como letra más acento.
+    - Se aceptan letras de cualquier alfabeto con sus acentos, dígitos, signos de puntuación, símbolos (emojis incluidos) y el espacio. Los espacios especiales, como el de no separación, se vuelven espacios normales al normalizar.
+    - Se rechazan tabuladores, saltos de línea y caracteres de control o invisibles. Por eso quedan fuera los emojis compuestos, que llevan un unificador invisible.
+  - **Lista de contraseñas comunes:**
+    - Fuente: `Pwdb_top-1000000.txt` de SecLists (licencia MIT), en el commit `837153d`. El original no se versiona.
+    - Se guardan solo las entradas que la política aceptaría por longitud y caracteres, normalizadas a NFKC, en minúsculas y sin repetir: 5,328 de 1,000,000 (94 KB), en `data/passwords/common-passwords.txt`, con su procedencia en `data/passwords/README.md` y la licencia en `data/passwords/LICENSE`.
+    - La comparación es sin distinguir mayúsculas: la contraseña se normaliza igual antes de buscarla.
+    - La API carga la lista en memoria al arrancar y no inicia sin ella, para que la política nunca deje de rechazar contraseñas comunes sin que nadie lo note. Al cargarla vuelve a normalizar cada entrada, así que el archivo no puede desalinearse de la política.
+    - La imagen de producción copia `data/passwords/`, que se lee relativa al directorio de trabajo.
+    - `npm run passwords:build -- <lista descargada>` genera el archivo con las mismas reglas de la política.
+  - **Política reutilizable:** `PasswordPolicy.assertAcceptable(contraseña, campo)` en la aplicación de Identity, con el puerto `CommonPasswords` y su adaptador de archivo. La usarán el registro (T-121), el restablecimiento (T-123) y las contraseñas temporales (T-131).
+  - **Error:** 400 `password-policy-violation` con `errors` (`API_SPEC.md` §6.2): una entrada en el campo de la contraseña, con `code` `passwordLength`, `passwordCharacters`, `commonPassword` o `samePassword`, y su mensaje en español. Una contraseña nueva igual a la actual también responde así.
+  - **`POST /v1/me/password` (UC-IAM-09):**
+    - En una transacción:
+      - se comprueba primero la contraseña actual (la temporal, en el cambio obligatorio del staff), así que la política no le dice nada a quien no la conoce;
+      - después, que la nueva cumpla la política y sea distinta de la actual;
+      - se guardan el hash nuevo y `password_changed_at`, y se quita `mustChangePassword`;
+      - se revocan las demás sesiones, conservando la de la solicitud (`sessionId` del token);
+      - se audita `auth.password-change`, con los cambios ocultos por la lista fija de ADR-0100.
+    - Una contraseña actual incorrecta responde 401 `invalid-credentials`, se audita como DENIED aparte y no cambia nada. No tiene límite propio: queda el general por IP (ADR-0065 no lista este endpoint), y hace falta un token de acceso válido.
+    - El cambio sube la versión de la cuenta: si un administrador la modifica al mismo tiempo, una de las dos operaciones recibe 409 `version-conflict`.
+  - **Correo de aviso (ADR-0072):**
+    - Solo texto, con el asunto "Tu contraseña cambió".
+    - Lleva el nombre de la persona, la fecha y hora del cambio en hora del centro de México, y qué hacer si no fue ella: usar "Olvidé mi contraseña" y contactar a la tienda.
+    - No lleva enlace hasta que T-123 defina la página de recuperación.
+    - Se envía después del commit. Si falla, queda en el log sin la dirección y no se reintenta (ADR-0110): el cambio ya ocurrió.
+    - `PasswordChangeNotice` lo arma y lo reutilizará el restablecimiento de T-123.
+- **Alternativas consideradas:**
+  - Sumar la lista de 10 millones de SecLists: más entradas, casi todas contraseñas que aparecieron pocas veces en filtraciones, a cambio de una descarga de 94 MB.
+  - Contar la longitud en unidades UTF-16, como `String.length`: un emoji contaría dos y una letra con acento separado, también dos.
+  - Validar la longitud en el DTO: respondería `validation-error` en lugar del `password-policy-violation` del contrato.
+  - Contar los intentos fallidos del cambio en el presupuesto por email del login: ADR-0065 no lo pide, y el endpoint ya exige un token de acceso válido.
+  - Enviar el correo dentro de la transacción: un fallo del servidor de correo desharía el cambio (ADR-0110).
+- **Consecuencias:**
+  - Con el mínimo de 15 caracteres, la longitud es la protección principal; la lista atrapa las contraseñas largas más usadas, como `1q2w3e4r5t6y7u8i`.
+  - Actualizar la lista es descargar otra versión, regenerarla con el script y actualizar su README.
+  - Una API sin `data/passwords/` en su directorio de trabajo no arranca.
+  - T-121, T-123 y T-131 aplican la política con `PasswordPolicy`, y T-123 envía el mismo aviso.
+- **Estado:** Aceptada (plan de T-120 parte b aprobado el 2026-09-29).
+
+---
+
+## ADR-0116 — Alta y reactivación del staff, contraseñas temporales y primer superadministrador
+
+- **Fecha:** 2026-09-29
+- **Contexto:** T-131 (UC-IAM-13, UC-IAM-16 y UC-IAM-20). ADR-0043 fijó que el staff lo da de alta un superadministrador con contraseña temporal, sin invitación por correo, y que el primer superadministrador se crea con un script a partir de variables de entorno. ADR-0076 fijó que el staff reactivado recibe una contraseña temporal nueva. BR-USR-13 pide contraseñas temporales generadas por el sistema, de al menos 15 caracteres. Faltaban el formato de la contraseña temporal, cómo recibe la suya el primer superadministrador, qué hace el script si ya hay uno y si el email del staff queda verificado.
+- **Decisión:**
+  - **Contraseña temporal:** 20 caracteres aleatorios (`crypto.randomInt`) de un alfabeto de 32 símbolos, minúsculas y dígitos sin `0`, `o`, `1` ni `l`, en cinco grupos de cuatro separados por guiones. Por ejemplo, `k7qm-3xrt-9fzw-p4hd-2nvc`: 24 caracteres y unos 100 bits, fácil de dictar o copiar. Pasa por la misma política que cualquier contraseña (ADR-0115) y se guarda solo su hash.
+  - **Alta (`POST /v1/admin/identity/staff`):**
+    - Con `staff.manage`. Exige email, nombres y apellidos (1 a 100 caracteres, no en blanco) y al menos un rol existente; si no existe, 400 `validation-error` con `unknownRoles`.
+    - El email se guarda en minúsculas. Si otra cuenta lo tiene, de cliente o de staff, responde 409 `duplicate-value`.
+    - Responde 201 con `Location` y `{ user, temporaryPassword }`, con `Cache-Control: no-store`. La cuenta queda ACTIVE y exige cambiar la contraseña en el primer inicio de sesión.
+    - Los roles registran quién los asignó.
+    - Se audita `staff.create`: los roles con su valor, y el email y los nombres solo como cambiados (ADR-0067).
+  - **Reactivación (`POST /v1/admin/identity/staff/{userId}/reactivate`):** solo desde SUSPENDED, con motivo y `version`. Genera una contraseña temporal nueva, marca el cambio obligatorio y conserva los roles; la contraseña anterior deja de servir. Responde 200 con `{ user, temporaryPassword }`. Se audita `staff.reactivate` con el motivo y el cambio de contraseña, sin su valor.
+  - **Email del staff sin verificar:** la verificación de ADR-0046 es de clientes y solo condiciona las compras, así que el staff se crea con `emailVerified: false`, sin efecto.
+  - **Primer superadministrador (`npm run superadmin:create`):**
+    - Lee `SUPERADMIN_EMAIL`, `SUPERADMIN_FIRST_NAMES` y `SUPERADMIN_LAST_NAMES`. Están en `.env.example` y en la configuración validada, como opcionales que la API no usa.
+    - Genera una contraseña temporal y la muestra una sola vez en la terminal, nunca en el log, que puede guardarse o enviarse a otro sistema. El cambio en el primer inicio de sesión es obligatorio. No existe una variable con la contraseña.
+    - Se niega, con código 1 y sin cambios, si hay un staff ACTIVE con el rol superadministrador (a partir de ahí las altas se hacen por la API), si el email ya existe o si falta alguna variable.
+    - Bloquea la fila del rol superadministrador mientras comprueba y crea, así que dos ejecuciones simultáneas crean uno a lo sumo; un test de concurrencia lo comprueba.
+    - La cuenta se audita como `staff.create` con actor SYSTEM, y sus roles quedan sin quien los asignó.
+  - **Transacciones anidadas:** `TransactionManager.run` dentro de otra transacción ejecuta el trabajo tal cual, en la transacción de afuera. Antes volvía a pedirla a `nestjs-cls`, que registraba un aviso de opciones ignoradas. Apareció al crear el primer superadministrador, que reutiliza el alta dentro de su propia transacción.
+- **Alternativas consideradas:**
+  - Frase de palabras aleatorias: necesita una lista de palabras y es más larga de escribir.
+  - Contraseña temporal con mayúsculas y símbolos: más difícil de dictar, sin necesidad, porque la longitud da la entropía.
+  - Variable `SUPERADMIN_PASSWORD`: la contraseña quedaría escrita en `.env` o en el historial de la terminal.
+  - Permitir el script aunque ya haya superadministradores: serviría como puerta trasera para crear más fuera de la API y de su auditoría por usuario.
+  - Dar por verificado el email del staff: no tiene efecto y ADR-0046 no lo pide.
+- **Consecuencias:**
+  - La contraseña temporal solo existe en la respuesta o en la terminal. Si se pierde, se suspende y reactiva la cuenta, o se usa la recuperación de T-123.
+  - Tras el primer superadministrador, las cuentas de staff solo se crean por la API, con `staff.manage`.
+  - En Docker Compose, el script corre dentro del contenedor, con las variables en `.env` o pasadas con `docker compose exec -e`.
+- **Estado:** Aceptada (plan de T-131 aprobado el 2026-09-29). ADR-0154: quien da de alta o reactiva a un miembro del staff debe poder darle todos sus roles.
+
+---
+
+## ADR-0117 — Registro, verificación y cambio de email, y corrección de datos del cliente
+
+- **Fecha:** 2026-09-29
+- **Contexto:** T-121 (UC-IAM-01 a 03 y 10, y `PATCH /v1/me`, que ADR-0114 pasó a esta tarea). ADR-0046 fijó la verificación con un enlace de un solo uso, vigente 24 horas y configurable, con reenvío limitado que invalida el anterior; ADR-0056 y ADR-0110, que los enlaces se arman con la URL base del frontend, y que cada tarea decide dónde va el token; ADR-0062, que el registro sí revela un email ya registrado; ADR-0067, la versión del aviso de privacidad y la rectificación desde `/v1/me`. Faltaban la forma del enlace, el contenido de los correos, si se avisa al email anterior y qué cuentas reciben el reenvío.
+- **Decisión:**
+  - **Enlace:** `FRONTEND_BASE_URL/verify-email?token=…`, con `FrontendLinks`, tal como lo previó ADR-0110. El frontend lee el token y lo envía a `POST /v1/auth/email-verification/confirm`. La recuperación de T-123 usará `/reset-password?token=…`. El token son 256 bits aleatorios en base64url; se guarda solo su SHA-256.
+  - **Vigencia y reemplazo:** `EMAIL_VERIFICATION_TTL` (24h por defecto, de 1h a 7d, en `.env.example`). Cada enlace nuevo invalida los anteriores de la cuenta, también al cambiar el email. Un enlace verifica solo la dirección a la que se envió, solo si la cuenta sigue teniéndola y puede iniciar sesión, y una sola vez: su fila se bloquea al confirmarlo. Si no, 400 `invalid-or-expired-token`, sin decir por qué.
+  - **Registro (`POST /v1/auth/register`):**
+    - aplica la política de contraseñas en el campo `password` (ADR-0115);
+    - guarda el email en minúsculas y la versión del aviso de privacidad;
+    - la cuenta queda de cliente, activa y sin verificar;
+    - un email ya registrado, de cliente o de staff, responde 409 `duplicate-value` (ADR-0062);
+    - responde 201 con `Account` y `Cache-Control: no-store`, sin iniciar sesión, y envía el enlace después del commit;
+    - no se audita: ADR-0037 no lo incluye entre los eventos de seguridad.
+  - **Reenvío:** responde 202 siempre. Solo envía a un cliente activo con el email sin verificar; nada a un email inexistente, verificado, de una cuenta suspendida o de staff.
+  - **Cambio de email (`POST /v1/me/email`, solo clientes):**
+    - pide la contraseña actual: si no coincide, 401 `invalid-credentials`, se audita como DENIED aparte y no cambia nada;
+    - el mismo email que ya se tiene responde 400 `validation-error` con `sameEmail` en `newEmail`; uno de otra cuenta, 409 `duplicate-value`;
+    - el email nuevo queda sin verificar, así que el cliente no puede comprar hasta verificarlo (BR-USR-11);
+    - se audita `auth.email-change` como evento de seguridad, sin las direcciones;
+    - después del commit, el email nuevo recibe su enlace y el anterior un aviso.
+  - **Correos, solo texto:**
+    - **"Confirma tu correo":** el nombre, el enlace, su vigencia y que se ignore si la persona no pidió la cuenta ni el cambio;
+    - **"Tu correo cambió":** al email anterior, con la fecha en hora de México, sin mostrar la dirección nueva, y "si no fuiste tú, contacta a la tienda". Así, si alguien con acceso a la cuenta cambia el email, el dueño se entera en el buzón que sigue controlando;
+    - un correo que falla queda en el log sin la dirección y no se reintenta (ADR-0110): el cliente puede pedir el reenvío.
+  - **Corrección de datos (`PATCH /v1/me`, solo clientes):** cambian solo los nombres y apellidos enviados, de 1 a 100 caracteres y sin `null`. Se audita `customers.rectify` sin los valores (ADR-0067); si nada cambia, no se guarda ni se audita.
+  - **Límites:** registro, 5 por IP por hora; reenvío, 3 por email por hora; cambio de email, 3 por cliente por hora, fallidos incluidos (ADR-0065, ADR-0102).
+- **Alternativas consideradas:**
+  - Token en el fragmento del enlace (`#token=`): no llega a los logs del servidor del frontend ni al `Referer`, pero hay que ampliar `FrontendLinks`. Con la query, el frontend debería enviar `Referrer-Policy: no-referrer`.
+  - No avisar al email anterior: la documentación no lo pedía, pero un cambio hecho por otra persona pasaría inadvertido.
+  - Reenviar también a cuentas verificadas o suspendidas: no sirve de nada, y a una suspendida le llegarían correos de una cuenta que no puede usar.
+  - Mostrar la dirección nueva en el aviso al email anterior: se la revelaría a quien tenga ese buzón.
+- **Consecuencias:**
+  - T-123 reutiliza los tokens de enlace (`link-tokens.ts`) y la hora de México de los avisos.
+  - El pedido del cliente verificado lo exige Ordering (BR-USR-05) con el `emailVerified` de la cuenta.
+  - Los tokens vencidos o usados los borrará la limpieza diaria (T-231).
+- **Estado:** Aceptada (plan de T-121 aprobado el 2026-09-29). ADR-0118: el cambio de email también invalida los enlaces de recuperación pendientes. ADR-0148 agrega la página `/order-access` para el enlace de acceso a los pedidos de invitado. ADR-0154: el reenvío responde 202 en cuanto recibe la solicitud y emite y envía el enlace en segundo plano.
+
+---
+
+## ADR-0118 — Recuperación de contraseña
+
+- **Fecha:** 2026-09-29
+- **Contexto:** T-123 (UC-IAM-07 y 08). ADR-0056 fijó la recuperación por un enlace de un solo uso, vigente 30 minutos y configurable, con el token guardado como hash. La respuesta no revela si el email existe, las cuentas suspendidas no reciben el correo, un enlace nuevo invalida los anteriores, y al restablecer se revocan todas las sesiones y se avisa por correo. ADR-0117 reservó la página `/reset-password` y dejó listos los tokens de enlace. Faltaban el rango de la vigencia, qué pasa con los enlaces pendientes al cambiar el email, si restablecer verifica el email, quién recibe el enlace y el contenido del correo.
+- **Decisión:**
+  - **Enlace:** `FRONTEND_BASE_URL/reset-password?token=…`, con el mismo token de 256 bits de ADR-0117, guardado como SHA-256. Vigencia `PASSWORD_RESET_TTL`: 30m por defecto, de 5m a 2h, en `.env.example`.
+  - **Solicitud (`POST /v1/auth/password-reset/request`):**
+    - Responde 202 siempre.
+    - Envía a clientes (verificados o no) y a staff activos; nada a cuentas suspendidas ni a emails inexistentes.
+    - Cada enlace nuevo invalida los anteriores.
+    - Las solicitudes no se auditan: son anónimas.
+    - La respuesta tarda algo más cuando el email existe, porque envía el correo. Se acepta porque el registro ya revela si un email existe (ADR-0062).
+  - **Restablecimiento (`POST /v1/auth/password-reset/confirm`):**
+    - El enlace sirve una vez, dentro de su vigencia y para una cuenta que puede iniciar sesión, con su fila bloqueada; si no, 400 `invalid-or-expired-token`.
+    - La contraseña nueva cumple la política en el campo `newPassword`. Si no la cumple, el enlace sigue sirviendo, así que se puede corregir sin pedir otro. No se exige que sea distinta de la anterior: quien restablece no la recuerda.
+    - Se revocan todas las sesiones y se quita `mustChangePassword`, porque la persona eligió su contraseña. Así, un staff que perdió su contraseña temporal recupera la cuenta sin que lo reactiven.
+    - Responde 204.
+    - Se audita `auth.password-reset` con el dueño como actor.
+    - Después del commit se envía el aviso "Tu contraseña cambió" de ADR-0115.
+  - **Email verificado al restablecer:** recibir el enlace prueba que la dirección funciona, así que un email sin verificar queda verificado. La fecha de una verificación anterior se conserva.
+  - **Enlaces pendientes al cambiar el email:** `ChangeEmail` (ADR-0117) también invalida los enlaces de recuperación pendientes. No guardan la dirección a la que se enviaron, y quien controle el buzón anterior no debe poder restablecer la contraseña después del cambio. Con esto, un enlace de recuperación usable siempre fue enviado a la dirección actual.
+  - **Correo "Restablece tu contraseña":** solo texto, con el nombre, el enlace, "vence en 30 minutos y sirve una sola vez" y "si no lo pediste, ignora este mensaje: tu contraseña no cambia". Si falla, queda en el log sin la dirección y no se reintenta (ADR-0110).
+  - **Regla común de los enlaces:** `isUsableLink` (sin usar, sin reemplazar y sin vencer) en `domain/one-time-link.ts`, compartida con la verificación de email.
+- **Alternativas consideradas:**
+  - Vigencia de hasta 24 horas: un enlace que cambia la contraseña vivo tanto tiempo es un riesgo si alguien lee el buzón.
+  - Guardar la dirección en cada enlace de recuperación: cambia la tabla, y la invalidación al cambiar el email da el mismo resultado.
+  - No verificar el email al restablecer: el cliente tendría que pedir otro enlace para comprar, aunque acaba de probar que recibe correo.
+  - Marcar el enlace como usado aunque la contraseña no cumpla la política: obligaría a pedir otro por un error de escritura.
+- **Consecuencias:**
+  - Identity & Access queda completo para el Sprint 2: todos sus casos de uso con API, salvo la anonimización (UC-IAM-19), que pasó a T-132.
+  - Los enlaces vencidos o usados los borrará la limpieza diaria (T-231).
+- **Estado:** Aceptada (plan de T-123 aprobado el 2026-09-29). ADR-0154: la solicitud responde 202 en cuanto se recibe y el enlace se emite y se envía en segundo plano.
+
+---
+
+## ADR-0119 — Detección de secretos antes de cada commit
+
+- **Fecha:** 2026-09-29
+- **Contexto:** Paso 0 del Sprint 3. En el Sprint 2, gitleaks encontró tres falsos positivos en tests (T-120, T-131 y T-121) después de commitear, y hubo que rehacer commits locales. La CI de ADR-0105 revisa todo el historial con una imagen fijada en el workflow. Para repetirla en local había que copiar un comando de Docker que cambiaba entre PowerShell y Git Bash, que necesitaba `MSYS_NO_PATHCONV=1`. Además, gitleaks solo revisaba lo ya commiteado.
+- **Decisión:**
+  - **`npm run secrets:scan`** corre dos revisiones con la imagen oficial de gitleaks y se detiene en el primer hallazgo:
+    1. `secrets:scan:staged`: los cambios preparados (`git --pre-commit --staged`), para detectar un hallazgo antes de commitear.
+    2. `secrets:scan:history`: todo el historial, igual que la CI, incluidos los commits que aún no se suben.
+  - **La imagen:** gitleaks 8.30.1, fijada por digest y solo en `package.json`, en los dos scripts.
+  - **Mismo comando en la CI:** el paso 9 corre `npm run secrets:scan`. En la CI no hay cambios preparados, así que la primera revisión termina sin hallazgos.
+  - **Montaje:** el repositorio se monta en solo lectura (`-v .:/repo:ro`). La ruta relativa funciona igual en PowerShell, Git Bash y Linux, porque npm ejecuta los scripts con su propio shell. Los hallazgos salen con `--redact`.
+  - **Paso manual, no hook:** antes de cada commit se revisa lo preparado (`git diff --cached --stat`) y se corre `npm run secrets:scan` (`DEVELOPMENT_GUIDE.md`, "Ramas y commits").
+  - **Test:** `test/repository/secrets-scan.spec.ts` comprueba:
+    - que la CI use el mismo comando;
+    - el orden de las dos revisiones;
+    - que las dos usen la misma imagen fijada por versión y digest, y que el workflow no fije otra;
+    - el montaje en solo lectura y `--redact`;
+    - que el checkout de la CI traiga todo el historial.
+- **Alternativas consideradas:**
+  - **Hook `pre-commit` con `core.hooksPath`:** cada clon tiene que activarlo y exige Docker encendido en cada commit, también en los de documentación. Si Docker está apagado, el commit falla o hay que saltarse el hook.
+  - **husky:** suma una dependencia y un script de instalación.
+  - **Un script de Node para armar el comando de Docker:** más código para lo mismo, porque Docker ya resuelve la ruta relativa en todos los sistemas.
+  - **Revisar solo el historial:** el falso positivo aparece después del commit, que fue el problema del Sprint 2.
+  - **Revisar solo los cambios preparados:** no cubre los commits hechos sin revisar ni los de otras ramas.
+  - **Mantener la imagen en el workflow:** el comando local y el de la CI podrían usar versiones distintas.
+- **Consecuencias:**
+  - Un falso positivo se corrige antes del commit. El paso depende de la disciplina de quien commitea, y la CI lo repite como segunda barrera.
+  - Commitear requiere Docker encendido, igual que los tests de integración y end-to-end.
+  - Actualizar gitleaks sigue siendo manual: Dependabot no revisa imágenes en `package.json`. Se cambian los dos scripts, y el test exige que coincidan.
+  - Modifica ADR-0105 en el paso 9.
+- **Estado:** Aceptada (plan del paso 0 del Sprint 3 aprobado el 2026-09-29). Modificada por ADR-0156: los dos scripts corren gitleaks con `scripts/secrets-scan.ts`, que monta también el directorio de git compartido, así que funciona en un worktree de git, y falla si gitleaks no puede leer el repositorio.
+
+---
+
+## ADR-0120 — Categorías y marcas: slugs, ciclos y árbol
+
+- **Fecha:** 2026-09-30
+- **Contexto:** T-150 (UC-CAT-03, 12 y 13). `API_SPEC.md` §11.4, §11.5 y §11.9 fijan los contratos, y ADR-0072, ADR-0076 y ADR-0080 las reglas de slugs, reactivación y visibilidad. Quedaban cinco huecos:
+  - qué pasa con un slug generado del nombre que ya existe, algo común con subcategorías del mismo nombre ("Hombre › Camisas" y "Mujer › Camisas");
+  - cómo evitar que dos movimientos simultáneos creen un ciclo;
+  - qué muestra el árbol administrativo filtrado por estado cuando una categoría activa está bajo una inactiva;
+  - cómo decir por qué se rechaza un movimiento o una reactivación, si el `detail` de cada tipo de error es fijo (ADR-0095);
+  - dos piezas que dependen de productos visibles, que llegan después.
+- **Decisión:**
+  - **Slugs** (categorías y marcas, cada una con su propio espacio):
+    - Sin `slug` en la solicitud, se genera del nombre: descomposición NFKD, sin acentos, en minúsculas, con guiones entre palabras y hasta 100 caracteres ("Camisas de Vestir" → `camisas-de-vestir`).
+    - Si ya existe, se numera con el primer número libre: `camisas-2`, `camisas-3`…, hasta `-100`. Un slug largo se recorta para que quepa el número. Se consultan los 100 candidatos de una vez.
+    - Si otra alta toma el mismo slug generado entre la consulta y el guardado, el alta se repite hasta 3 veces, así que el staff nunca ve un conflicto por un slug que no envió.
+    - Un slug que envía el staff se usa tal cual y, si existe, responde 409 `duplicate-value` en `slug`: cambiarlo en silencio sorprendería a quien lo eligió.
+    - Un nombre sin letras ni dígitos utilizables ("¡!") y sin `slug` responde 400 `validation-error` con `slugRequired` en `slug`.
+  - **Ciclos (BR-PRD-03):** mover una categoría toma primero un bloqueo advisory de transacción (`pg_advisory_xact_lock`, con la clave `0x43415454`, "CATT"), y después lee la cadena de ancestros del nuevo padre con una consulta recursiva. Dos movimientos nunca revisan a la vez: el segundo espera a que el primero termine y ve su resultado. Solo los movimientos lo toman; crear, renombrar o desactivar no pueden crear ciclos.
+  - **Padre:** al crear o mover, el padre debe existir y estar activo. Si no, 400 `validation-error` con `unknownParent` o `inactiveParent` en `parentId`, como un rol inexistente (ADR-0112). Si el padre se borra entre la revisión y el guardado, la clave foránea lo detecta y se responde igual.
+  - **Motivo de un rechazo:** `detail` sigue fijo por tipo (ADR-0095). Los 409 `invalid-state-transition` de categorías llevan la extensión `reason`: `category-cycle` al mover bajo sí misma o bajo una subcategoría, e `inactive-parent` al reactivar bajo un padre inactivo, este con `currentStatus`.
+  - **Duplicados:** los índices únicos de la base deciden, y el repositorio distingue `name` de `slug` por el nombre del índice que rechazó la fila, que el adaptador de PostgreSQL informa (`uniqueViolationIndex`). El nombre se compara sin distinguir mayúsculas: entre hermanas en categorías, también entre raíces, y entre todas las marcas.
+  - **Borrado (BR-PRD-10):** lo garantizan las claves foráneas `RESTRICT`. Una categoría con subcategorías o productos, o una marca con productos, responde 409 `resource-in-use`. `productCount` cuenta productos en cualquier estado, igual que esa regla; `childCount`, subcategorías directas activas o no.
+  - **Árbol administrativo con filtro `status`:** incluye las categorías que coinciden y los ancestros que llevan a ellas, cada uno con su propio estado, para que ninguna rama se pierda. Sin filtro, todas.
+  - **Árbol público (UC-CAT-03):** solo categorías visibles (BR-PRD-17), con `id`, `name`, `slug`, `position` y `children`. Las hermanas se ordenan por `position`, después por nombre como lo ordena el español (la ñ después de la n, sin distinguir mayúsculas ni acentos) y al final por ID. Se guarda en el espacio `catalog` de la cache; los cambios del staff se ven al vencer el TTL, sin eventos nuevos (ADR-0028, ADR-0076).
+  - **Límites:** nombre de 1 a 100 caracteres, sin espacios alrededor; slug de 1 a 100, con minúsculas, dígitos y guiones sencillos entre ellos; `position` entero de 0 a 10 000, 0 por defecto.
+  - **Respuestas:** el alta responde 201 con `Location` hacia el recurso (`/v1/admin/catalog/categories/{id}` o `…/brands/{id}`), que identifica la categoría o marca aunque no tenga `GET` propio. Editar, desactivar y reactivar responden 200 con la representación.
+  - **Auditoría:** `categories.create`, `categories.update`, `categories.deactivate`, `categories.reactivate` y `categories.delete`, y lo mismo con `brands.*`, con los campos que cambiaron. Un `PATCH` sin cambios no guarda ni audita.
+  - **Pasan a T-140:**
+    - `GET /v1/catalog/brands`, porque lista "marcas activas con al menos un producto visible", y un producto es visible con precio vigente (T-145);
+    - recalcular el `search_vector` de los productos al renombrar, desactivar o reactivar una categoría, o al renombrar una marca (ADR-0080), porque T-140 define ese vector.
+  - **Código compartido:**
+    - `pathId`, que responde 404 a un ID de la URL que no es UUID, pasa de Identity a `src/platform/http/path-id.ts`;
+    - el nombre del espacio de cache del catálogo (`PUBLIC_CATALOG_CACHE`) pasa a la aplicación de Catalog, porque lo usan su presentación y su infraestructura;
+    - la presentación lee los límites del dominio a través de `application/catalog-limits.ts`, porque no puede importar el dominio (ADR-0103).
+- **Alternativas consideradas:**
+  - **Slug generado repetido:** responder 409 para que el staff elija uno, igual que en productos, o formar el slug con la ruta de ancestros (`hombre-camisas`), que cambia de sentido al mover la categoría.
+  - **Ciclos:** aislamiento SERIALIZABLE en los movimientos, que obliga a reintentar, o bloquear las filas de la cadena de ancestros, con riesgo de deadlock entre dos movimientos opuestos.
+  - **Filtro del árbol:** podar estrictamente, lo que deja fuera las categorías bajo un padre que no coincide, o una lista plana cuando hay filtro.
+  - **Cache:** vaciar el espacio `catalog` en cada cambio de categoría o marca.
+  - **Motivo:** un `detail` distinto por caso, que contradice ADR-0095.
+- **Consecuencias:**
+  - Es el primer bloqueo advisory del sistema. Su prueba de concurrencia retiene las filas de las dos categorías, para que ambos movimientos lleguen a guardar al mismo tiempo; sin el bloqueo, esa prueba falla.
+  - El orden del árbol no depende del idioma del servidor: usa un `Intl.Collator` en español.
+  - Un enlace público a un slug anterior deja de funcionar, como aceptó ADR-0072.
+  - T-140 hereda el listado público de marcas y el recálculo del `search_vector`.
+- **Estado:** Aceptada (plan de T-150 aprobado el 2026-09-30). `GET /v1/catalog/brands` llegó con T-140 parte c (ADR-0129).
+
+---
+
+## ADR-0121 — Imágenes de producto en disco: validación, subida y `/media`
+
+- **Fecha:** 2026-09-30
+- **Contexto:** T-141. ADR-0024 fijó las imágenes en el disco del servidor detrás de un puerto de la aplicación, con la clave en la base y la URL armada al responder desde una URL base configurable. También fijó los formatos JPEG, PNG y WebP y el máximo de 5 MB, configurable. `SECURITY.md` pide validar el tipo por el contenido, que el servidor elija el nombre del archivo, que la carpeta no permita ejecutar y que el límite corte la subida antes de leer el archivo completo. Quién sirve las imágenes depende del hosting (P-06), que sigue abierto. Los endpoints de imágenes (UC-CAT-11) llegan con T-140, porque necesitan productos.
+- **Decisión:**
+  - **Alcance:** T-141 deja la infraestructura: validación, puerto, adaptador de disco, recepción de la subida, configuración y servicio de los archivos. T-140 agrega los endpoints de `API_SPEC.md` §11.8 sobre ella.
+  - **Validación (BR-PRD-08), en el dominio de Catalog (`ProductImageFile`):**
+    - El formato se reconoce solo por los primeros bytes: JPEG `FF D8 FF`, PNG `89 50 4E 47 0D 0A 1A 0A` y WebP `RIFF` más `WEBP` en el byte 8. El nombre del archivo y el tipo que declara el cliente se ignoran. Cualquier otro contenido, incluidos SVG, GIF y un archivo vacío, responde 415 `unsupported-media-type`.
+    - El tamaño no puede pasar de `IMAGE_MAX_BYTES`, ni nunca del `CHECK` de la base (5 242 880 bytes). Si pasa, responde 413 `payload-too-large`.
+    - La imagen no se decodifica ni se reescribe, así que conserva sus metadatos EXIF, incluida la ubicación donde se tomó, si la tiene.
+  - **Categorías de error:** el shared kernel suma `too-large` (413) y `unsupported` (415) a las cuatro de ADR-0094, porque estas reglas son del dominio y el dominio no conoce HTTP. Un código fuera del catálogo toma los textos de `payload-too-large` y `unsupported-media-type`.
+  - **Clave (ADR-0024):** `products/<productId>/<imageId>.<jpg|png|webp>`, con un UUIDv7 nuevo y la extensión del formato detectado. La elige el servidor. El adaptador rechaza cualquier clave de otra forma antes de tocar el disco, así que ni un error de programación puede escribir o borrar fuera de la carpeta.
+  - **Puerto `ProductImageStorage` (aplicación de Catalog):**
+    - `save(key, file)` guarda el archivo completo o nada;
+    - `delete(key)` borra, y un archivo que ya no existe no es un error, así que reintentar es seguro;
+    - `urlOf(key)` devuelve `IMAGE_BASE_URL` + `/` + clave.
+  - **Adaptador de disco (`LocalDiskProductImageStorage`):**
+    - Escribe en `.uploading/` dentro de la misma carpeta, con un nombre aleatorio, y renombra el archivo a su clave. Nadie lee un archivo a medias, y si algo falla, el temporal se borra.
+    - Los archivos quedan con permisos `0644`, sin ejecución; las carpetas, con `0755`.
+  - **Subida:**
+    - Multer, que ya trae `@nestjs/platform-express`, recibe en memoria un solo archivo en el campo `file`, con hasta 10 campos de texto de 4 KB.
+    - El límite de tamaño es `IMAGE_MAX_BYTES`: al pasarlo corta la lectura y responde 413. La regla del dominio vuelve a revisarlo.
+    - Sin archivo, 400 `validation-error` con `isDefined` en `file`; con dos archivos o en otro campo, 400.
+    - `@ImageUpload()` y `requireImage()` quedan listos para los endpoints de T-140.
+  - **Servir las imágenes:**
+    - La API las sirve en `/media/<clave>`, fuera de `/v1` como `/docs`, desde `IMAGE_STORAGE_DIR`.
+    - Como una clave nunca cambia de contenido, van con `Cache-Control: public, max-age=31536000, immutable`, y conservan los encabezados de helmet (`nosniff` y la CSP estricta).
+    - No lista carpetas, no redirige, ignora las carpetas con punto (`.uploading`), y un archivo inexistente responde 404 `not-found` como problema.
+    - Cuando el hosting ponga un servidor web o un CDN delante (P-06), basta con cambiar `IMAGE_BASE_URL`.
+  - **Configuración:**
+    - `IMAGE_STORAGE_DIR`: `storage/images` por defecto.
+    - `IMAGE_BASE_URL`: `http://localhost:3000/media` por defecto; obligatoria en producción, con las reglas de `FRONTEND_BASE_URL`.
+    - `IMAGE_MAX_BYTES`: de 1 a 5 242 880, con 5 242 880 por defecto. Subir de 5 MB exige primero una migración del `CHECK`.
+    - La validación de URL base se generaliza como `isBaseUrl`.
+  - **Docker y Git:**
+    - la imagen de producción crea `/app/storage/images` con dueño `node`, lista para montar un volumen persistente;
+    - `storage/` queda fuera de Git y del contexto de Docker;
+    - en local, las imágenes quedan en `./storage/images`.
+  - **Para T-140:** al subir, primero se guarda el archivo y después la fila; si la transacción falla, se borra el archivo. Al borrar una imagen, primero se borra la fila y después, ya confirmada la transacción, el archivo. Si ese borrado falla, el archivo queda huérfano y se registra en el log.
+- **Alternativas consideradas:**
+  - `sharp`: decodifica la imagen completa y puede quitar los metadatos, pero es una dependencia nativa pesada, que hay que revisar contra ADR-0108.
+  - La librería `file-type`: una dependencia más para tres firmas.
+  - No servir las imágenes hasta P-06: sus URL no funcionarían en local.
+  - Validar en la presentación, sin tocar las categorías de error: dejaría BR-PRD-08 fuera del dominio.
+  - Guardar el archivo con el nombre del cliente: permitiría sobrescribir otros archivos y manipular rutas.
+- **Consecuencias:**
+  - **Metadatos:** las fotos conservan su EXIF, así que el staff debe subirlas sin ubicación (`SECURITY.md`).
+  - **Límites de `/media`:** no pasa por el rate limiting de Nest ni por la autorización, porque las imágenes de producto son públicas.
+  - **Una sola instancia:** mientras las imágenes vivan en disco, la API corre en una sola instancia o sobre un volumen compartido. Además, la carpeta debe ir en los respaldos (ADR-0024).
+  - **Tests:** el de permisos `0644` solo corre en Linux, donde lo ejecuta la CI. La subida se prueba de punta a punta con un controlador que solo existe en los tests, porque los endpoints reales llegan con T-140.
+- **Estado:** Aceptada (plan de T-141 aprobado el 2026-09-30). Los endpoints de UC-CAT-11 llegan en ADR-0124, que además agrega `maxBytes` al 413 que corta multer.
+
+---
+
+## ADR-0122 — Método de envío, cálculo del costo y tasa de IVA configurable
+
+- **Fecha:** 2026-09-30
+- **Contexto:** T-196 (UC-SHI-01 y 02). ADR-0042, ADR-0075, ADR-0079, ADR-0083 y ADR-0092 fijan el costo fijo con IVA incluido, el envío gratis por monto, el plazo estimado, el permiso para configurarlos y los valores iniciales. Quedaban tres huecos:
+  - ADR-0027 dice que la tasa de IVA es "un valor de configuración, no una constante", pero no dónde vive;
+  - ADR-0092 pide crear el método solo si no existe, pero no dice cómo;
+  - el contrato no fija máximos para el plazo ni para los montos.
+- **Decisión:**
+  - **Tasa de IVA:** variable de entorno `VAT_RATE_BP`, en puntos base, de 0 a 10 000, con 1600 (16%) por defecto, validada al arrancar (ADR-0032). La usan Shipping ahora, y Pricing y Ordering después. Cambiarla no altera órdenes colocadas, porque cada orden guarda la tasa que aplicó.
+  - **Método inicial:** la migración de datos `20260930120000_shipping_initial_method` inserta "Envío Estándar" con los valores de ADR-0092 solo si la tabla está vacía. Corre una vez por base, como los roles iniciales, y nunca sobrescribe lo que configure el administrador.
+  - **Cálculo (UC-SHI-01):** el servicio de dominio `ShippingRateCalculator` devuelve el costo, el IVA contenido y la tasa aplicada.
+    - El costo es el fijo, con IVA incluido, o 0 cuando el subtotal con IVA menos el descuento es mayor o igual al umbral. El propio envío no cuenta para alcanzarlo (ADR-0079).
+    - El IVA contenido se redondea como una línea (`Money.containedTax`, ADR-0094); con envío gratis es 0.
+    - Con umbral `null` nunca hay envío gratis. Un costo fijo de 0 es envío siempre gratis, sin IVA.
+  - **Fachada para el checkout:** `ShippingFacade.quote({ subtotal, discount })` se exporta en `index.ts` para T-180. Devuelve el método, el costo, el IVA, la tasa, el umbral y el plazo, lo que la cotización muestra y la orden guarda. Lee el método activo en cada llamada, sin cache (ADR-0028). Sin método activo falla con un error de programación, porque la migración siempre lo crea.
+  - **Configuración (UC-SHI-02):**
+    - `GET /v1/admin/shipping/method` requiere `shipping.manage`, y `PUT` requiere `shipping.configure` (ADR-0075).
+    - `PUT` reemplaza todos los valores con bloqueo optimista por `version`: un cambio sobre una versión anterior responde 409 `version-conflict` con `currentVersion`. El `UPDATE` compara la versión, así que dos cambios simultáneos sobre la misma nunca ganan los dos.
+    - Se audita `shipping-method.update` con los valores que cambiaron, en centavos. Un `PUT` sin cambios no guarda ni audita.
+  - **Límites:**
+    - nombre de 1 a 100 caracteres, sin espacios alrededor;
+    - `flatFee` entero de 0 a 2 147 483 647 centavos, el tope de la columna;
+    - `freeShippingThreshold` obligatorio en el cuerpo, `null` o de 1 al mismo tope;
+    - plazo entero de 1 a 30 días hábiles, con el máximo ≥ el mínimo. Si no, 400 `validation-error` con `deliveryRange` en `deliveryMaxBusinessDays`.
+  - **Dinero en las respuestas:** `MoneyDto` (`{ amount, currency }`, `API_SPEC.md` §8.1) queda en `src/platform/http/money.dto.ts` para todos los módulos.
+- **Alternativas consideradas:**
+  - **Tasa de IVA:**
+    - una tabla de configuración editable desde la API (tabla, migración y endpoint nuevos para un valor que casi nunca cambia);
+    - una constante en el código, que contradice ADR-0027.
+  - **Método inicial:** un script manual (`npm run shipping:seed`), que alguien podría olvidar, o crearlo al arrancar la API, lo que mezcla datos con el arranque.
+  - **Plazo:** sin máximo, que solo lo limita la columna `integer`.
+- **Consecuencias:**
+  - Las bases existentes reciben el método al aplicar la migración; los tests restauran sus valores después de cambiarlos.
+  - Cambiar la tasa de IVA exige reiniciar la API.
+  - T-180 usa `ShippingFacade.quote` y guarda como snapshot el costo, el IVA, la tasa y el plazo.
+- **Estado:** Aceptada (plan de T-196 aprobado el 2026-09-30).
+
+---
+
+## ADR-0123 — Productos y variantes: división de T-140, slugs, opciones y búsqueda
+
+- **Fecha:** 2026-09-30
+- **Contexto:** T-140. La consulta pública (ADR-0060) oculta los productos sin precio vigente, filtra y ordena por precio, y filtra por disponibilidad. `storeVisibility` en la administración usa la fachada de Pricing, y `GET /v1/catalog/brands` lista las marcas con productos visibles. Todo eso depende de T-145 y T-160, que a su vez necesitan que existan las variantes. Además quedaban abiertos:
+  - el slug de producto repetido, que ADR-0120 resolvió solo para categorías y marcas;
+  - el momento en que se recalcula el `search_vector`;
+  - cómo se escriben los nombres de las opciones.
+- **Decisión:**
+  - **T-140 en tres partes, cada una con su pull request:**
+    - **a:** productos y variantes para el staff (UC-CAT-04 a 10 y 14), el `search_vector` y los eventos;
+    - **b:** imágenes (UC-CAT-11);
+    - **c:** consulta pública (UC-CAT-01 y 02), `GET /v1/catalog/brands`, `storeVisibility` y la cache de listados y detalle, después de T-145 y T-160.
+
+    Hasta la parte c, la tienda no muestra productos y `AdminProduct` no lleva `storeVisibility`. Así nunca se muestra un producto sin precio (BR-PRD-06).
+  - **Slug de producto (ADR-0071, ADR-0120):** sin `slug`, se genera del título y se numera si existe (`camisa-lino-2`), con hasta 200 caracteres. Un slug enviado y repetido responde 409 `duplicate-value`. Como los productos nunca se borran, ningún slug se reutiliza (BR-PRD-09).
+  - **Opciones:**
+    - los nombres se guardan sin espacios alrededor y en minúsculas (`Talla` → `talla`), y los valores solo sin espacios alrededor;
+    - todas las variantes de un producto tienen los mismos nombres. Si no, 400 `validation-error` con `optionNames` en `options`, o 409 `field-locked` después de la primera publicación, porque sería una dimensión nueva (ADR-0068);
+    - la única variante de un producto sin publicar puede cambiar sus nombres;
+    - la combinación repetida entre activas responde 409 `duplicate-value` en `options`;
+    - el SKU se guarda en mayúsculas, y un SKU repetido en cualquier producto responde 409 en `sku`.
+  - **Campos fijos (ADR-0068):** desde la primera publicación, cambiar el slug, el SKU o las opciones responde 409 `field-locked` con `fields`. Peso y medidas se editan siempre: gramos enteros mayores que 0, y centímetros mayores que 0 con un decimal, hasta los topes de sus columnas.
+  - **Publicar sin variante activa:** 409 `invalid-state-transition` con `reason: no-active-variant`, porque `detail` es fijo por tipo (ADR-0095).
+  - **Producto archivado:** no acepta cambios de datos ni de variantes (409 `invalid-state-transition`) hasta reactivarlo. Reactivar lo deja en DRAFT sin fecha de publicación.
+  - **Marca y categorías:** una marca o categoría nueva en un producto debe existir y estar activa (400 con `unknownBrand`, `inactiveBrand`, `unknownCategories` o `inactiveCategories`). Una que ya tenía y luego se desactivó puede quedarse. Hasta 10 categorías por producto.
+  - **`search_vector` (ADR-0060, ADR-0080):**
+    - configuración `spanish` sobre el texto sin acentos (`unaccent`), con peso A para el título, B para la marca (activa o no) y C para las categorías visibles;
+    - se recalcula con un solo `UPDATE`, en la misma transacción del cambio: al crear o editar el título, la marca o las categorías de un producto; al renombrar, mover, desactivar o reactivar una categoría (sus productos y los de todo su subárbol); y al renombrar una marca. Nunca queda desfasado.
+    - El stemmer español ya quita los acentos agudos; `unaccent` hace falta para la `ñ` y la `ü` ("piñata" se encuentra con "pinata").
+  - **Eventos:** `ProductPublished`, `ProductArchived` y `VariantDiscontinued` se publican después del commit; el manejador de ADR-0104 vacía la cache con ellos. Reactivar no publica eventos (ADR-0076). Sus tipos se exportan en `index.ts`.
+  - **Bloqueo optimista:** cada cambio de producto o de variante lleva la `version` del producto. El repositorio escribe solo las variantes nuevas o cambiadas, para no mover su `updated_at`.
+  - **Auditoría:**
+    - `products.create`, `update`, `publish`, `archive` y `reactivate` sobre el producto; la descripción se registra solo como cambiada, porque puede ser larga;
+    - `products.variant-create`, `variant-update`, `variant-discontinue` y `variant-reactivate` sobre la variante;
+    - un cambio sin efecto no se guarda ni se audita.
+  - **Listado administrativo:** `q` busca en el título y en los SKU; filtros `status`, `brandId` y `categoryId` (directa); orden `-updatedAt` por defecto, y `publishedAt` con los nunca publicados al final. El listado no incluye `description`.
+- **Alternativas consideradas:**
+  - **Toda la consulta pública ahora,** probada con precios y stock insertados a mano: T-140 fijaría cómo se leen tablas que todavía no tienen dueño, y `storeVisibility` quedaría sin fachada de Pricing.
+  - **Slug repetido con 409,** como decía `API_SPEC.md`: inconsistente con ADR-0120.
+  - **`search_vector` por eventos, en segundo plano:** la búsqueda puede quedar desfasada, y si el manejador falla el efecto se pierde (ADR-0014).
+  - **Nombres de opciones tal como llegan:** "Talla" y "talla" contarían como dos dimensiones.
+- **Consecuencias:**
+  - El orden del sprint queda así: T-140a → T-140b → T-145 y T-160 → T-140c.
+  - Desactivar una categoría grande recalcula el `search_vector` de todos sus productos en la misma transacción; en el MVP el costo es aceptable.
+  - Para agregar una dimensión de opciones a un producto sin publicar con varias variantes, primero se descontinúan las demás.
+- **Estado:** Aceptada (plan de T-140 aprobado el 2026-09-30). ADR-0125 hace que Pricing use la fachada de Catalog, así que `storeVisibility` no podrá salir de la fachada de Pricing: se decide en la parte c. La parte c está en ADR-0129: `storeVisibility` sale del servicio de consultas de la tienda.
+
+---
+
+## ADR-0124 — Imágenes de producto: galería, límite y subidas simultáneas
+
+- **Fecha:** 2026-09-30
+- **Contexto:** T-140 parte b (UC-CAT-11), sobre la base de T-141 (ADR-0121). Las imágenes no exigen la `version` del producto (ADR-0071), pero dos subidas simultáneas calcularían la misma posición "al final". El contrato no fija un máximo de imágenes, ni dice si un cambio de imágenes cuenta como una edición del producto. Además, `API_SPEC.md` §6.2 pide `maxBytes` en el 413, y el que corta multer no lo llevaba.
+- **Decisión:**
+  - **`ProductGallery`:** las imágenes de un producto son un aggregate propio, separado de `Product`. Subir una foto nunca choca con la `version` de quien edita los datos del producto. Sus reglas:
+    - las posiciones son consecutivas desde 1;
+    - una imagen nueva va al final;
+    - al borrar una imagen, las demás se renumeran;
+    - la variante de una imagen debe ser del mismo producto (400 `unknownVariant` en `variantId`);
+    - un reorden trae todas las imágenes una sola vez (400 `imageOrder` en `imageIds`);
+    - el texto alternativo se guarda sin espacios alrededor, hasta 200 caracteres, y uno vacío se guarda como `null`;
+    - un producto archivado no acepta cambios de imágenes (409, ADR-0123).
+  - **Límite:** 20 imágenes por producto. La siguiente responde 409 `image-limit-reached` con `limit` (nuevo tipo de problema y error E-35).
+  - **Subidas simultáneas:** cada cambio de imágenes toma un `SELECT … FOR UPDATE` sobre la fila del producto, así que los cambios de una misma galería se hacen uno tras otro.
+  - **Archivo y fila (ADR-0121):**
+    - Antes de escribir nada se revisan el producto (que exista y no esté archivado), la variante y el límite. Así una subida que se va a rechazar no escribe ni la carpeta.
+    - Después se guarda el archivo y se repiten las revisiones con el bloqueo. Si la fila no se guarda, el archivo se borra.
+    - Al borrar, la fila se borra en la transacción y el archivo después del commit. Si ese borrado falla, el archivo queda huérfano y se registra en el log con su clave.
+  - **Fecha de modificación:** cada cambio de imágenes actualiza `updated_at` del producto, pero no su `version`. Así el listado administrativo, ordenado por `-updatedAt`, lo muestra como editado recientemente. La fecha la pone la aplicación, como el `@updatedAt` de Prisma: el reloj de la base puede ir atrasado, y con `now()` el producto parecería editado antes de su último cambio.
+  - **413 con `maxBytes`:** el interceptor `ImageUploadLimit` envuelve al de multer y convierte su 413 en `payload-too-large` con `maxBytes`, igual que la regla del dominio.
+  - **Endpoints (`catalog.write`):**
+    - `POST …/images` (`multipart`: `file`, `altText` y `variantId`) responde 201 `Image` con `Location`;
+    - `PATCH …/images/{imageId}` responde 200 `Image`;
+    - `PUT …/images/order` responde 200 `{ data: [Image] }`;
+    - `DELETE …/images/{imageId}` responde 204.
+  - **Auditoría:** `products.image-add`, `image-update` e `image-delete` sobre la imagen, y `products.image-reorder` sobre el producto. Un cambio sin efecto no se guarda ni se audita.
+  - **Cache:** sin eventos nuevos; la tienda ve los cambios de imágenes al vencer el TTL (ADR-0028).
+- **Alternativas consideradas:**
+  - **Imágenes dentro de `Product`:** cada subida cambiaría la `version` y rompería las ediciones en curso de los datos del producto.
+  - **Posiciones con huecos o repetidas,** con la fecha como desempate: el orden dependería de la hora de cada subida.
+  - **Sin límite de imágenes.**
+  - **Dejar `updated_at` intacto:** un producto con fotos nuevas no subiría en el listado administrativo.
+- **Consecuencias:**
+  - Una subida bloquea la fila del producto mientras guarda la fila de la imagen; el archivo ya está escrito, así que el bloqueo dura poco.
+  - Los archivos huérfanos solo aparecen si falla el borrado del disco después del commit; hoy no hay limpieza automática para ellos.
+  - La imagen de un borrador se puede abrir con su URL, que lleva dos UUID difíciles de adivinar.
+- **Estado:** Aceptada (plan de T-140 parte b aprobado el 2026-09-30). La imagen en posición 1 es la principal del producto, y la primera de cada variante es la suya: el carrito las usa (ADR-0131).
+
+---
+
+## ADR-0125 — Precios: lista predeterminada, línea de periodos y fachadas
+
+- **Fecha:** 2026-09-30
+- **Contexto:** T-145 (UC-PRC-01 a 06). Las tablas de Pricing existen desde T-110, pero faltaban la lista predeterminada (ADR-0039) y el módulo. Además quedaban abiertos varios puntos:
+  - El contrato (`API_SPEC.md` §12) no envía `effectiveTo` ("un periodo termina cuando empieza el siguiente"). Pero no dice qué pasa al programar entre otros periodos, ni al cancelar uno.
+  - Tampoco dice si un precio igual al vigente abre un periodo nuevo.
+  - Validar la variante requiere la fachada de Catalog, mientras que `storeVisibility` (T-140 parte c) pensaba usar la de Pricing: los dos módulos se usarían mutuamente.
+  - El formato de la carga masiva sigue sin definir.
+- **Decisión:**
+  - **División de T-145:**
+    - **a:** lista predeterminada, precios y periodos, y las fachadas de Pricing y de Catalog (esta decisión).
+    - **b:** carga masiva (UC-PRC-05). Su formato, la validación parcial o total y la respuesta se deciden al empezarla.
+  - **Lista predeterminada:** la crea la migración `20260930180000_pricing_default_list`, solo si no existe otra predeterminada. Sus datos: código `GENERAL`, "Lista general", MXN, IVA incluido, activa y prioridad 0. El sentido de la prioridad se fija cuando existan más listas (BR-PRC-10).
+  - **Línea de periodos sin huecos** (`VariantPrice`): desde el primer periodo, cada uno termina donde empieza el siguiente, y el último no tiene fin.
+    - **Precio desde ahora** (sin `effectiveFrom`, o con una fecha no posterior al momento actual): empieza en el instante del servidor y cierra ahí el periodo vigente.
+    - **Precio programado:** cierra en su inicio el periodo en el que cae, vigente o programado, y termina donde empieza el siguiente. Uno anterior al primer periodo termina donde empieza este.
+    - **Mismo inicio:** dos periodos no empiezan en el mismo instante. El segundo responde 409 `price-period-conflict` con `reason: overlap`.
+    - **Cancelar un precio programado:** su tiempo vuelve al periodo anterior, que dura otra vez hasta el siguiente. Un periodo que ya empezó responde 409 con `reason: already-started` (BR-PRC-04).
+    - **Periodos que ya empezaron:** solo cambia su fin. Los terminados nunca cambian.
+  - **Precio igual al vigente:** un precio desde ahora con el mismo monto y el mismo precio de comparación que el vigente no abre un periodo. Responde 200 con el vigente, sin guardar ni auditar. Un precio programado igual al vigente sí se programa.
+  - **Validación:**
+    - el precio de comparación debe ser mayor que el monto; si no, 400 con `compareAtAmount` en `compareAtAmount`;
+    - `effectiveFrom` lleva fecha, hora y zona horaria (`Z` u `±hh:mm`);
+    - la variante debe existir en Catalog, en cualquier estado, porque la tienda ya oculta una que no se vende;
+    - una variante o una lista que no existen responden 404.
+  - **Cambios simultáneos:**
+    - Cada cambio bloquea la fila de la variante en `variant_prices` (`SELECT … FOR UPDATE`) y toma la hora después del bloqueo.
+    - La fila se crea con el primer precio (`INSERT … ON CONFLICT DO NOTHING`), así que dos primeros precios a la vez crean una sola.
+    - La restricción de exclusión de la base sigue de respaldo: si rechaza un periodo, se responde 409 con `reason: overlap`.
+    - Cada cambio incrementa la `version` de la fila.
+  - **Auditoría:** `prices.set`, `prices.schedule` y `prices.cancel`, sobre el periodo (`price-period`). Guardan la lista, la variante, los montos en centavos y el inicio.
+  - **Fachadas:**
+    - **`PricingFacade.quote(variantIds, at)`** (UC-PRC-06): el precio vigente en ese instante de varias variantes, en una sola consulta y en la lista predeterminada. Una variante sin precio queda fuera. No usa cache ni jobs: un precio programado rige solo por su fecha.
+    - **`CatalogFacade.variants(ids)`:** el snapshot de cada variante (SKU, opciones, estado, peso, dimensiones y producto). Pricing lo usa con su puerto `CatalogVariants` y un adaptador en su infraestructura (ADR-0005, ADR-0113).
+  - **Dirección entre módulos:** Pricing usa a Catalog; Catalog nunca usa a Pricing, porque la regla `no-circular` rechaza el ciclo. Por eso, en T-140 parte c, `storeVisibility` no puede salir de la fachada de Pricing. Se decide entonces cómo calcularlo, previsiblemente con el servicio de consulta de ADR-0060, que ya lee precios.
+  - **Sin eventos:** `PriceScheduled` y `PriceChanged` todavía no tienen quien los escuche. La tienda ve los precios nuevos al vencer su cache (ADR-0028).
+- **Alternativas consideradas:**
+  - **Rechazar todo periodo que caiga dentro de otro programado:** solo se podría programar un precio a la vez.
+  - **Abrir siempre un periodo nuevo,** aunque el precio sea igual al vigente: ensucia el historial, y repetir la carga masiva lo duplicaría.
+  - **Dejar un hueco al cancelar:** la variante quedaría sin precio y la tienda la ocultaría.
+  - **Que Catalog use a Pricing para `storeVisibility` y Pricing no valide las variantes:** se podrían fijar precios de variantes inexistentes.
+- **Consecuencias:**
+  - Si llegan dos precios desde ahora de una misma variante en el mismo milisegundo, el segundo responde 409 `overlap`.
+  - `API_SPEC.md` §11.6 decía que `storeVisibility` usa la fachada de Pricing; queda PENDIENTE para T-140 parte c.
+  - UC-PRC-05 sigue PENDIENTE (T-145 parte b).
+- **Estado:** Aceptada (plan de T-145 aprobado el 2026-09-30). ADR-0126 cambia una regla: un precio programado idéntico al que ya existe en el mismo instante responde 200 con ese periodo, en lugar de 409. ADR-0129 calcula `storeVisibility` con el servicio de consultas de la tienda.
+
+---
+
+## ADR-0126 — Carga masiva de precios: formato, todo o nada y proceso en bloque
+
+- **Fecha:** 2026-09-30
+- **Contexto:** T-145 parte b (UC-PRC-05). ADR-0039 dejó el formato de la carga masiva para T-145, y ADR-0125 lo pasó a esta parte. Faltaban por decidir:
+  - el formato del archivo, de los montos y de las fechas;
+  - si la validación es parcial o total, y la respuesta;
+  - los límites.
+
+  Además, una carga de miles de filas no cabe en una transacción de 5 s si cada fila hace sus propias consultas.
+- **Decisión:**
+  - **Endpoint:** `POST /v1/admin/pricing/price-lists/{priceListId}/imports`, con `pricing.write`. Recibe `multipart/form-data` con el archivo en `file`, y acepta `?dryRun=true`.
+  - **Archivo:**
+    - CSV (RFC 4180) en UTF-8, con o sin BOM, separado por comas y con encabezado; las líneas vacías se ignoran.
+    - Columnas `sku`, `amount`, `compareAtAmount` y `effectiveFrom`, cada una una vez, en cualquier orden y sin distinguir mayúsculas.
+    - Hasta 5,000 filas y 1 MB.
+  - **Valores:**
+    - `sku`: el de una variante en cualquier estado, sin distinguir mayúsculas, como en `POST …/periods`.
+    - `amount` y `compareAtAmount` (opcional): pesos con punto decimal y hasta 2 decimales (`599`, `599.5`, `599.00`), sin `$` ni separador de miles.
+    - `effectiveFrom`: vacía significa "desde ahora". Una fecha y hora sin zona (`2026-11-14 00:00`) se lee en hora de México (America/Mexico_City), como los jobs (ADR-0101). También se acepta ISO 8601 con zona.
+  - **Cada fila es un `POST …/periods`** (ADR-0125), con estas reglas propias:
+    - Todas las filas "desde ahora" empiezan en el mismo instante: el de la carga.
+    - Un SKU puede repetirse con inicios distintos, por ejemplo una oferta y su regreso al precio normal. El mismo SKU con el mismo inicio es un error de la fila, y una fecha pasada cuenta como "desde ahora".
+    - El resultado no depende del orden de las filas.
+  - **Todo o nada:**
+    - Se revisan todas las filas antes de guardar. Con cualquier error no se importa nada, y la respuesta es 400 `validation-error` con los primeros 100 errores, ordenados por línea.
+    - Cada error señala `rows[<línea>].<columna>`, donde el encabezado es la línea 1.
+    - Los errores del archivo completo van en `file`: falta el archivo, no está en UTF-8, tiene otras columnas, no tiene filas o pasa de 5,000.
+    - Un archivo de más de 1 MB responde 413 con `maxBytes`.
+  - **Repetir el archivo no cambia nada:**
+    - Una fila "desde ahora" igual al precio vigente cuenta como sin cambio.
+    - Una fila programada idéntica a la que ya existe en ese instante, también.
+    - La segunda regla también aplica a `POST …/periods`, que en ese caso ahora responde 200 con el periodo existente en lugar de 409 (cambia ADR-0125). Con otro precio en el mismo instante sigue el 409 `overlap`.
+  - **Respuesta:** 200 `{ rows, created, unchanged, dryRun }`. Con `dryRun`, las mismas revisiones corren dentro de una transacción que se deshace.
+  - **Proceso en bloque:**
+    - Una sola transacción bloquea todas las variantes del archivo en una consulta, en orden de variante. Así dos cambios de varias variantes nunca se esperan en círculo.
+    - Lee sus periodos de una vez y escribe con unas pocas sentencias que reciben arreglos. `POST …/periods` usa la misma vía con una sola variante.
+    - Medido en local: 5,000 filas en unos 1.4 s, dentro del límite de 5 s de las transacciones.
+  - **Auditoría:**
+    - Una sola entrada `prices.import` sobre la lista, con `rows`, `created` y `unchanged`.
+    - Una carga que no crea periodos no guarda ni audita nada.
+    - Cada periodo conserva `created_by` y `created_at`.
+  - **Lector CSV compartido:** el lector RFC 4180 de la importación del catálogo geográfico (ADR-0109) pasa a `src/platform/files/csv.ts`, y ahora da la línea de cada registro.
+  - **SKU en Catalog:** `CatalogFacade.variantsBySku` busca las variantes por SKU, sin distinguir mayúsculas.
+- **Alternativas consideradas:**
+  - **Cuerpo JSON:** es más fácil de validar, pero no se puede preparar en una hoja de cálculo.
+  - **Montos en centavos,** como el resto de la API: es fácil equivocarse por un factor de 100.
+  - **Solo fechas ISO con zona:** son poco prácticas de escribir en una hoja de cálculo.
+  - **Aplicar las filas válidas y reportar las demás:** el archivo queda aplicado a medias, y cuesta corregirlo y volver a subirlo.
+  - **Una entrada de auditoría por periodo:** 5,000 inserciones no caben en la transacción.
+- **Consecuencias:**
+  - La auditoría de una carga no dice qué precios cambió. El historial de cada variante (`price_periods`, con quién y cuándo) sí lo dice.
+  - Si hacen falta más de 5,000 filas o de 1 MB, habrá que procesar la carga en segundo plano.
+  - T-145 queda completa.
+- **Estado:** Aceptada (plan de T-145 parte b aprobado el 2026-09-30). ADR-0164 (T-146 parte a): el lector, la subida y los errores por fila pasan a piezas compartidas con las otras cargas, sin cambiar sus reglas; el mensaje de `columns` dice ahora qué columna falta, no reconoce o repite.
+
+---
+
+## ADR-0127 — Inventario: almacén, entradas, ajustes y listado sin copiar datos de Catalog
+
+- **Fecha:** 2026-09-30
+- **Contexto:** T-160 (UC-INV-01 a 07). Las tablas de Inventory existen desde T-110, pero faltaban el almacén inicial (ADR-0081), el módulo y la paginación por cursor que el contrato pide para los movimientos (`API_SPEC.md` §5.2). Además quedaban abiertos varios puntos:
+  - El listado de stock filtra por SKU o título y ordena por SKU, pero esos datos son de Catalog.
+  - La dirección del almacén usa el formato de ADR-0057, igual que las de los clientes.
+  - El contrato no fijaba el tope de un ajuste ni la forma del 409 que responde.
+- **Decisión:**
+  - **División de T-160:**
+    - **a:** el stock para el staff: almacén, entradas, ajustes, listado y movimientos (esta decisión).
+    - **b:** las reservas para el checkout (UC-INV-05 a 07), con sus pruebas de concurrencia, y la fachada de disponibilidad para el carrito. Sus preguntas se deciden al empezarla.
+  - **Almacén inicial:** lo crea la migración `20260930200000_inventory_main_warehouse`, solo si no existe ninguno: "Almacén principal", código `PRINCIPAL`, sin dirección y activo.
+  - **Edición del almacén:**
+    - `PATCH` cambia solo lo que se envía: el nombre (1 a 100 caracteres) y la dirección. `address: null` la quita.
+    - La dirección se valida contra el catálogo del INEGI con la fachada de Geo, mediante el puerto `WarehouseLocations` de Inventory, y guarda los nombres del estado y del municipio (ADR-0057).
+    - No hay `version` (§4): gana el último cambio.
+    - Se audita como `warehouses.update`. La dirección queda solo como "cambió", porque contiene datos personales.
+  - **DTO de dirección compartido:** `AddressInputDto` y `PostalAddressDto` pasan a `src/platform/http/address.dto.ts`. Identity los extiende sin cambiar su contrato.
+  - **Entradas y ajustes:**
+    - La variante debe existir en Catalog, en cualquier estado, y el almacén debe ser el activo; si no, 404.
+    - Una entrada lleva de 1 a 100,000 unidades. Un ajuste lleva de ±1 a ±100,000, el mismo tope (ADR-0071).
+    - El motivo y su dirección siguen ADR-0069, y con `OTHER` la nota es obligatoria. Las notas se guardan sin espacios alrededor, y una vacía se guarda como `null`.
+    - Cada cambio es un `UPDATE` condicional atómico, sin `version` (`DATABASE.md` §12). Un ajuste solo se aplica si `onHand` queda en `reserved` o más; si no, responde 409 `insufficient-stock` con `lines: [{ variantId, canFulfill: false }]` y no escribe nada, ni siquiera el stock item.
+    - El primer cambio de una variante crea su stock item con `INSERT … ON CONFLICT DO NOTHING`, así que dos primeros cambios a la vez lo crean una sola vez.
+    - Cada cambio escribe su movimiento, con `onHandAfter` y el staff, en la misma transacción.
+    - Se auditan como `inventory.receipt` e `inventory.adjustment`.
+  - **Listado de stock sin copiar datos de Catalog:**
+    - Inventory solo lee sus tablas. El SKU y el título salen de `CatalogFacade.variants` en cada página.
+    - `sku` (exacto) y `q` (parte del SKU o del título) los resuelve Catalog, con `variantsBySku` y la nueva `searchVariants`, en IDs de variantes. Inventory filtra por esos IDs, así que los totales son correctos.
+    - El orden por `sku` (el predeterminado) lee todos los stock items del filtro, los ordena en memoria en el orden de SKU de Catalog y toma la página. Los órdenes por `available` y `updatedAt` se resuelven en la base. Los empates se desempatan por ID.
+    - No se extiende la excepción de ADR-0060.
+    - El listado muestra los stock items, es decir, las variantes que ya tuvieron una entrada o un ajuste.
+  - **Movimientos:**
+    - Se paginan por cursor (§5.2): un cursor opaco con la hora de creación y el ID, del más reciente al más antiguo.
+    - Filtros: `type`, uno o más; y `from` y `to`, donde una fecha sola en `to` incluye todo el día, como en el listado de clientes.
+    - Un cursor que no es de este listado responde 400 en `cursor`.
+    - El helper (`src/platform/http/pagination/cursor.ts`) servirá también para la auditoría (T-220).
+  - **Dirección entre módulos:**
+    - Inventory usa a Catalog y a Geo, y ninguno de ellos usa a Inventory.
+    - T-161 (reintegros) necesita las líneas de la orden, que son de Ordering, mientras que Ordering usará a Inventory para reservar (T-180). Cómo evitar el ciclo Inventory ↔ Ordering queda PENDIENTE DE DECISIÓN para T-161; por ejemplo, que Ordering le pase a Inventory las cantidades vendidas.
+- **Alternativas consideradas:**
+  - **Extender la excepción de ADR-0060** con un `JOIN` de solo lectura sobre las tablas de Catalog.
+  - **Copiar SKU y título en `stock_items`:** la copia podría desincronizarse.
+  - **Quitar el orden por SKU del contrato:** es más simple y escala mejor, pero cambia un contrato aprobado (ADR-0071).
+  - **Un DTO de dirección propio en Inventory:** duplicaría las validaciones.
+- **Consecuencias:**
+  - El orden por SKU cuesta más cuantos más stock items tenga el filtro. Con miles no se nota; con cientos de miles habrá que pasar a una proyección de lectura, la misma salida que prevé ADR-0060.
+  - Cada página hace una consulta más a Catalog, en lote.
+  - Dos cambios de un mismo stock item se esperan en su fila.
+- **Estado:** Aceptada (plan de T-160 aprobado el 2026-09-30; el listado sin copiar datos de Catalog, manteniendo el orden por SKU, se eligió en la misma revisión). La parte b está en ADR-0128. La decisión pendiente de T-161 se registró como P-73 en la Sprint Review del Sprint 3, y ADR-0132 la resuelve. ADR-0160: el staff crea y desactiva almacenes; las entradas van a un almacén activo, y los ajustes a cualquiera, para mover o corregir el stock de uno inactivo.
+
+---
+
+## ADR-0128 — Reservas de stock: fachada, vigencia y TTL configurable
+
+- **Fecha:** 2026-09-30
+- **Contexto:** T-160 parte b (UC-INV-05 a 07). Las reservas no tienen API: las usarán el carrito (T-170), el checkout (T-180) y los pagos (T-190). Quedaban abiertos estos puntos:
+  - hasta cuándo se puede confirmar una reserva pasado su vencimiento, si el job de T-230 corre cada minuto;
+  - qué sabe el carrito de la disponibilidad;
+  - cómo se configura el TTL (BR-INV-07);
+  - qué se registra.
+- **Decisión:**
+  - **Fachada `InventoryFacade`:** se exporta en el `index.ts` de Inventory, y sus operaciones se unen a la transacción de quien llama (ADR-0019).
+    - **`canFulfill(requests)`:** responde por variante si las unidades pedidas, sumadas, están disponibles (`onHand − reserved`) en el almacén activo. Solo dice sí o no: las cantidades nunca salen de Inventory (ADR-0061).
+    - **`reserve(orderId, requests)` (UC-INV-05):**
+      - es todo o nada (BR-INV-02), con una actualización condicional por stock item, en orden ascendente de ID (BR-INV-14);
+      - si alguna línea no alcanza, responde 409 `insufficient-stock` con todas las variantes cortas, también las que nunca tuvieron stock;
+      - la reserva vence en `RESERVATION_TTL`;
+      - es idempotente por orden: abre la reserva con `INSERT … ON CONFLICT` sobre el índice único parcial, así que pedirla de nuevo, o dos veces a la vez, responde la reserva activa sin reservar dos veces (BR-INV-04).
+    - **`commit(orderId)` (UC-INV-06):**
+      - pasa la reserva de ACTIVE a COMMITTED con un `UPDATE` condicional, una sola vez;
+      - baja `onHand` y `reserved`, y escribe un movimiento SALE por línea con la orden;
+      - responde `committed`, `already-committed` (un evento repetido, UC-ORD-09) o `not-active` (Ordering aplica ADR-0012).
+    - **`release(orderId)` (UC-INV-07):** pasa la reserva de ACTIVE a RELEASED y devuelve `reserved`. Responde `false` si la orden no tiene reserva activa.
+  - **Vigencia:** una reserva se puede confirmar mientras esté ACTIVE, también después de `expiresAt` y hasta que el job de vencimiento (T-230) la termine. Durante ese tiempo el stock siguió apartado para la orden.
+  - **TTL:** variable `RESERVATION_TTL` con el formato de duración de las demás: `20m` por defecto, de 5 minutos a 2 horas.
+  - **Venta sin reserva previa** (pago tardío de ADR-0012 y `retry-fulfillment`): Ordering reserva y confirma en la misma transacción. Cuando la reserva de una orden ya terminó, se le puede abrir otra.
+  - **Vencimiento (UC-INV-08):** queda en T-230 con su job, que agregará la transición a EXPIRED.
+  - **Registro:** sin auditoría, porque son operaciones del sistema, y sin eventos, porque aún nadie los escucharía. El registro son las reservas y los movimientos SALE.
+  - **Concurrencia:** si se confirma y se libera una misma reserva a la vez, solo una de las dos gana, gracias al `UPDATE` condicional del estado.
+- **Alternativas consideradas:**
+  - **Exigir que `expiresAt` no haya pasado para confirmar:** casi siempre da el mismo resultado, con más pasos.
+  - **`available(variantIds)` con cantidades:** cada consumidor tendría que cuidarse de no exponerlas.
+  - **Un TTL fijo en el código.**
+  - **Auditar cada reserva:** serían miles de entradas del sistema, sin valor para el staff.
+- **Consecuencias:**
+  - Hay una variable nueva en `.env.example`.
+  - T-170, T-180 y T-190 usarán la fachada desde un puerto propio.
+  - Las pruebas de concurrencia contra PostgreSQL muestran que N reservas simultáneas nunca reservan más de lo disponible, y que dos reservas con líneas en orden contrario no se bloquean entre sí.
+- **Estado:** Aceptada (plan de T-160 parte b aprobado el 2026-09-30). ADR-0133 hace que `reserve` sea todo o nada por sí misma, también dentro de la transacción de quien llama. T-230 agrega `expire` (ADR-0136). ADR-0160: `reserve` elige el almacén por prioridad; `canFulfill` responde si algún almacén cubre cada línea, y `canFulfillTogether`, si cabe en el pedido junto con las demás.
+
+---
+
+## ADR-0129 — Tienda pública: consulta, `storeVisibility`, tablas de cada contexto y cache acotada
+
+- **Fecha:** 2026-09-30
+- **Contexto:** T-140 parte c (UC-CAT-01, 02 y 14). ADR-0060 fijó la consulta pública con una excepción de solo lectura a ADR-0005, y ADR-0123 la dejó para después de T-145 y T-160. Quedaban abiertos estos puntos:
+  - cómo calcular `storeVisibility`, si Catalog no puede usar la fachada de Pricing (ADR-0125);
+  - cómo verificar la excepción, que `dependency-cruiser` no ve (ADR-0103);
+  - el tamaño de la cache: Keyv borra un valor vencido solo cuando alguien lo vuelve a leer, y cada combinación de filtros y página del listado es una clave nueva;
+  - qué hacer con las imágenes de variantes que no se venden;
+  - detalles del contrato: los códigos de los 400, cómo se arma la búsqueda y cómo se desempata.
+- **Decisión:**
+  - **Servicio de consultas de la tienda:**
+    - el puerto `StorefrontQueries`, en la aplicación de Catalog, y su adaptador `PrismaStorefrontQueries` son el único código que lee tablas de Pricing (`price_lists`, `variant_prices` y `price_periods`) y de Inventory (`warehouses` y `stock_items`);
+    - las lee solo para consultar y siempre en la misma sentencia que las de Catalog;
+    - el servicio de aplicación `Storefront` valida los filtros y toma la hora del `Clock`.
+  - **Qué vende la tienda:**
+    - una variante es vendible si su producto está publicado, la variante está activa y tiene un periodo vigente en ese instante en la lista predeterminada (BR-PRD-11);
+    - está disponible si le quedan unidades sin reservar (`onHand − reserved > 0`) en el almacén activo; sin fila de stock, está agotada (ADR-0061);
+    - el precio de un producto es el más bajo entre sus variantes vendibles (BR-PRD-15). `compareAtPrice` es el de esa misma variante, y en un empate gana la variante más antigua.
+  - **Búsqueda:**
+    - cada palabra de `q` (letras y dígitos seguidos) se convierte por separado con `to_tsquery('spanish', quote_literal(unaccent(palabra)) || ':*')`, y las partes se unen con `&&`;
+    - así cada palabra cuenta como inicio de palabra, todas son obligatorias y ningún carácter del cliente entra en la sintaxis de la consulta;
+    - PostgreSQL descarta solas las palabras vacías ("de"), así que un `q` sin letras ni dígitos, o hecho solo de esas palabras, no encuentra nada;
+    - la relevancia usa `ts_rank`: el título pesa más que la marca y las categorías (ADR-0123). Después va la publicación más reciente.
+  - **Filtros:**
+    - `category` incluye las subcategorías visibles;
+    - `brand` acepta hasta 20 slugs, y los repetidos se ignoran;
+    - `minPrice` y `maxPrice` incluyen sus extremos;
+    - `available=true` deja solo los disponibles, y `false` no filtra.
+  - **Errores 400 (`validation-error`):**
+    - `unknownCategory` en `category` y `unknownBrands` en `brand`. Una categoría oculta o una marca inactiva dan el mismo error que una que no existe, así la tienda no revela lo que el staff ocultó (ADR-0080);
+    - `relevanceNeedsQ` en `sort` si se pide `relevance` sin `q`;
+    - `priceRange` en `maxPrice` si es menor que `minPrice`;
+    - `sort` acepta un solo valor de los seis del contrato.
+  - **Orden:**
+    - `title` usa la colación ICU `es-x-icu` de PostgreSQL: la ñ va después de la n, y en primer nivel no distingue acentos ni mayúsculas;
+    - el ID desempata en todos los órdenes (ADR-0036);
+    - la consulta elige primero la página y después lee la marca y la imagen, solo de esos productos.
+  - **Detalle:**
+    - responde 404 si el producto no existe, no está publicado o no tiene variantes vendibles. Un slug que ningún producto podría tener ni se busca;
+    - muestra solo las variantes vendibles, de la más antigua a la más nueva, y `optionNames` en orden alfabético;
+    - lista solo las categorías visibles, por nombre en orden español, y la marca aunque esté inactiva.
+  - **Imágenes:** la imagen de una variante que no se vende (descontinuada o sin precio) no aparece en el detalle ni como imagen del resumen, porque su `variantId` apuntaría a una variante que la respuesta no incluye.
+  - **Marcas públicas:** las activas con al menos un producto visible, en orden español.
+  - **`storeVisibility` (UC-CAT-14, ADR-0016):**
+    - sale del mismo servicio de la tienda, con una consulta por página del listado administrativo y otra por detalle, y usa la misma definición de variante vendible;
+    - toma uno de tres valores: `VISIBLE` (publicado con alguna variante vendible), `HIDDEN_NO_PRICE` (publicado sin ninguna: ninguna variante activa tiene precio vigente) y `NOT_PUBLISHED` (borrador o archivado);
+    - lo llevan todas las respuestas `AdminProduct`.
+  - **Tablas de cada contexto:**
+    - `test/boundaries/table-ownership.spec.ts` lee `prisma/schema/*.prisma` para saber a qué contexto pertenece cada modelo y cada tabla. Cada archivo lleva el nombre de su contexto, y los modelos de `transversal.prisma` tienen su dueño en el test;
+    - comprueba que el código de cada módulo solo usa lo suyo, tanto en llamadas de Prisma (`tx.pricePeriod.findMany`) como en tablas escritas después de `FROM`, `JOIN`, `UPDATE` o `INTO`;
+    - la única excepción es el archivo de la tienda, y otro test comprueba que ese archivo todavía la necesita;
+    - el proyecto de ejemplo de `test/boundaries/` agrega una violación de cada tipo.
+  - **Cache acotada:**
+    - cada espacio de `AppCache` guarda hasta 1 000 valores (`MAX_ENTRIES_PER_NAMESPACE`) en un almacén propio, `LruStore`, que descarta el que se usó hace más tiempo;
+    - no agrega dependencias.
+  - **Qué se cachea (espacio `catalog`):**
+    - los listados sin `q`. La clave sale de los parámetros ya validados, con los valores por defecto explícitos y las marcas ordenadas, así que `brand=a,b` y `brand=b,a` comparten entrada;
+    - el detalle por slug y la lista de marcas;
+    - los errores nunca se guardan;
+    - el espacio se vacía con los tres eventos de ADR-0104. Los precios, el stock, las imágenes y los cambios de categorías o marcas se ven cuando vence el TTL (ADR-0028).
+- **Alternativas consideradas:**
+  - **`storeVisibility` desde la fachada de Pricing:** forma el ciclo Catalog ↔ Pricing que descartó ADR-0125.
+  - **`storeVisibility` desde un endpoint de Pricing:** cambia el contrato de `AdminProduct`.
+  - **Revisar la excepción solo en el code review,** como decía ADR-0103.
+  - **Para la cache:**
+    - el paquete `cacheable`: una dependencia nueva para unas 30 líneas;
+    - guardar solo las primeras páginas, lo que no limita los filtros de precio;
+    - dejarla sin límite.
+  - **Mostrar todas las imágenes del producto.**
+  - **Distinguir en la tienda una categoría oculta de una que no existe.**
+  - **`websearch_to_tsquery` o `plainto_tsquery`:** no buscan por inicio de palabra.
+- **Consecuencias:**
+  - **Rendimiento,** medido con 5 000 productos y 15 000 variantes:
+    - cada consulta del listado tarda de 40 a 55 ms, en cualquier página, orden o filtro;
+    - el detalle tarda unos 4 ms, y las marcas menos de 2 ms;
+    - lo que más cuesta es calcular la oferta de todos los productos en cada consulta. Los listados sin `q` salen de la cache, y si el catálogo crece se puede pasar a una proyección de lectura (ADR-0060).
+  - **Búsquedas sin resultados:** una búsqueda hecha solo de palabras vacías, o del inicio de una ("la" de "lámpara"), no encuentra nada.
+  - **Paginación:** `toPageResponse` pasa a cada elemento su posición en la página.
+  - **Excepción de ADR-0060:** deja de ser solo una convención, porque ahora la verifica un test.
+  - **Sprint 3:** con T-140 completa, terminan sus tareas.
+- **Estado:** Aceptada (plan de T-140 parte c aprobado el 2026-09-30). ADR-0160: la disponibilidad agrega los almacenes activos, con una fila por variante.
+
+---
+
+## ADR-0130 — Validación: una regla por campo, primero la presencia y el tipo
+
+- **Fecha:** 2026-10-01
+- **Contexto:** Paso 0 del Sprint 4.
+  - ADR-0095 reporta solo la primera regla que falla en cada campo (`stopAtFirstError`), y class-validator corre los decoradores de abajo hacia arriba.
+  - En 102 propiedades de 14 archivos, la regla de tipo estaba arriba de las demás, así que corría al final.
+  - Un valor del tipo equivocado también falla las reglas de longitud o de rango, y la primera en fallar daba un mensaje engañoso:
+    - `pageSize=abc` respondía "Es mayor que el máximo permitido.";
+    - `amount: "59900"` en JSON respondía lo mismo;
+    - un número donde va texto respondía "No tiene una longitud permitida.".
+- **Decisión:**
+  - **Todas las reglas, un solo error por campo:** el pipe de validación corre todas las reglas de cada campo (sin `stopAtFirstError`) y reporta una sola, en este orden:
+    1. la presencia: `isDefined` y después `isNotEmpty`;
+    2. el tipo: `isString`, `isInt`, `isNumber`, `isBoolean`, `isArray` o `isObject`;
+    3. si no falló ninguna de esas, la primera que falló en el orden en que corrieron, como antes. Por ejemplo, `matches` sigue antes que `isIso8601`.
+  - **Orden de los decoradores:** ya no cambia la regla reportada.
+  - **Reglas propias:** deben aceptar un valor de cualquier tipo, porque corren aunque el tipo falle. Las tres que pasan por el pipe (`IsSortOf`, `RelevanceNeedsSearch` y `NotBelowMinPrice`) ya lo hacen.
+  - **Configuración:** su validación al arrancar no cambia y sigue listando todas las reglas que fallan.
+- **Alternativas consideradas:**
+  - **Reordenar los decoradores** de las 102 propiedades y agregar una prueba que vigile la convención: son más cambios, y la regla depende de recordarla en cada DTO nuevo.
+  - **Mantener `stopAtFirstError`** y ordenar bien solo los DTO nuevos.
+- **Consecuencias:**
+  - Todos los endpoints responden el error de tipo correcto sin tocar sus DTO.
+  - Una solicitud inválida corre todas las reglas de sus campos; el costo es despreciable.
+  - Ningún test existente dependía de los mensajes engañosos.
+  - Un campo obligatorio que falta y no tiene `@IsDefined` ni `@IsNotEmpty` responde con su regla de tipo ("Debe ser texto."), no con "Es obligatorio.".
+- **Estado:** Aceptada (plan del paso 0 del Sprint 4 aprobado el 2026-10-01).
+
+---
+
+## ADR-0131 — Carrito: bloqueos, límite de líneas, variantes no vendibles e imagen principal
+
+- **Fecha:** 2026-10-01
+- **Contexto:** T-170 (UC-CRT-01 a 06). `API_SPEC.md` §14 fija los contratos, y ADR-0059, la fusión y el identificador aleatorio. Quedaban abiertos estos puntos:
+  - cómo evitar que dos cambios simultáneos dejen una línea con más de 30 unidades, si el contrato no envía `version`;
+  - qué se responde para una variante que no existe;
+  - si una cuenta de staff puede usar las rutas de invitado;
+  - qué cuenta como actividad para la limpieza de 30 días (BR-CRT-06);
+  - cuántas líneas puede tener un carrito;
+  - qué imagen muestra cada línea.
+- **Decisión:**
+  - **Módulo Shopping:**
+    - el aggregate `Cart` guarda solo variantes y cantidades, nunca precios (BR-CRT-04);
+    - la aplicación declara los puertos `CartCatalog`, `CartPrices` y `CartStock`, que su infraestructura responde con las fachadas de Catalog, Pricing e Inventory (ADR-0005);
+    - Shopping usa a esos tres módulos y ninguno usa a Shopping, así que no hay ciclos.
+  - **Vista del carrito, calculada al leer:**
+    - cada línea toma el precio vigente de Pricing;
+    - es vendible si su producto está publicado, la variante está activa y tiene precio vigente (BR-PRD-11);
+    - Inventory responde `canFulfill` solo para las líneas vendibles, sin cantidades (ADR-0061);
+    - las líneas van de la más antigua a la más nueva;
+    - `itemCount` cuenta las unidades de todas las líneas, y `subtotal` suma solo las vendibles.
+  - **Cambios simultáneos:**
+    - cada cambio bloquea la fila del carrito (`SELECT … FOR UPDATE`) y revisa que siga activo, así que dos cambios a la vez esperan en vez de fallar;
+    - al carrito de un cliente se llega con un bloqueo advisory del cliente (clase `CART` más `hashtext` del ID) y después el `FOR UPDATE`. Así, crear su carrito y adoptar uno de invitado nunca chocan, y el índice único parcial de un carrito activo por cliente queda de respaldo;
+    - la fusión bloquea primero el carrito de invitado y después el del cliente. Ninguna otra operación bloquea dos carritos, así que dos solicitudes nunca se esperan en ciclo.
+  - **Variante que no se puede agregar:**
+    - 409 `variant-not-sellable` con `variantIds`, igual para una que no existe, una de un producto sin publicar o archivado, una descontinuada o una sin precio. La tienda no revela si existe un borrador;
+    - cambiar la cantidad de una línea que dejó de ser vendible también responde 409; quitarla siempre se puede.
+  - **Cantidad:**
+    - si una suma deja la línea con más de 30 unidades, se responde 400 `validation-error` con `lineQuantity` en `quantity`;
+    - quitar una línea que no está no cambia nada y responde el carrito.
+  - **Staff:** 403 `staff-cannot-purchase` en `/v1/me/cart` y, con un token de staff, al crear un carrito de invitado o cambiar sus líneas. Leer un carrito de invitado sí se puede.
+  - **Actividad:** solo los cambios actualizan `last_activity_at` (crear, agregar, cambiar, quitar y fusionar); leer nunca escribe.
+  - **Límite de líneas:**
+    - un carrito tiene como máximo 100 variantes distintas, y la siguiente responde 409 `cart-line-limit-reached` con `limit` (E-36);
+    - sumar unidades a una línea existente sigue permitido;
+    - una fusión puede pasar el límite, porque nunca descarta lo que eligió el cliente.
+  - **Imagen de una línea:**
+    - la primera imagen de su variante y, si no tiene, la primera imagen general del producto, es decir, sin variante;
+    - la imagen en posición 1 es la principal, y el staff la elige reordenando la galería (ADR-0124);
+    - no hay atributo "principal", porque duplicaría la posición;
+    - `CatalogFacade.variantsWithImage` aplica la regla en un solo lugar.
+  - **Identificadores y fechas:** todo carrito lleva un UUIDv4 (ADR-0059), y las fechas las pone la aplicación.
+  - **Registro:** sin auditoría ni eventos; T-181 reaccionará a `OrderExpired`.
+- **Alternativas consideradas:**
+  - **`version` en cada cambio:** el contrato no la envía.
+  - **404 para una variante que no existe.**
+  - **Rutas de invitado que ignoren el token de staff.**
+  - **Contar las lecturas como actividad:** una escritura por cada lectura.
+  - **Carrito sin límite de líneas.**
+  - **Un atributo "principal" en las imágenes:** daría más flexibilidad, pero duplica lo que ya hace la posición y crea dos fuentes de verdad.
+  - **Usar siempre la primera imagen del producto.**
+- **Consecuencias:**
+  - El checkout de T-180 bloqueará la fila del carrito igual que estos cambios, así que ningún cambio se cuela entre la cotización y la orden.
+  - Un carrito fusionado puede tener más de 100 líneas; mientras tanto, no acepta variantes nuevas.
+  - `VariantSnapshot` suma `productSlug`.
+  - Nuevo tipo de error `cart-line-limit-reached` (E-36).
+  - Cuatro pruebas de concurrencia cubren dos sumas a la misma línea, las dos primeras líneas de un cliente, dos fusiones del mismo carrito, y una fusión junto con una suma.
+- **Estado:** Aceptada (plan de T-170 aprobado el 2026-10-01). En la misma revisión se descartó el atributo de imagen principal, y se documentó la posición 1 como principal. El checkout de T-180 bloquea el carrito así (ADR-0132).
+
+---
+
+## ADR-0132 — Checkout y pedidos: división de T-180, dependencias de Ordering, reintegro sin ciclo y vencimiento del pago
+
+- **Fecha:** 2026-10-01
+- **Contexto:** T-180 (UC-ORD-01 a 03 y 06 a 09). ADR-0019 fija el protocolo del checkout; ADR-0049, los identificadores de la orden; ADR-0063 y ADR-0099, la idempotencia; ADR-0128, las reservas, y ADR-0131, el bloqueo del carrito. Quedaban abiertos estos puntos:
+  - el tamaño de la tarea;
+  - P-73: cómo reintegra Inventory el stock de una orden sin formar un ciclo con Ordering;
+  - cómo obtiene Ordering los datos del cliente si Identity debía mostrar `orderCount` (ADR-0111);
+  - dónde guarda la orden el vencimiento de su pago (`paymentDueAt`);
+  - de dónde salen los precios y los snapshots de la orden;
+  - qué hacer con un código público repetido dentro de la transacción.
+- **Decisión:**
+  - **División de T-180:**
+    - **a:** cotizar (UC-ORD-01), colocar la orden (UC-ORD-02) y consultar mis pedidos (UC-ORD-03). Esta decisión.
+    - **b:** la administración de órdenes (UC-ORD-06), cancelar (UC-ORD-07), reintentar el surtido (UC-ORD-08), marcar pagada al recibir `PaymentCaptured` (UC-ORD-09) y quitar `orderCount`. Sus preguntas se deciden al empezarla, y va antes de T-190.
+  - **Dependencias de Ordering:**
+    - usa a Shopping, Catalog, Pricing, Inventory, Shipping, Identity & Access y Geo por sus fachadas, con un puerto propio por cada uno (ADR-0005), y ninguno usa a Ordering;
+    - Shopping exporta `ShoppingFacade`: el contenido del carrito sin precios, el mismo bloqueado hasta el fin de la transacción, y marcarlo CHECKED_OUT;
+    - `IdentityAccessFacade` suma el contacto del cliente (email de la cuenta y si está verificado) y una dirección guardada con los nombres del estado y del municipio;
+    - Ordering lee las variantes, su vendibilidad y los precios de Catalog y Pricing, no de la vista del carrito, para que el precio de la orden no salga de una vista de segunda mano.
+  - **Identity nunca usa a Ordering:**
+    - `orderCount` sale de `AdminCustomer` en la parte b; el panel lo obtiene de `meta.totalItems` de `GET /v1/admin/orders?customerId=…`;
+    - la anonimización (T-132) se hará con eventos o se orquestará fuera de Identity; se decide en su plan.
+  - **P-73, reintegro sin ciclo:**
+    - Ordering le pasa a Inventory las líneas de la orden (`orderLineId`, variante y cantidad vendida) y lo que se reintegra de cada una;
+    - Inventory verifica con sus movimientos RESTOCK por `order_line_id` que no se reintegre más de lo vendido, y escribe los movimientos;
+    - el reintegro independiente (UC-INV-09) pasa de `POST /v1/admin/inventory/restocks` a `POST /v1/admin/orders/{orderId}/restocks`, con `inventory.write`, porque Ordering conoce la orden, su estado y sus líneas. Para una devolución, Ordering consulta el estado del envío con la fachada de Shipping;
+    - se implementa en T-161.
+  - **Cotización (UC-ORD-01):**
+    - no cambia nada ni usa la cache: precios vigentes, IVA por línea con `VAT_RATE_BP`, y envío y plazo de `ShippingFacade.quote` (ADR-0122);
+    - una línea no vendible (producto no publicado, variante descontinuada o sin precio) aparece con `sellable: false` y su precio, total e IVA en `null`. La disponibilidad solo se pregunta por las vendibles;
+    - los totales suman solo las líneas vendibles, como el carrito, y `readyToPlace` exige que todas sean vendibles y surtibles;
+    - un carrito sin líneas, o un cliente sin carrito activo, responde 409 `empty-cart`.
+  - **Colocar la orden (UC-ORD-02):** una transacción revisa, en este orden:
+    1. el comprador: un cliente debe seguir activo y tener el email verificado (403 `email-not-verified`);
+    2. el carrito, bloqueado como en ADR-0131 (404, 409 `cart-not-active` o 409 `empty-cart`);
+    3. la dirección: una guardada del cliente (404 si no es suya) o una escrita, validada contra el catálogo del INEGI (400 `validation-error` en `shippingAddress.stateCode` o `shippingAddress.municipalityCode`);
+    4. que todas las líneas sean vendibles (409 `variant-not-sellable` con todas las que no);
+    5. el total contra `expectedTotal` (409 `total-mismatch` con `currentTotal`);
+    6. la reserva, todo o nada (409 `insufficient-stock`).
+
+    Después crea la orden en PENDING_PAYMENT con sus líneas y la primera entrada del historial, y deja el carrito CHECKED_OUT. Además:
+    - la ruta del cliente recibe exactamente uno de `addressId` y `shippingAddress`; si no, 400 `validation-error` con `exactlyOneAddress` en `addressId`;
+    - un cliente con sesión puede usar la ruta de invitado con un carrito de invitado, y la orden queda como de invitado;
+    - `Location: /v1/me/orders/{publicCode}` va solo en la ruta del cliente;
+    - el historial guarda como actor al cliente, y `NULL` para un invitado.
+  - **Código público:**
+    - 8 caracteres aleatorios con `randomInt`;
+    - la orden se escribe con `INSERT … ON CONFLICT (public_code) DO NOTHING`: un código repetido no aborta la transacción ni pierde la reserva, y se sortea otro, hasta 5 veces;
+    - las rutas aceptan el código con o sin guion y en mayúsculas o minúsculas; uno que no puede existir responde 404.
+  - **Vencimiento del pago:** la columna nueva `orders.payment_due_at` (migración `20261001120000_ordering_payment_due_at`) copia el `expires_at` de la reserva, que nunca cambia. `paymentDueAt` se muestra solo en PENDING_PAYMENT.
+  - **Mis pedidos (UC-ORD-03):**
+    - filtros `status`, `placedFrom` y `placedTo` (una fecha sola en `placedTo` incluye todo el día), y orden por `placedAt` (el predeterminado, descendente) o `grandTotal`, con desempate por ID;
+    - `payment` y `shipment` son `null` hasta T-190 y T-195;
+    - un pedido de otro cliente responde 404, y el staff recibe 403 `forbidden`.
+  - **Idempotencia:** un error de validación que encuentra el dominio, como un estado que no existe, libera la llave igual que los del pipe (ADR-0099).
+  - **Staff:** el guard `NoStaffPurchases` pasa a `platform/auth`, y lo usan el carrito y el checkout.
+  - **IVA:** Ordering lee `VAT_RATE_BP` con su propio token, como Shipping.
+  - **Registro:** sin eventos todavía, porque nadie escucharía `OrderPlaced` (T-181 y T-215 los agregarán), y sin auditoría, porque no es una acción del staff.
+- **Alternativas consideradas:**
+  - **Una sola T-180:** un pull request enorme, y la parte b depende de cómo se integre Payments.
+  - **P-73:**
+    - que Inventory guarde su propia copia de las líneas y escuche los cambios de estado de la orden (más datos copiados, que se actualizan con demora);
+    - mantener la ruta en `/v1/admin/inventory` con un controlador de Ordering, que confunde de quién es.
+  - **`orderCount`:** que Identity lleve la cuenta escuchando `OrderPlaced`, con una tabla nueva. Se actualizaría con demora y se descuadraría si un evento se pierde.
+  - **`paymentDueAt`:** preguntarle a Inventory en cada lectura, una llamada más por página.
+  - **Precios:** tomar la vista con precios que calcula Shopping.
+  - **Código repetido:** buscarlo antes de insertar, con una ventana de carrera, o dejar que el error de duplicado aborte la transacción.
+- **Consecuencias:**
+  - Dos cambios de contrato: la ruta del reintegro independiente (T-161) y `orderCount` (parte b).
+  - La migración agrega `payment_due_at` `NOT NULL` sin valor predeterminado, porque `orders` estaba vacía.
+  - Pruebas de concurrencia contra PostgreSQL: dos órdenes del mismo carrito, dos carritos por la última unidad, dos órdenes del mismo cliente y una orden que espera un cambio del carrito en curso.
+  - Hasta T-230, las órdenes sin pago no vencen y mantienen su stock apartado (ADR-0128).
+- **Estado:** Aceptada (plan de T-180 aprobado el 2026-10-01, con sus 5 recomendaciones). La parte b está en ADR-0133, que también quita `orderCount`. El reintegro de P-73 se implementó en T-161 (ADR-0142). La anonimización, que necesita a Identity y a Ordering, la orquesta el módulo `privacy` (ADR-0145). ADR-0161 (T-187 parte a): el staff coloca órdenes sin carrito con `StaffCheckout`, que comparte con `Checkout` lo que no depende del carrito (`OrderPlacement`). La primera fila del historial lleva al staff, y su colocación se audita como `orders.place`.
+
+---
+
+## ADR-0133 — Administración de órdenes: cancelación sin pago, pago capturado, pago tardío y reserva todo o nada
+
+- **Fecha:** 2026-10-01
+- **Contexto:** T-180 parte b (UC-ORD-06 a 09). ADR-0132 dejó sus preguntas para esta parte. Quedaban abiertos estos puntos:
+  - cómo cancelar una orden pagada si iniciar su reembolso necesita a Payments, que llega con T-190;
+  - la forma de `PaymentCaptured`, y qué hacer con un monto distinto del total o con el pago de una orden ya cancelada;
+  - que `InventoryFacade.reserve` dejaba apartadas las líneas que sí alcanzaron y confiaba en que quien llama revirtiera todo, mientras que un pago tardío sin stock tiene que guardar AWAITING_MANUAL_FULFILLMENT en esa misma transacción;
+  - qué busca `q` y cómo se sabe `hasPendingRefund` sin Payments;
+  - qué pasa si el staff cancela mientras llega el pago.
+- **Decisión:**
+  - **Consulta del staff (UC-ORD-06):**
+    - `GET /v1/admin/orders`, paginado, con `q`, `status`, `customerId`, `guest` (`true` o `false`), `placedFrom`, `placedTo` y `hasPendingRefund`, y orden por `placedAt` (el predeterminado, descendente), `orderNumber` o `grandTotal`, con desempate por ID;
+    - `q` busca el número interno y el código público exactos (con o sin guion y sin distinguir mayúsculas) o una parte del email de contacto, sin distinguir mayúsculas, como la búsqueda de clientes. Un número fuera del rango de `bigint` solo puede coincidir por el email;
+    - `hasPendingRefund` es CANCELLED con `paid_at`: la orden no necesita a Payments para saberlo;
+    - el listado lleva cada orden sin líneas ni historial, pero con la dirección, y `GET /v1/admin/orders/{orderId}` agrega las líneas y el historial de estados, del más antiguo al más reciente;
+    - `payment` y `shipment` son `null` hasta T-190 y T-195.
+  - **Cancelar (UC-ORD-07):**
+    - en esta parte solo se cancela desde PENDING_PAYMENT: la orden pasa a CANCELLED y libera su reserva. El historial guarda al staff y el motivo, y se audita `orders.cancel` con el motivo;
+    - cancelar una orden PAID o AWAITING_MANUAL_FULFILLMENT responde 409 `invalid-state-transition` hasta que T-190 agregue el reembolso. No es un hueco real, porque antes de T-190 ninguna orden llega a PAID;
+    - `restock: true` sin `inventory.write` responde 403; en un estado que no es PAID, 409 `restock-not-allowed` con `currentStatus`. Reintegrar al cancelar llega con T-161.
+  - **Reintentar el surtido (UC-ORD-08):** solo desde AWAITING_MANUAL_FULFILLMENT, revisado antes de reservar. Abre una reserva nueva, la confirma, y la orden pasa a PAID con esa reserva; sin stock responde 409 `insufficient-stock` y no cambia nada. Se audita `orders.retry-fulfillment`.
+  - **Pago capturado (UC-ORD-09):**
+    - Payments publicará `PaymentCaptured { orderId, paymentId, amount }` desde T-190. Ordering declara su propio tipo y se suscribe por el nombre, y el manejador corre en segundo plano (ADR-0098);
+    - una orden en PENDING_PAYMENT confirma su reserva y pasa a PAID. Si la reserva ya no está activa, sigue el flujo de pago tardío;
+    - una orden EXPIRED abre otra reserva y la confirma, y pasa a PAID con ella; si no hay stock, pasa a AWAITING_MANUAL_FULFILLMENT (BR-ORD-09, ADR-0012);
+    - una orden ya en PAID o en un estado posterior no cambia, así que un evento repetido no repite nada;
+    - si el monto no es el total (BR-ORD-08), la orden no cambia y el log registra un error con los IDs;
+    - una orden CANCELLED sigue cancelada, pero guarda `paid_at` una sola vez, así que aparece en `hasPendingRefund`; el log lo advierte;
+    - `paid_at` es el momento de la captura que trae el evento, también cuando la orden queda en AWAITING_MANUAL_FULFILLMENT o cancelada.
+  - **Cambios simultáneos:** cada cambio lee la orden con `SELECT … FOR UPDATE`. Las acciones del staff comparan la `version` enviada (409 `version-conflict` con `currentVersion`), y al guardar se compara otra vez. Una cancelación y un pago que llegan juntos se aplican uno después del otro.
+  - **Reserva todo o nada por sí misma:**
+    - el puerto `TransactionManager` suma `runNested(work)`: se une a la transacción de quien llama, pero si `work` falla deshace solo lo suyo con un `SAVEPOINT` y la transacción sigue, aun después de una sentencia fallida. Fuera de una transacción es `run`;
+    - `InventoryFacade.reserve` corre así: si alguna línea no alcanza, deshace lo que apartó y la reserva que abrió antes de lanzar el error (ajusta ADR-0128);
+    - el publicador de eventos registra un callback por publicación, así que un paso deshecho descarta sus eventos; los demás se despachan en un solo lote y en orden, como antes.
+  - **Puertos:** `CheckoutStock` pasa a llamarse `OrderStock` y suma `reserveIfAvailable`, `commit` y `release`.
+  - **`orderCount`:** sale de `AdminCustomer`, como decidió ADR-0132.
+  - **Registro:** sin `OrderPaid` ni `OrderCancelled` todavía, porque nadie los escucharía; los agregarán T-195 y T-215.
+- **Alternativas consideradas:**
+  - **Cancelación de órdenes pagadas:** dejar ahora un puerto de reembolso sin adaptador, que sería código imposible de ejecutar.
+  - **Monto distinto del total:** pasar la orden a AWAITING_MANUAL_FULFILLMENT, que mezcla un error de cobro con uno de stock.
+  - **Pago de una orden cancelada:** ignorarlo, y que el dinero quede sin un reembolso pendiente visible.
+  - **Reserva parcial:** preguntar `canFulfill` antes de reservar, con una carrera entre las dos llamadas; o guardar AWAITING_MANUAL_FULFILLMENT en otra transacción, que ya no es atómica.
+  - **`q`:** exigir el email exacto, más restrictivo con los datos personales.
+- **Consecuencias:**
+  - T-190 debe publicar `PaymentCaptured` con esa forma y agregar la cancelación de órdenes pagadas con su reembolso; T-161, el reintegro al cancelar; T-195 y T-215, los eventos de la orden.
+  - `runNested` queda disponible para otras operaciones que deban ser todo o nada dentro de una transacción mayor.
+  - Pruebas contra PostgreSQL:
+    - un pago que llega dos veces a la vez;
+    - una cancelación y un pago a la vez;
+    - un pago tardío con una línea sin stock, que no aparta nada de las demás;
+    - una reserva corta dentro de una transacción mayor;
+    - pasos deshechos con sus eventos.
+- **Estado:** Aceptada (plan de T-180 parte b aprobado el 2026-10-01, con sus 4 recomendaciones). T-190 parte a publica `PaymentCaptured` con esa forma (ADR-0134). ADR-0135 cancela también órdenes pagadas, e inicia el reembolso del pago que llega después de cancelar.
+
+---
+
+## ADR-0134 — Pagos: Ordering usa a Payments, pago en tienda y división de T-190
+
+- **Fecha:** 2026-10-01
+- **Contexto:** T-190 (UC-PAY-01 a 03, 06 y 07). Algunas operaciones de pago necesitan datos de la orden, y algunas de la orden necesitan a Payments:
+  - iniciar el pago necesita saber de quién es la orden y en qué estado está;
+  - registrar el pago manual necesita el total y el estado de la orden;
+  - cancelar una orden pagada inicia el reembolso dentro de la misma operación (`API_SPEC.md` §2.5);
+  - las vistas de la orden muestran su pago.
+
+  Si cada módulo usara al otro habría un ciclo. Quedaban abiertos también el tamaño de la tarea y cómo se habilita el pago manual.
+- **Decisión:**
+  - **División de T-190:**
+    - **a:** pagar: iniciar el pago (UC-PAY-01), registrar el pago manual (UC-PAY-02), la consulta de pagos del staff y el pago en las vistas de la orden. Esta decisión.
+    - **b:** reembolsos: cancelar órdenes PAID y AWAITING_MANUAL_FULFILLMENT iniciando el reembolso (UC-PAY-03), y registrar el reembolso manual (UC-PAY-06), que publica `RefundCompleted` y lleva la orden a REFUNDED.
+    - UC-PAY-07 (reintentar un reembolso fallido) pasa a T-192: con el pago manual un reembolso nunca falla, porque lo registra el staff; solo un proveedor puede fallar.
+  - **Ordering usa a Payments, y Payments nunca usa a Ordering:**
+    - Payments exporta `PaymentsFacade`, que recibe de Ordering el ID, el código público y el total de la orden; Payments solo le avisa a Ordering con eventos (`PaymentCaptured` y, en la parte b, `RefundCompleted`);
+    - las rutas para iniciar el pago (`POST /v1/orders/{publicCode}/payments` y `/v1/me/orders/{publicCode}/payments`) las atiende Ordering, porque son de la orden. No cambian;
+    - Ordering lee los pagos para `Order.payment` (`provider` y `status`) y `AdminOrder.payment` (con montos, fecha de captura y reembolsos); `OrderReader` pide los de una página entera en una sola consulta;
+    - Payments guarda el código público de la orden en `payments.order_code` (migración `20261001200000_payments_order_code`), para mostrar `orderCode` en `AdminPayment` sin leer a Ordering.
+  - **Pago manual:**
+    - pasa de `POST /v1/admin/payments/manual-captures`, con `orderId` en el cuerpo, a `POST /v1/admin/orders/{orderId}/manual-capture` (`payments.manage`), atendido por Ordering;
+    - responde 200 con el `AdminOrder` y su pago capturado, como las demás acciones sobre `/v1/admin/orders`, en lugar de 201 `AdminPayment`, así Ordering no importa la representación de Payments. La orden pasa a PAID en segundo plano (§2.5);
+    - registra el cobro por el total y crea el pago si el cliente nunca lo inició. `reference` queda en el intento junto con el staff, y `note` es el motivo de la auditoría `payments.manual-capture`;
+    - publica `PaymentCaptured { orderId, paymentId, amount }` en la misma transacción, y se despacha después de confirmar.
+  - **Orden de las validaciones:**
+    - al iniciar: el proveedor (400 `validation-error` en `provider` si no está habilitado), la orden y quien paga (404), el estado PENDING_PAYMENT (409) y el pago que ya exista. Con el mismo proveedor y pendiente responde 200 con la misma acción; con otro, o ya no pendiente, 409;
+    - al registrar el pago manual: que esté habilitado (403 `manual-payments-disabled`), la orden (404), el estado PENDING_PAYMENT o EXPIRED (409) y que el pago no esté capturado (409).
+  - **Variable `MANUAL_PAYMENTS_ENABLED`:** `false` por defecto y también en `.env.example`, como pide ADR-0040. Quien prueba en local la pone en `true`, y las e2e la activan.
+  - **Intentos:** iniciar el pago guarda un intento PENDING, y registrarlo, uno CAPTURED con el comprobante y el staff.
+  - **Consulta del staff (§16.3):** `GET /v1/admin/payments` filtra por `status`, `provider`, `orderId` y fechas de captura, y ordena por `createdAt` (descendente por defecto) o `amount`, con desempate por ID. `GET /v1/admin/payments/{paymentId}` incluye los intentos y los reembolsos.
+  - **Idempotencia:** el interceptor guarda el código de respuesta que dejó el controlador, no solo el declarado. Así, repetir el inicio de un pago con la misma llave devuelve 200 si el original fue 200.
+  - **Concurrencia:** Ordering bloquea la orden al iniciar el pago y al registrar el pago manual, así que dos operaciones sobre el pago de una orden se esperan. El índice único de `payments.order_id` queda de respaldo.
+- **Alternativas consideradas:**
+  - **Payments usa a Ordering:** el reembolso al cancelar se iniciaría con un evento en segundo plano, contra §2.5, y las vistas de la orden necesitarían una copia del estado del pago.
+  - **Pago manual con 201 `AdminPayment`:** Ordering tendría que importar la representación de Payments.
+  - **`MANUAL_PAYMENTS_ENABLED=true` en `.env.example`:** el flujo funcionaría en local sin tocar nada, pero ADR-0040 pide desactivado por defecto.
+  - **Una sola T-190.**
+- **Consecuencias:**
+  - Cambio de contrato: la ruta y la respuesta del pago manual.
+  - Una migración agrega `order_code` `NOT NULL` sin valor predeterminado, porque `payments` estaba vacía.
+  - La parte b: cancelar una orden pagada llama a Payments para iniciar el reembolso, y Ordering escucha `RefundCompleted`.
+  - T-192 suma UC-PAY-07. La conciliación (UC-PAY-05) vivirá en Ordering, que es quien puede leer órdenes y pagos.
+  - Pruebas contra PostgreSQL: dos registros del mismo pago a la vez, dos inicios a la vez, y un pago junto con una cancelación.
+- **Estado:** Aceptada (plan de T-190 aprobado el 2026-10-01, con sus 3 recomendaciones). La respuesta del pago manual se decidió durante la implementación. La parte b está en ADR-0135. ADR-0161 agrega `method` al registro del pago manual, que guarda el intento capturado. ADR-0162 reemplaza la variable `MANUAL_PAYMENTS_ENABLED` por la configuración de Payments: las comprobaciones de la fachada leen la base y son asíncronas. ADR-0163 (T-197): el intento capturado guarda también la nota del staff, que antes solo era el motivo de la auditoría.
+
+---
+
+## ADR-0135 — Reembolsos: cancelar órdenes pagadas, reembolso manual y reintegro hasta T-161
+
+- **Fecha:** 2026-10-01
+- **Contexto:** T-190 parte b (UC-PAY-03 y 06, UC-ORD-07). Cancelar una orden pagada inicia su reembolso total, y registrar el reembolso manual lleva la orden a REFUNDED (ADR-0051). Quedaban abiertas tres cosas:
+  - la opción `restock`, que necesita a Inventory y llega con T-161;
+  - el pago que llega después de cancelar, que ADR-0133 dejó a la espera de su reembolso sin iniciarlo;
+  - el pago iniciado de una orden que se cancela sin pagar.
+- **Decisión:**
+  - **Cancelar (UC-ORD-07, UC-PAY-03):**
+    - desde PAID o AWAITING_MANUAL_FULFILLMENT, la orden pasa a CANCELLED y Ordering llama a `PaymentsFacade.startRefund` en la misma transacción. Payments crea un reembolso PENDING por todo lo capturado; el pago sigue CAPTURED. El stock no se toca: el de PAID ya salió y el de AWAITING_MANUAL_FULFILLMENT nunca se confirmó;
+    - desde PENDING_PAYMENT, además de liberar la reserva, Ordering llama a `PaymentsFacade.cancelPending`: un pago PENDING pasa a CANCELLED y nadie puede capturarlo. Un pago en otro estado, o ninguno, no cambia;
+    - una orden pagada sin pago en Payments es un error interno, porque Ordering solo marca pagadas las órdenes de las que Payments le avisó.
+  - **Pago después de cancelar:** el manejador de `PaymentCaptured` también inicia el reembolso cuando la orden ya estaba CANCELLED, una sola vez aunque el evento se repita. Así el staff registra su devolución como la de cualquier otra orden.
+  - **Registrar el reembolso manual (UC-PAY-06):**
+    - lo atiende Payments en `POST /v1/admin/payments/{paymentId}/refunds/manual` (`payments.manage`), porque solo necesita el pago. Responde 200 `AdminPayment`;
+    - bloquea la fila del pago (`FOR UPDATE`), compara su `version`, completa el reembolso PENDING con `reference` en `provider_refund_id` y el staff en `registered_by`, y deja el pago REFUNDED con `refunded_amount` igual a lo capturado;
+    - se audita como `payments.manual-refund`, con el cambio de estado del pago y `note` como motivo, y publica `RefundCompleted { refundId, paymentId, orderId, amount }` en la misma transacción;
+    - solo un reembolso PENDING de un pago MANUAL. El contrato dice "pendiente o fallido", pero un reembolso manual nunca falla porque lo registra el staff; uno fallido solo puede venir de un proveedor (T-192);
+    - orden de las validaciones: el permiso `inventory.write` si se pide `restock` (403 `forbidden`), el pago manual habilitado (403 `manual-payments-disabled`), `restock` (409, abajo), el pago (404), su `version` (409 `version-conflict`) y el reembolso pendiente (409 `invalid-state-transition`).
+  - **`RefundCompleted` en Ordering:** en segundo plano, la orden CANCELLED con `paidAt` pasa a REFUNDED, sin actor, con `refundedAt` igual a la fecha en que se completó el reembolso; el historial guarda cuándo se registró el cambio, como con `paidAt`. Un evento repetido no cambia nada, y el de una orden que no está cancelada con pago queda en el log como error, solo con los IDs.
+  - **Reintegro hasta T-161:** `restock: true` al cancelar una orden PAID o al registrar el reembolso responde 409 `restock-not-allowed` con `reason: "unavailable"`, después de revisar `inventory.write`, sin cambiar nada. El staff nunca debe creer que el stock volvió. En un estado que no es PAID, la cancelación sigue respondiendo `restock-not-allowed` con `currentStatus` (ADR-0133).
+  - **Concurrencia:**
+    - iniciar el reembolso ocurre siempre con la orden bloqueada (al cancelar y al recibir el pago), así que dos inicios se esperan; el índice único parcial de `refunds` queda de respaldo (BR-PAY-14);
+    - dos registros del mismo reembolso a la vez: uno lo completa y el otro responde 409 `version-conflict`; la orden pasa a REFUNDED una sola vez.
+  - **Sin migración:** `refunds` y `orders.refunded_at` ya existían.
+- **Alternativas consideradas:**
+  - **Reintegrar al cancelar con `InventoryFacade`:** adelantaría T-161 sin resolver cómo se reintegra por línea y cuánto ya se reintegró (ADR-0052).
+  - **Ignorar `restock` hasta T-161:** el staff creería que el stock volvió.
+  - **Iniciar el reembolso del pago tardío solo con la conciliación (T-192):** el pago en tienda nunca tendría reembolso que registrar.
+  - **Dejar PENDING el pago de una orden cancelada sin pagar:** seguiría pareciendo cobrable.
+  - **Registrar el reembolso desde Ordering, como el pago manual:** solo necesita el pago, y Ordering ya se entera por `RefundCompleted`.
+- **Consecuencias:**
+  - Las órdenes CANCELLED con `paidAt` (`hasPendingRefund=true`) son la lista de reembolsos pendientes, y salen de ella al pasar a REFUNDED.
+  - T-161 cambia la respuesta de `restock` por el reintegro real, en la cancelación y en el registro del reembolso.
+  - T-192 agrega los reembolsos con proveedor, que pueden fallar, y su reintento (UC-PAY-07). T-215 envía el correo "Reembolso completado".
+  - Pruebas contra PostgreSQL: dos registros del mismo reembolso a la vez, y una cancelación junto con el registro del pago de una orden con su pago iniciado.
+- **Estado:** Aceptada (plan de T-190 parte b aprobado el 2026-10-01, con sus 3 recomendaciones). Desde T-161 (ADR-0142), `restock` al cancelar reintegra, y el registro del reembolso ya no lo acepta. ADR-0163 (T-197): el reembolso manual guarda también la nota del staff.
+
+---
+
+## ADR-0136 — Vencimiento de órdenes impagas: un job en Ordering con su reserva
+
+- **Fecha:** 2026-10-01
+- **Contexto:** T-230 (UC-ORD-10, UC-INV-08). Una orden PENDING_PAYMENT vence cuando vence su reserva (BR-ORD-07), y la orden guarda ese momento en `paymentDueAt` (ADR-0132). ADR-0029 pidió un job cada minuto, por lotes, con una transacción por elemento e idempotente, y ADR-0128 dejó a T-230 la transición de la reserva a EXPIRED. Quedaban abiertas tres cosas:
+  - si la orden y la reserva vencen en un job o en dos;
+  - cuándo se publica `OrderExpired`, que T-181 necesita para devolver las líneas al carrito (ADR-0054);
+  - qué pasa con el pago que el comprador ya había iniciado.
+- **Decisión:**
+  - **Un solo job en Ordering,** `ordering.expire-orders`, cada minuto con `@ScheduledJob` (ADR-0101). Llama al caso de uso `OrderExpiry`:
+    - busca hasta 100 órdenes PENDING_PAYMENT con `paymentDueAt` vencido, la que venció primero antes;
+    - vence cada una en su propia transacción: bloquea la orden, vuelve a revisar que siga PENDING_PAYMENT con el pago vencido, la pasa a EXPIRED con `expiredAt` (en el historial sin actor), pasa su reserva a EXPIRED con la nueva `InventoryFacade.expire` y publica `OrderExpired`;
+    - una orden que falla queda en el log con su ID y el lote sigue; vencerla otra vez no cambia nada.
+  - **La orden y su reserva vencen juntas:** con dos jobs, un pago que llegara entre ambos encontraría la reserva vencida y la orden pendiente. Ordering puede llamar a Inventory, pero Inventory no puede llamar a Ordering.
+  - **`InventoryFacade.expire(orderId)`:** pasa la reserva activa de ACTIVE a EXPIRED con el mismo `UPDATE` condicional que `release`, y devuelve sus unidades. Responde `false` si la orden no tiene reserva activa.
+  - **`OrderExpired { orderId, customerId, sourceCartId, lines: [{ variantId, quantity }] }`:** se publica ahora, en la transacción del vencimiento, con lo que Shopping necesita, porque Shopping nunca lee a Ordering. T-181 solo agrega el listener.
+  - **El pago pendiente se conserva:** una orden vencida todavía puede pagarse (ADR-0012), y el staff puede registrar su pago en tienda. Cancelar es distinto: es definitivo, y por eso cancela el pago (ADR-0135).
+  - **Sin auditoría:** es una transición del sistema y queda en el historial, como el pago recibido.
+  - **Carreras:** las resuelve el bloqueo de la orden.
+    - Si el pago llega primero, el job encuentra la orden pagada y no la toca.
+    - Si el job llega primero, el pago sigue el flujo de pago tardío (ADR-0012).
+    - Una cancelación que llega después del job responde 409 `version-conflict`, porque la orden cambió.
+  - **Sin migración:** las órdenes PENDING_PAYMENT siempre son pocas y el índice `(status, placed_at)` basta.
+- **Alternativas consideradas:**
+  - **Dos jobs, uno de reservas en Inventory y otro de órdenes en Ordering:** cumple UC-INV-08 al pie de la letra, pero abre una ventana con la reserva vencida y la orden pendiente.
+  - **Publicar `OrderExpired` en T-181:** T-181 tendría que volver a tocar el vencimiento.
+  - **Cancelar el pago pendiente al vencer:** cerraría el pago tardío del pago manual.
+  - **Un índice parcial nuevo `(payment_due_at) WHERE status = 'PENDING_PAYMENT'`:** innecesario con tan pocas órdenes pendientes.
+- **Consecuencias:**
+  - El índice `(expires_at) WHERE status = 'ACTIVE'` de `reservations`, pensado para un job de Inventory, queda sin uso.
+  - Una orden vencida suma una versión, como cualquier cambio de estado.
+  - Las pruebas que simulaban el vencimiento ahora usan el caso de uso real.
+  - Pruebas contra PostgreSQL: el job junto con un pago y junto con una cancelación de la misma orden.
+- **Estado:** Aceptada (plan de T-230 aprobado el 2026-10-01, con sus 3 recomendaciones). Shopping restaura el carrito con `OrderExpired` desde T-181 parte a (ADR-0137). El índice `(expires_at)` de `reservations` se quitó en el paso 0 del Sprint 5 (migración `20261002120000_inventory_drop_reservation_expiry_index`).
+
+---
+
+## ADR-0137 — Carrito de una orden vencida: división de T-181 e idempotencia por el carrito de origen
+
+- **Fecha:** 2026-10-01
+- **Contexto:** T-181 (UC-CRT-08 y 09). Cuando una orden vence, sus líneas vuelven al carrito (ADR-0054), y T-230 ya publica `OrderExpired` con el cliente, el carrito de origen y las líneas (ADR-0136). La recompra de órdenes canceladas (UC-CRT-09) tiene tres rutas, y la pública identifica al invitado con email y código público, igual que la consulta de pedido de T-185, con un límite compartido. Quedaban abiertas tres cosas:
+  - el tamaño y el orden de la tarea;
+  - cómo restaurar una sola vez aunque el evento se repita;
+  - qué líneas vuelven y con qué límites.
+- **Decisión:**
+  - **División de T-181:**
+    - **a:** restaurar el carrito al vencer la orden (UC-CRT-08). Esta decisión;
+    - **b:** la recompra (UC-CRT-09), después de T-185, para usar su identificación del invitado y su límite.
+  - **Shopping escucha `OrderExpired`** por su nombre, con su propio tipo del evento, y llama al caso de uso `CartRestoration` en una transacción. Shopping nunca lee a Ordering: el evento trae lo necesario.
+  - **Restauración:**
+    - una orden de invitado, o de un cliente sin carrito activo, recupera su carrito de origen: pasa de CHECKED_OUT a ACTIVE con las líneas con las que se colocó, que no cambiaron desde entonces;
+    - un cliente con carrito activo recibe en él las líneas de la orden, sumadas con tope de 30 sin aviso, y el carrito de origen queda MERGED en el activo, como en una fusión;
+    - como en la fusión, el carrito puede pasar de 100 líneas y conserva las que dejaron de venderse: la vista las marca y el cliente decide.
+  - **Idempotencia, sin tabla nueva:** solo se restaura un carrito de origen CHECKED_OUT cuyo último cambio no es posterior al vencimiento. Así, un evento repetido lo encuentra ACTIVE o MERGED, y uno que llega después de que el invitado volvió a usar el carrito para otra orden lo encuentra cambiado después del vencimiento. En ambos casos no cambia nada.
+  - **Bloqueos:** con cliente, primero su bloqueo advisory y su carrito activo, como todo cambio del carrito de un cliente, y después el carrito de origen. Es la segunda operación que bloquea dos carritos, después de la fusión, y nunca espera en ciclo con ella: el carrito de origen de un cliente tiene dueño, y la fusión solo bloquea carritos sin dueño antes del bloqueo del cliente.
+  - **Datos inesperados:** un carrito de origen que no existe o no es del comprador queda en el log con los IDs, sin cambios.
+  - **Sin cambios de API, sin auditoría** (es el sistema) **y sin migración.**
+- **Alternativas consideradas:**
+  - **T-181 completa antes de T-185:** adelantaría la identificación del invitado y el límite compartido.
+  - **Una tabla de órdenes restauradas:** necesita migración, y el carrito de origen ya dice si se restauró.
+  - **Omitir las variantes que dejaron de venderse,** como la recompra: UC-CRT-08 no lo pide, y el carrito ya las muestra.
+  - **Que Ordering llame a `ShoppingFacade` al vencer la orden:** posible en esa dirección, pero ADR-0054 y el modelo de dominio fijan que Shopping reaccione al evento, y el vencimiento no depende de Shopping.
+- **Consecuencias:**
+  - MERGED también significa "sus líneas pasaron a otro carrito" para el carrito de una orden vencida.
+  - Las pruebas que vencen órdenes también restauran su carrito.
+  - Prueba contra PostgreSQL: la restauración junto con una línea nueva del mismo cliente deja un solo carrito activo con todo.
+  - T-181 parte b agrega la recompra.
+- **Estado:** Aceptada (plan de T-181 aprobado el 2026-10-01, con sus 3 recomendaciones). La comparación con la fecha del vencimiento se agregó durante la implementación. La parte b está en ADR-0139. ADR-0161: una orden que el staff colocó en la tienda física no tiene carrito de origen; `OrderExpired` lo lleva en `null` y Shopping no restaura nada.
+
+---
+
+## ADR-0138 — Consulta de pedido de invitado: una sola consulta, 404 único y staff permitido
+
+- **Fecha:** 2026-10-01
+- **Contexto:** T-185 (UC-ORD-04). `POST /v1/orders/lookup` recibe en el cuerpo el email de contacto y el código público (ADR-0071), responde solo órdenes de invitado y el mismo 404 si la orden no existe, el email no coincide o la orden es de una cuenta (BR-ORD-11), con 10 consultas por IP en 15 minutos (ADR-0065, `guest-order`). Quedaban abiertas tres cosas:
+  - cómo comparar el email y el código sin que el tiempo de respuesta delate cuál falló;
+  - qué responder a un código mal formado;
+  - si una cuenta de staff puede consultar.
+- **Decisión:**
+  - **Una sola consulta:** busca por código público, `customer_id IS NULL` y email de contacto. El email se normaliza con `trim` y minúsculas, la misma regla con que la orden lo guarda (ahora una función del dominio para ambos usos). Los tres casos de 404 siguen el mismo camino, y una orden anonimizada, sin email, nunca coincide.
+  - **El mismo 404 para todo fallo:** también para un código que no puede existir, como ya hace el pago de invitado (ADR-0134). El error no lleva el email ni el código, tampoco en el log. Solo responden 400 `validation-error` los campos faltantes, un email mal formado o un código vacío, de otro tipo o de más de 100 caracteres, que no revelan nada de las órdenes.
+  - **El staff puede consultar:** es una lectura, como leer un carrito de invitado (ADR-0131), y el staff ya ve cualquier orden en `/v1/admin/orders`. El bloqueo de compras de staff pasa del controlador a sus dos rutas de compra, colocar la orden e iniciar el pago, que siguen respondiendo 403 `staff-cannot-purchase`.
+  - **Respuesta:** el `Order` que ve el cliente, con su pago, igual que `/v1/me/orders/{publicCode}`.
+  - **Sin auditoría, sin idempotencia** (es una lectura) **y sin migración.** La recompra pública de T-181 parte b usará la misma búsqueda y el mismo límite.
+- **Alternativas consideradas:**
+  - **Leer por código y comparar en la aplicación:** más simple, pero el caso "existe con otro email" tarda distinto.
+  - **400 para un código mal formado:** más útil para un formulario, pero el cliente puede validar el formato por su cuenta.
+  - **403 al staff, como el resto del controlador:** no protege nada.
+- **Consecuencias:**
+  - Las e2e suben `RATE_LIMIT_GUEST_ORDER` a 1000 en 15 minutos, como ya hacían con el límite general; una suite propia lo baja a 2 para comprobar el 429 en la ruta real.
+  - T-181 parte b reutiliza la búsqueda para `POST /v1/orders/reorder`.
+- **Estado:** Aceptada (plan de T-185 aprobado el 2026-10-01, con sus 3 recomendaciones). La recompra de invitado usa la misma búsqueda (ADR-0139). El uso de un enlace de acceso a los pedidos comparte su límite (ADR-0148).
+
+---
+
+## ADR-0139 — Recompra de órdenes: rutas en Ordering, respuesta con `cartId` y carrito destino del staff
+
+- **Fecha:** 2026-10-01
+- **Contexto:** T-181 parte b (UC-CRT-09, BR-CRT-11). `API_SPEC.md` §14.3 fija tres rutas para volver a comprar una orden cancelada o reembolsada: la del cliente, la pública del invitado y la del staff. Ordering usa a Shopping y Shopping nunca usa a Ordering (ADR-0132), así que quedaban abiertas tres cosas:
+  - qué responden las rutas del cliente y del invitado, que el contrato pedía con el `Cart` de Shopping;
+  - a qué carrito copia el staff;
+  - qué límites aplica la recompra.
+- **Decisión:**
+  - **Rutas en Ordering:** Ordering lee la orden bloqueada, revisa su estado y le pasa las líneas a Shopping por el puerto `ReorderCarts`. Shopping responde con tres operaciones nuevas de `ShoppingFacade`: copiar al carrito del cliente, a un carrito de invitado y al carrito de origen de la orden. Todas se unen a la transacción de Ordering, y la orden nunca cambia.
+  - **Shopping decide qué se vende:** solo copia las variantes publicadas, activas y con precio en ese momento (BR-PRD-11), y devuelve las demás en `skippedVariantIds`.
+  - **Respuesta `{ cartId, skippedVariantIds }` en las tres rutas:** el cliente lee el carrito con `GET /v1/me/cart` o `GET /v1/carts/{cartId}`. Ordering no importa la representación del carrito de Shopping, como no importa la de Payments (ADR-0134). Cambia el contrato de la ruta del cliente y de la pública, que respondían `{ cart, skippedVariantIds }`.
+  - **Cliente (`POST /v1/me/orders/{publicCode}/reorder`):** solo sus propias órdenes (404 para las demás); las líneas van a su carrito activo, o a uno nuevo. Una cuenta de staff recibe 403 `staff-cannot-purchase`, porque la ruta cambia un carrito.
+  - **Invitado (`POST /v1/orders/reorder`):**
+    - se identifica igual que en la consulta (ADR-0138), con el mismo 404;
+    - con `cartId`, las líneas van a ese carrito de invitado activo: 404 si no existe o tiene dueño, 409 `cart-not-active` si no está activo, como en las rutas del carrito; sin `cartId`, a un carrito nuevo;
+    - comparte el límite `guest-order` con la consulta, y una cuenta de staff recibe 403 `staff-cannot-purchase`.
+  - **Staff (`POST /v1/admin/orders/{orderId}/reorder`, `orders.manage`):**
+    - la orden de un cliente va a su carrito activo, o a uno nuevo, igual que en la ruta del cliente;
+    - la de un invitado va a su carrito original, el `cartId` que el invitado conoce (ADR-0082). Si sigue CHECKED_OUT, vuelve a ACTIVE solo con las líneas que se siguen vendiendo; si ya está ACTIVE, se le suman. Si ya no existe, tiene dueño o quedó MERGED en una cuenta, responde 409 `source-cart-unavailable` y no se crea otro;
+    - se audita como `orders.reorder` cuando copia.
+  - **Límites, como en la fusión y la restauración:**
+    - tope de 30 por línea sin aviso;
+    - puede pasar de 100 líneas, porque nunca descarta lo que el cliente pidió.
+  - **Sin `Idempotency-Key`,** como dice el contrato: repetir la recompra vuelve a sumar con el tope, y el cliente lo ve y lo corrige en su carrito.
+  - **Orden de las validaciones:** primero la orden (404), después su estado (409 `invalid-state-transition`) y al final el carrito (404 o 409).
+  - **Sin migración.**
+- **Alternativas consideradas:**
+  - **Responder el `Cart` como decía el contrato:** Shopping tendría que exportar su DTO y su mapper, y la presentación de Ordering quedaría acoplada a la de Shopping.
+  - **Al pie de la letra de ADR-0054 y ADR-0055:** un cliente sin carrito activo recuperaría su carrito original en la ruta del staff, pero uno nuevo en la suya. El mismo caso se trataría distinto según la ruta, y para el cliente el ID del carrito no importa.
+  - **409 `cart-line-limit-reached` al pasar de 100 líneas, o exigir `Idempotency-Key`:** el segundo también cambia el contrato.
+- **Consecuencias:**
+  - Cambio de contrato en la respuesta de dos rutas.
+  - T-181 queda completa, y con ella las tareas del Sprint 4.
+  - Prueba contra PostgreSQL: una recompra a la vez que una línea nueva del mismo cliente deja un solo carrito activo con todo.
+- **Estado:** Aceptada (plan de T-181 parte b aprobado el 2026-10-01, con sus 3 recomendaciones).
+
+---
+
+## ADR-0140 — Envíos: división de T-195, creación al pagarse la orden, envío cancelado y datos de la orden
+
+- **Fecha:** 2026-10-02
+- **Contexto:** T-195 (UC-SHI-03 a 09). ADR-0041 crea el envío al recibir `OrderPaid`, y `API_SPEC.md` §2.5 lo trataba como un efecto en segundo plano. Pero Ordering usa a Shipping para cotizar (ADR-0132), así que Shipping no puede leer órdenes, y Ordering todavía no publica `OrderPaid`. Quedaban abiertas cuatro cosas:
+  - el tamaño de la tarea, con siete casos de uso;
+  - cómo nace el envío sin que Shipping lea la orden;
+  - qué pasa con el envío al cancelar una orden pagada, que BR-CAN-01 permite y que el modelo del envío no contemplaba;
+  - de dónde salen el código de la orden y el SKU y el nombre de cada artículo de `AdminShipment`, si Shipping no lee Ordering.
+- **Decisión:**
+  - **Dos partes:**
+    - (a) crear el envío, consultarlo, capturar paquetería y guía, mostrarlo en las vistas de la orden y cancelarlo con su orden;
+    - (b) despachar, entregar, entrega fallida y devolución, con la orden siguiendo al envío por eventos (`ShipmentDispatched`, `ShipmentDelivered`).
+  - **El envío nace con la orden pagada, en la misma transacción:**
+    - Ordering lo crea al pasar la orden a PAID: con el pago capturado, con el pago tardío que consigue stock y al reintentar el surtido. Una orden AWAITING_MANUAL_FULFILLMENT no tiene envío.
+    - Ordering le pasa a `ShippingFacade.createShipment` lo que el envío necesita: el código público, el almacén activo (nueva `InventoryFacade.activeWarehouseId`), la dirección de envío y las líneas.
+    - Una orden que ya tiene envío lo conserva: el único de `order_id` y `ON CONFLICT DO NOTHING`.
+    - Se aparta de la redacción de UC-SHI-03 y ADR-0041 ("al recibir `OrderPaid`"). `OrderPaid` lo publicará T-215 para el correo de pago confirmado.
+  - **Cada línea de la orden tiene su ID desde el dominio** (UUIDv7, al colocar la orden), para que los artículos del envío la referencien, igual que el reintegro de T-161.
+  - **Estado CANCELLED, solo desde PENDING, con `cancelledAt`:**
+    - cancelar una orden PAID cancela su envío en la misma transacción;
+    - si el envío ya salió, la cancelación responde 409 `invalid-state-transition` con el estado del envío, y no cambia nada;
+    - un envío cancelado no admite paquetería ni guía (409).
+  - **Datos de la orden en el envío:** `shipments.order_code` y `shipment_items.sku` y `product_name` se copian al crearlo. La lista de trabajo y la búsqueda no necesitan leer Ordering.
+  - **Migraciones:**
+    - `20261002200000_shipping_cancelled_status` agrega el valor al enum; va en su propia migración, porque PostgreSQL no permite usar un valor nuevo del enum en la misma transacción que lo agrega;
+    - `20261002200100_shipping_order_snapshot` agrega las columnas y adapta las restricciones: un envío CANCELLED, como uno PENDING, no tiene fecha de despacho ni paquetería, y siempre tiene `cancelled_at`.
+  - **Vistas de la orden:**
+    - `Order.shipment` lleva el estado, la paquetería, la guía, la entrega propia y las fechas;
+    - `AdminOrder.shipment` lleva además `id` y `version`;
+    - los envíos se leen una sola vez por página.
+  - **Paquetería y guía (UC-SHI-04):**
+    - `PATCH …/shipments/{shipmentId}` bloquea el envío, compara `version` y recorta los espacios;
+    - se permite en PENDING, o en DISPATCHED por paquetería;
+    - se audita como `shipments.update` con los cambios; sin cambios no se guarda ni se audita, como el método de envío (ADR-0122).
+  - **Lista (UC-SHI-08):**
+    - por defecto, los PENDING del más antiguo al más reciente;
+    - `q` busca el código de la orden exacto (con o sin guion, sin distinguir mayúsculas) o la guía exacta, sin distinguir mayúsculas.
+- **Alternativas consideradas:**
+  - **Crear el envío al recibir `OrderPaid`, como decía ADR-0041:**
+    - el evento tendría que llevar la dirección y las líneas;
+    - un fallo del manejador dejaría una orden pagada sin envío y sin reintento;
+    - la orden se podría cancelar mientras el envío todavía no existe.
+  - **Impedir cancelar una orden pagada que tenga envío:** contradice BR-CAN-01, que permite cancelar en PAID.
+  - **Borrar el envío al cancelar:** pierde el rastro de lo que se canceló.
+  - **Leer el código y los productos de Ordering al listar:** Shipping no puede usar a Ordering.
+- **Consecuencias:**
+  - Cambian el mecanismo de UC-SHI-03 y de ADR-0041, y la tabla de efectos en segundo plano (`API_SPEC.md` §2.5).
+  - Cancelar una orden pagada puede responder 409 cuando su envío salió. En la parte a nada despacha todavía.
+  - La parte b resuelve la carrera entre cancelar y despachar. La cancelación ya bloquea el envío por su orden.
+  - El contrato suma CANCELLED a los estados del envío y `cancelledAt` a `AdminShipment`.
+  - Las pruebas que pagan órdenes borran también sus envíos.
+- **Estado:** Aceptada (plan de T-195 aprobado el 2026-10-02, con sus 4 recomendaciones). `id` y `version` en `AdminOrder.shipment`, como pide el contrato (`API_SPEC.md` §8.9), se agregaron durante la implementación. La parte b está en ADR-0141. ADR-0160: el envío sale del almacén de la reserva confirmada (`InventoryFacade.allocationOf`), no del almacén activo. ADR-0161: una orden `IN_STORE` pagada no crea envío; el staff la entrega en la tienda.
+
+---
+
+## ADR-0141 — Envíos en camino: notas, guía quitada y la orden que sigue al envío por eventos
+
+- **Fecha:** 2026-10-02
+- **Contexto:** T-195 parte b (UC-SHI-05 a 07 y 09). ADR-0140 dejó para esta parte despachar, entregar, la entrega fallida y la devolución, con la orden siguiendo al envío por eventos. Quedaban abiertas tres cosas:
+  - dónde queda la `note` de la entrega fallida y de la devolución, que el contrato pide sin decir dónde se guarda;
+  - qué hace Ordering si `ShipmentDelivered` llega con la orden todavía en PAID. Los eventos viven en memoria y se procesan después del commit (ADR-0098), así que el del despacho puede llegar tarde o perderse;
+  - cómo se quita una guía capturada por error. El `PATCH` exige paquetería y guía de 1 a 100 caracteres, y un envío con guía no puede despacharse como entrega propia (ADR-0078).
+- **Decisión:**
+  - **Rutas** (`shipping.manage`, `version`, responden 200 con `AdminShipment`):
+    - `dispatch`, desde PENDING. Con `ownDelivery: false` (por defecto) exige paquetería y guía ya capturadas; con `true`, que no tenga ninguna. Si no, responde 400 `validation-error` en `ownDelivery`, con `trackingRequired` o `trackingNotAllowed`. Primero revisa el estado (409) y después la guía (400);
+    - `deliver`, desde DISPATCHED, definitivo;
+    - `delivery-failure`, desde DISPATCHED; la orden no cambia (ADR-0053);
+    - `return`, desde DELIVERY_FAILED, definitivo; el stock que regresa lo reintegra T-161;
+    - se auditan como `shipments.dispatch`, `shipments.deliver`, `shipments.delivery-failure` y `shipments.return`, con el cambio de estado, y al despachar también el de `ownDelivery`.
+  - **Notas:**
+    - `note` es opcional, de hasta 500 caracteres; se guarda sin los espacios de los extremos, y una nota vacía es ninguna;
+    - se guarda en el envío (`failure_note` y `return_note`, que `AdminShipment` muestra como `failureNote` y `returnNote`) y es además el motivo de la auditoría.
+  - **Quitar la guía:**
+    - el `PATCH` acepta `carrierName` y `trackingNumber` en `null`, los dos juntos y solo en PENDING; se audita como `shipments.update`;
+    - si solo una de las dos es `null`, responde 400 `validation-error` con `trackingPair` en esa;
+    - el despacho nunca las borra por su cuenta: la entrega propia sigue siendo una decisión explícita (ADR-0078).
+  - **La orden sigue al envío por eventos:**
+    - Shipping publica `ShipmentDispatched { shipmentId, orderId, carrierName, trackingNumber, ownDelivery }` y `ShipmentDelivered { shipmentId, orderId, dispatchedAt }` después del commit, con `occurredAt` igual al momento del cambio. Ordering declara sus propios tipos y se suscribe por nombre;
+    - Ordering pasa la orden de PAID a SHIPPED con `shippedAt`, y de SHIPPED a DELIVERED con `deliveredAt`. El historial no lleva actor, como con el pago y el reembolso;
+    - un evento repetido no cambia nada, y una orden en otro estado queda en el log como error;
+    - si `ShipmentDelivered` encuentra la orden en PAID, la pasa por SHIPPED, con `dispatchedAt`, y luego a DELIVERED, en un solo guardado con dos entradas en el historial;
+    - `DeliveryFailed` y `ShipmentReturned` no se publican, porque nadie los escucha (ADR-0128). T-161 leerá el estado del envío con la fachada.
+  - **Base de datos:** la migración `20261002220000_shipping_delivery_notes` agrega las notas y restricciones que exigen la fecha de cada estado: DELIVERED con `delivered_at`; DELIVERY_FAILED y RETURNED con `failed_at`; RETURNED con `returned_at`.
+  - **Despachar y cancelar la orden a la vez:**
+    - las dos operaciones bloquean el envío (la cancelación lo hace por su orden, ADR-0140), así que una espera a la otra y solo una ocurre;
+    - si gana el despacho, la cancelación responde 409 `invalid-state-transition`;
+    - si gana la cancelación, el despacho responde 409 `version-conflict`, porque el envío ya cambió.
+- **Alternativas consideradas:**
+  - **Nota solo en la auditoría, como el pago y el reembolso manuales:** no necesita migración, pero quien atiende la devolución no la vería hasta T-220, y solo con `audit.read`.
+  - **Dejar en el log el `ShipmentDelivered` de una orden en PAID:** la orden quedaría en PAID con el envío entregado hasta que alguien la corrigiera a mano.
+  - **Que despachar como entrega propia borre la guía:** ocultaría un error de captura.
+  - **Publicar `OrderShipped` y `OrderDelivered`:** no tienen consumidor.
+- **Consecuencias:**
+  - Cambios compatibles del contrato: `failureNote` y `returnNote` en `AdminShipment`, y `null` en el `PATCH`.
+  - **Riesgo:** si se pierde un `ShipmentDispatched`, la orden queda en PAID con el envío despachado hasta la entrega. Mientras tanto, cancelarla responde 409 por el envío. No hay conciliación para los eventos de envío (`API_SPEC.md` §2.5).
+  - T-195 queda terminada. T-161 atiende las devoluciones con `SHIPMENT_RETURNED`.
+  - Las suites de integración de Shipping importan `EventsModule`.
+- **Estado:** Aceptada (plan de T-195 parte b aprobado el 2026-10-02, con sus 3 recomendaciones).
+
+---
+
+## ADR-0142 — Reintegro de stock: Ordering bloquea la orden, Inventory pone el tope y el reembolso ya no reintegra
+
+- **Fecha:** 2026-10-02
+- **Contexto:** T-161 (UC-INV-09, ADR-0052, ADR-0053). ADR-0132 resolvió P-73: el reintegro independiente se pide en `POST /v1/admin/orders/{orderId}/restocks`, Ordering le pasa a Inventory las líneas y lo vendido de cada una, e Inventory verifica con sus movimientos el tope por línea. Hasta ahora la opción `restock` respondía 409 `unavailable` al cancelar y al registrar el reembolso (ADR-0135). Quedaban abiertas cuatro cosas:
+  - cómo reintegra la opción del reembolso, que es una ruta de Payments, si Payments no conoce las líneas de la orden ni puede usar a Ordering;
+  - qué impide que un reenvío de la misma petición reintegre dos veces dentro del tope;
+  - cómo sabe el sistema si el stock de una orden cancelada se confirmó;
+  - cómo nombra el staff las líneas, si `AdminOrder` no mostraba sus IDs.
+- **Decisión:**
+  - **Reintegro independiente** (`inventory.write`, exige `Idempotency-Key`):
+    - `ORDER_CANCELLED` sirve para una orden CANCELLED o REFUNDED; `SHIPMENT_RETURNED`, para una orden cuyo envío está RETURNED, que Ordering lee con la fachada de Shipping. En otro caso responde 409 `invalid-state-transition`, con el estado de la orden o, para una devolución, el del envío;
+    - las líneas son de 1 a 100, de la orden, sin repetir, con cantidad entera de 1 en adelante. Una línea que no es de la orden responde 400 `validation-error` con `orderLine` en `lines[i].orderLineId`. La nota es opcional, de hasta 500 caracteres;
+    - Ordering bloquea la orden (`FOR UPDATE`), así que dos reintegros de la misma orden se esperan; la cancelación con reintegro usa el mismo bloqueo;
+    - responde 201 con un movimiento RESTOCK por línea y se audita como `orders.restock`, con las líneas y la nota como motivo. La orden no cambia.
+  - **El tope lo pone Inventory** (`InventoryFacade.restock`):
+    - lo vendido de una línea cuenta solo si la orden tiene una reserva COMMITTED; una orden cancelada antes de confirmar su stock vendió 0;
+    - suma los RESTOCK anteriores de cada línea (índice parcial por `order_line_id`) y rechaza el reintegro completo si alguna línea pasaría de lo vendido: 409 `restock-not-allowed` con `lines` (`orderLineId`, `sold`, `restocked`, `requested`) de cada línea que lo haría;
+    - escribe los movimientos en el almacén activo, en orden ascendente de stock item como las reservas (BR-INV-14), con motivo, orden, línea, nota y actor.
+  - **Al cancelar:** `restock: true` en una orden PAID reintegra todas las líneas completas en la misma transacción, con el motivo de la cancelación como nota, y se audita aparte como `orders.restock`.
+  - **El reembolso ya no reintegra:** se quita `restock` del registro del reembolso manual y del reintento de T-192. Payments no conoce las líneas de la orden, y el staff reintegra con la ruta independiente justo después. Enviar `restock` responde 400 `validation-error`, porque el campo ya no existe.
+  - **`AdminOrder.lines` lleva `id`**, solo para el staff, para nombrar las líneas del reintegro; el cliente sigue sin verlo.
+  - **Sin migración:** `stock_movements` ya tenía las columnas, las restricciones y el índice parcial de RESTOCK.
+- **Alternativas consideradas:**
+  - **Mover el reembolso manual a una ruta de Ordering**, como el pago manual (ADR-0134): cambio de contrato mayor solo para conservar un atajo.
+  - **Reintegrar en segundo plano al recibir `RefundCompleted`:** el staff no sabría si el reintegro falló o ya había otro.
+  - **Reintegro sin `Idempotency-Key`, como pedía el contrato:** un reenvío reintegraría dos veces mientras no se pase de lo vendido, sin que nada lo detecte.
+  - **Que Ordering decida si se confirmó el stock**, por el historial de la orden: Inventory ya lo sabe por su reserva, y el tope queda en un solo lugar.
+- **Consecuencias:**
+  - Cambios de contrato: `Idempotency-Key` en el reintegro, `restock` fuera del reembolso manual y del reintento, e `id` en las líneas de `AdminOrder`.
+  - BR-INV-10 y ADR-0052 dejan la opción solo al cancelar.
+  - Prueba contra PostgreSQL: dos reintegros de la misma línea a la vez que juntos pasarían de lo vendido; solo uno ocurre.
+  - Con T-195 y T-161 hechas, sigue T-215.
+- **Estado:** Aceptada (plan de T-161 aprobado el 2026-10-02, con sus 2 recomendaciones). `id` en las líneas de `AdminOrder` se agregó durante la implementación, porque la ruta pide `orderLineId` y ninguna vista lo mostraba. ADR-0160: las unidades vuelven al almacén del que salió cada línea, o al almacén activo `warehouseId` que indique el staff.
+
+---
+
+## ADR-0143 — Correos de la orden: módulo de notificaciones, eventos de Ordering y su fachada
+
+- **Fecha:** 2026-10-02
+- **Contexto:** T-215 (UC-NTF-01). ADR-0074 decidió los cinco correos, que reaccionan a eventos y leen la orden con una fachada de Ordering. Tres cosas faltaban:
+  - Ordering todavía no publicaba `OrderPlaced`, `OrderPaid` ni `OrderCancelled`, y no tenía fachada;
+  - el correo de orden recibida pide "instrucciones de pago en tienda", pero la orden se coloca antes de iniciar el pago, y el pago en tienda solo existe con `MANUAL_PAYMENTS_ENABLED` (ADR-0040);
+  - el formato de las fechas en los correos vivía en Identity & Access.
+- **Decisión:**
+  - **Módulo `notifications`**, una capacidad transversal sin dominio propio (ARCHITECTURE.md):
+    - escucha `OrderPlaced`, `OrderPaid`, `ShipmentDispatched`, `OrderCancelled` y `RefundCompleted` por nombre, con sus propios tipos;
+    - lee la orden con la nueva `OrderingFacade.orderNotice` mediante un puerto propio (ADR-0103);
+    - ningún módulo lo usa, así que no se forma ningún ciclo.
+  - **`OrderingFacade`:** es la primera fachada de Ordering y solo sirve para los correos. Da el código público con guion, el email de contacto (`null` si la orden está anonimizada), las líneas, los totales, la dirección sin el teléfono, el vencimiento de la reserva y el plazo de entrega.
+  - **Eventos de Ordering**, publicados en la transacción del cambio y despachados después del commit (ADR-0098). Solo llevan la orden, salvo `refundStarted`:
+    - `OrderPlaced` al colocar la orden;
+    - `OrderPaid` cuando la orden pasa a PAID: con el pago capturado, con el pago tardío que consigue stock o al reintentar el surtido. No se publica cuando queda esperando stock;
+    - `OrderCancelled` al cancelar, con `refundStarted` si la orden ya estaba pagada.
+  - **Correos** en texto plano y en español, como los de cuenta (ADR-0110), con el código público y sin el ID ni el número interno:
+    - orden recibida: líneas con sus opciones, subtotal, envío (o "gratis"), descuento si lo hay, total con el IVA incluido, dirección, hasta cuándo se apartan los productos y el plazo de entrega estimado;
+    - pago confirmado: el total pagado;
+    - orden enviada: la paquetería y la guía, o "lo entregará la tienda";
+    - orden cancelada: el reembolso en proceso, o "no se hizo ningún cargo";
+    - reembolso completado: el monto;
+    - todos terminan pidiendo mencionar el código al contactar a la tienda, sin enlaces (ADR-0077).
+  - **Instrucciones de pago:** solo con `MANUAL_PAYMENTS_ENABLED`: "presenta el código en la tienda y paga el total". Sin pago manual, el correo no da instrucciones de pago hasta que PayPal tenga las suyas (T-192).
+  - **Entrega:**
+    - el correo va al email de contacto, nunca a una orden anonimizada (BR-NTF-03);
+    - un fallo del servidor de correo queda en el log como advertencia, sin el destinatario, y no se reintenta (BR-NTF-04);
+    - una orden que no existe queda en el log como error.
+  - **`inMexicoTime` pasa al shared kernel**, para las fechas de los correos de cuenta y de orden.
+- **Alternativas consideradas:**
+  - **Eventos con todos los datos del correo:** Notifications no leería a Ordering, pero cada evento cargaría líneas, totales y dirección que solo usa el correo; ADR-0074 ya eligió la fachada.
+  - **Instrucciones de pago siempre:** hoy es el único método, pero le indicaría al cliente uno que no existe en cuanto se deshabilite.
+  - **Correos en HTML:** más trabajo de formato y de pruebas; los correos de cuenta son de texto.
+- **Consecuencias:**
+  - Ordering exporta una fachada por primera vez, solo para lectura.
+  - Las suites e2e que colocan órdenes intentan enviar los correos. Sin servidor SMTP en las pruebas, el envío falla de inmediato y solo queda una advertencia que el logger de pruebas no muestra. La suite de correos captura los mensajes con un `EmailSender` falso.
+  - No hay correo cuando llega un pago a una orden ya cancelada: con el pago en tienda no ocurre, porque el registro manual solo acepta órdenes PENDING_PAYMENT o EXPIRED. Se revisa con PayPal (T-192).
+  - Con T-215 terminada, sigue T-231.
+- **Estado:** Aceptada (plan de T-215 aprobado el 2026-10-02, con su recomendación). ADR-0150: un fallo del servidor de correo llega a la entrega del evento, que lo reintenta (BR-NTF-04). ADR-0162: el correo de orden recibida pregunta a la fachada de Payments, al escribirse, si la tienda cobra en persona.
+
+---
+
+## ADR-0144 — Limpieza diaria: un job por dueño de cada tabla y borrados por lotes
+
+- **Fecha:** 2026-10-02
+- **Contexto:** T-231 (UC-SYS-01, UC-CRT-07). ADR-0029 fija qué borra la limpieza diaria a las 3:00, hora de México, y con qué retención. Las tablas son de cuatro dueños: Identity & Access, Shopping, Payments y la plataforma (idempotencia). Quedaban abiertas dos cosas:
+  - quién corre cada borrado;
+  - cómo se aplica a los borrados la regla de ADR-0029, "cada elemento en su propia transacción". Una transacción por fila sería muy costosa con miles de llaves de idempotencia.
+- **Decisión:**
+  - **Un job por dueño, todos a las 3:00** (`@ScheduledJob`, ADR-0101). Cada contexto borra solo sus tablas y ningún módulo depende de otro para esto:
+
+    | Job | Qué borra | Retención |
+    |---|---|---|
+    | `identity.cleanup-tokens` | Refresh tokens vencidos o revocados | 30 días después |
+    | `identity.cleanup-tokens` | Enlaces de verificación y de recuperación vencidos, usados o reemplazados | Ninguna (ADR-0056) |
+    | `shopping.cleanup-guest-carts` | Carritos de invitado sin actividad, en cualquier estado, con sus líneas por cascada | 30 días (BR-CRT-06) |
+    | `payments.cleanup-webhook-events` | Eventos de webhooks procesados | 30 días |
+    | `platform.cleanup-idempotency-keys` | Llaves de idempotencia | Al vencer (24 horas, ADR-0063) |
+
+  - **Borrados por lotes:**
+    - lotes de 1,000 filas, cada uno en su propio `DELETE`, fuera de toda transacción;
+    - hasta 100 lotes por ejecución; lo que falte, al día siguiente;
+    - un fallo solo pierde su lote, y repetir no tiene efecto, porque lo borrado ya no existe. Es la interpretación de ADR-0029 para borrados;
+    - `deleteInBatches` del shared kernel los repite hasta que un lote vuelve incompleto.
+  - **Cada `DELETE` vuelve a revisar su condición:**
+    - un carrito que alguien usa mientras corre la limpieza espera su bloqueo y ya no se borra;
+    - una llave de idempotencia reclamada de nuevo, con un vencimiento nuevo, tampoco.
+  - **Carritos:** se eligen por la última actividad, los más antiguos primero, con el índice parcial de los carritos de invitado. Los carritos de clientes se conservan siempre.
+  - **En Identity**, un tipo que falla queda en el log y los otros siguen.
+  - **Sin auditoría:** es una tarea del sistema; cada job deja en el log cuántas filas borró.
+  - **Sin migración:** las tablas ya tenían sus índices de limpieza, salvo los tokens de Identity, que se recorren sin índice.
+- **Alternativas consideradas:**
+  - **Un solo job de limpieza:** necesita un orquestador sin dueño natural que dependa de las fachadas de cuatro módulos.
+  - **Una transacción por fila, al pie de la letra de ADR-0029:** miles de transacciones cada noche sin beneficio, porque un borrado no deja nada a medias.
+  - **Borrar sin volver a revisar la condición:** podría borrar un carrito usado mientras corría la limpieza.
+- **Consecuencias:**
+  - La recompra del staff de una orden de invitado con más de 30 días responde 409 `source-cart-unavailable`, porque su carrito original ya se borró (ADR-0082). Era un riesgo aceptado.
+  - Un refresh token borrado, 30 días después de revocarse, ya no detecta su reutilización (ADR-0023): responde 401 como cualquier token desconocido.
+  - Los tokens de Identity no tienen índice por vencimiento; si las tablas crecen, se agrega uno.
+  - Con T-231 se terminan las tareas del Sprint 5.
+  - Prueba contra PostgreSQL: un carrito usado mientras corre la limpieza no se borra.
+- **Estado:** Aceptada (plan de T-231 aprobado el 2026-10-02, con sus 2 recomendaciones). ADR-0150 agrega `platform.cleanup-events`, que borra los eventos entregados hace más de 7 días.
+
+---
+
+## ADR-0145 — Anonimización: módulo de privacidad, órdenes concluidas y bloqueo del cliente en el checkout
+
+- **Fecha:** 2026-10-02
+- **Contexto:** T-132 (UC-IAM-19, BR-PRIV-03). ADR-0067 fija qué se anonimiza. Quedaban abiertos:
+  - **quién la orquesta:** toca Identity & Access, Ordering, Shipping y Shopping, e Identity no puede usar a Ordering (ADR-0132);
+  - **qué responde la del cliente:** el contrato pedía `AdminCustomer`, que solo Identity puede construir;
+  - **qué orden no concluyó:** ADR-0070 dice que una orden concluye en DELIVERED, CANCELLED, REFUNDED o EXPIRED. Pero una orden cuyo envío volvió se queda en SHIPPED (ADR-0053), y una cancelada con pago espera su reembolso;
+  - **la carrera con un checkout del mismo cliente**, que lee su email para la orden;
+  - **el pago tardío de una orden vencida** (ADR-0012), que la revive;
+  - **las respuestas guardadas por idempotencia** (ADR-0063), posteriores a ADR-0067, que repiten 24 horas el email y la dirección de la orden colocada.
+- **Decisión:**
+  - **Módulo `privacy`:** capacidad transversal sin dominio propio, como Notifications (ADR-0143):
+    - atiende las dos rutas, bajo `/v1/admin/identity`;
+    - llama, en una transacción y con la misma fecha, a las fachadas de Identity (`anonymizeCustomer`), Ordering (`anonymizeOrders`) y Shopping (`deleteCartsOf`);
+    - ningún módulo lo usa.
+  - **Ordering anonimiza los envíos de sus órdenes**, como los cancela, porque Shipping no lee Ordering. Así, el job de conservación (T-232) anonimizará la orden y su envío juntos.
+  - **Qué cambia en cada lugar:**
+
+    | Dónde | Cambio |
+    |---|---|
+    | Identity & Access | Email, nombres, apellidos, hash y verificación del email en `NULL`; estado ANONYMIZED con `anonymized_at`. Se borran los refresh tokens, los enlaces de verificación y recuperación, y las direcciones. Se audita `customers.anonymize` |
+    | Ordering | `contact_email` en `NULL`; la dirección conserva estado, municipio, código postal y país, y los demás campos quedan en `null`; `anonymized_at`; una versión más. Se audita `orders.anonymize` por orden |
+    | Shipping | El destino se reduce igual; `anonymized_at`; una versión más |
+    | Shopping | Se borran los carritos del cliente, en cualquier estado, con sus líneas y los carritos de invitado fusionados en ellos. Antes se toma el bloqueo de sus carritos (ADR-0131) |
+    | Idempotencia | Se borran las respuestas completadas de quien colocó cada orden: el cliente, o el carrito de la orden de invitado. Las que siguen en curso no guardan respuesta todavía |
+
+    Los montos, líneas, estados, pagos y notas del staff no cambian.
+  - **Respuesta del cliente:** `200 { userId, anonymizedAt, anonymizedOrderCount }`, en línea con la del invitado. El staff consulta al cliente con su `GET`, como en la recompra (ADR-0139).
+  - **Orden concluida, para anonimizar:**
+    - DELIVERED, EXPIRED y REFUNDED;
+    - CANCELLED sin pago; con pago espera su reembolso, y pasa a REFUNDED cuando termina;
+    - SHIPPED con su envío RETURNED.
+
+    Con una orden que no concluyó responde 409 `active-orders-exist` y no anonimiza nada.
+  - **Validaciones del cliente, en orden:** 404 si no es un cliente; 409 `version-conflict`; 409 `invalid-state-transition` si ya está anonimizado; 409 `active-orders-exist`.
+  - **Invitado:**
+    - se identifica con email y código, como en la consulta (ADR-0138), con el mismo 404;
+    - se anonimizan todas las órdenes de invitado con ese email; las de una cuenta con el mismo email no cambian;
+    - repetirlo responde 404, porque el email ya no está;
+    - sus carritos de invitado se van con la limpieza diaria (BR-CRT-06).
+  - **Carrera con el checkout:** el checkout lee al cliente con `SELECT … FOR SHARE`, que choca con el `UPDATE` de la cuenta al anonimizar:
+    - si el checkout va primero, la anonimización lo espera y responde 409 por la orden nueva;
+    - si la anonimización va primero, el checkout la espera y ya no encuentra al cliente (404).
+  - **Pago tardío de una orden anonimizada:**
+    - una orden EXPIRED anonimizada que recibe un pago pasa a AWAITING_MANUAL_FULFILLMENT sin reservar stock, porque no tiene dirección;
+    - el staff no puede reintentar su surtido (409 `invalid-state-transition`) y solo puede cancelarla con su reembolso;
+    - el dominio rechaza pagar o surtir una orden anonimizada.
+  - **Vistas:**
+    - el comprador nunca ve una orden anonimizada: sus consultas la excluyen;
+    - el staff la ve con `contactEmail` y los campos de la dirección en `null`;
+    - la fachada de Ordering entrega a Notifications una orden anonimizada sin email ni dirección, y no se envía correo.
+  - **Respuestas de idempotencia:** el almacén de la plataforma no trabaja en la transacción de la anonimización (ADR-0099). Ordering las borra al final: si la anonimización falla después, solo se pierde la repetición de una solicitud dentro de las 24 horas.
+- **Alternativas consideradas:**
+  - **Orquestar en Ordering**, como el pago manual (ADR-0134): ya usa a Identity y a Shopping, pero metería datos de cuentas en el contexto de pedidos.
+  - **Eventos:** Identity anonimiza y publica un evento que los demás escuchan después del commit (ADR-0098). No podría responder 409 por las órdenes antes de vaciar la cuenta, y una falla dejaría la anonimización a medias.
+  - **Duplicar `AdminCustomer` en Privacy:** dos representaciones del mismo recurso que mantener al día.
+  - **ADR-0070 al pie de la letra:** una orden con su envío devuelto bloquearía la anonimización para siempre, y una cancelada con su reembolso pendiente perdería el correo del reembolso.
+  - **Dejar las respuestas de idempotencia hasta que venzan:** guardarían el email y la dirección hasta 24 horas, más lo que tarde la limpieza siguiente.
+- **Consecuencias:**
+  - El contrato de la anonimización del cliente cambia de `AdminCustomer` a `{ userId, anonymizedAt, anonymizedOrderCount }`.
+  - `AdminOrder.contactEmail`, `AdminOrder.shippingAddress` y `AdminShipment.destination` admiten `null` en los campos anonimizados.
+  - Las notas del staff no cambian: motivos del historial, notas del envío, del pago y de los reintegros. Son texto libre en el que la API pide no escribir datos personales (ADR-0112).
+  - Una orden anonimizada no recibe correo, tampoco el de un reembolso posterior.
+  - Sin migración: el esquema ya tenía las columnas y las restricciones (ADR-0067).
+  - Pruebas contra PostgreSQL:
+    - la anonimización en todos los módulos;
+    - la carrera con el checkout, en los dos órdenes;
+    - un cambio del carrito en curso;
+    - que no queda nada del comprador en sus tablas ni en las respuestas guardadas.
+- **Estado:** Aceptada (plan de T-132 aprobado el 2026-10-02, con sus 3 recomendaciones). ADR-0148: la anonimización del invitado borra también sus enlaces de acceso a los pedidos. ADR-0151 guarda en la orden cuándo concluyó (`concluded_at`), y su job anonimiza la orden y su envío juntos. ADR-0163: no toca la nota de los pagos y reembolsos manuales, que se conserva.
+
+---
+
+## ADR-0146 — Auditoría: consulta por cursor y archivo diario verificado, por día UTC
+
+- **Fecha:** 2026-10-02
+- **Contexto:** T-220 (UC-AUD-02 y 03). ADR-0037 fijó:
+  - la consulta con `audit.read`;
+  - el archivo en JSON Lines con gzip, un archivo por día, en un directorio privado;
+  - borrar solo después de verificar la exportación;
+  - las retenciones de 3 meses y 2 años, configurables.
+
+  Quedaban abiertos dónde se guardan los archivos sin hosting (ADR-0031), en qué día cae un registro, cómo se verifica, y qué pasa si una corrida falla a la mitad.
+- **Decisión:**
+  - **Consulta:** `GET /v1/admin/audit`, del más reciente al más antiguo, paginada por cursor (`occurredAt` e `id`) con el índice `(occurred_at, id)`:
+    - los filtros del contrato; `actorType` y `result` aceptan varios valores separados por comas;
+    - `action` es un código exacto o un prefijo terminado en `.*`;
+    - `to` con solo fecha incluye todo el día, y un `from` anterior a la retención no se rechaza;
+    - `AuditEntry` suma `reason` (ADR-0112);
+    - leer la auditoría no se audita.
+  - **Archivos:**
+    - viven en `AUDIT_ARCHIVE_DIR` (por defecto `storage/audit`): una carpeta privada (0700, con archivos 0600) que la API nunca sirve. La API no arranca si queda dentro de `IMAGE_STORAGE_DIR`, que se sirve en `/media`;
+    - la imagen de producción crea `/app/storage/audit`, y `/app/storage` va en un volumen persistente y en los respaldos;
+    - un archivo por día UTC, `audit-AAAA-MM-DD.jsonl.gz`: los registros guardan UTC (ADR-0037), así que el nombre dice exactamente qué instantes contiene;
+    - cada línea es un registro como lo muestra la API.
+  - **Retenciones configurables,** en meses calendario y sujetas a P-61:
+    - `AUDIT_RETENTION_MONTHS`: 3 por defecto, de 1 a 24;
+    - `AUDIT_ARCHIVE_RETENTION_MONTHS`: 24 por defecto, de 2 a 240, y mayor que la anterior, para no borrar un archivo antes de que sus registros salgan de la base.
+  - **Job `audit.archive`,** diario a las 3:00, hora de México:
+    1. borra lo que una corrida anterior dejó a medio escribir en `.writing/`;
+    2. toma los días UTC con registros anteriores al inicio del día de hace 3 meses, del más antiguo al más reciente, hasta 31 por corrida;
+    3. exporta cada día por lotes de 1,000 a un temporal; lo cierra y lo fuerza a disco (`fsync`); lo relee descomprimido y compara cada ID, en orden;
+    4. si coinciden, le da su nombre con un enlace que falla si el nombre ya existe, y fuerza la carpeta a disco;
+    5. borra los registros del día en un solo `DELETE … RETURNING id`, dentro de una transacción. Si los IDs no son exactamente los exportados, la transacción se revierte y no se borra nada;
+    6. un día que falla queda en el log y en la base, y la corrida sigue con el siguiente;
+    7. al final borra los archivos de días anteriores a hace 24 meses, por la fecha de su nombre.
+  - **Nunca se sobrescribe un archivo** (propuesta del usuario en el plan):
+    - qué días archivar lo decide la base, no los archivos;
+    - un día que vuelve a tener registros, por un borrado fallido o un respaldo restaurado, va a `audit-AAAA-MM-DD.2.jsonl.gz`, luego `.3`, y así;
+    - después de una falla, un registro puede quedar en dos archivos; se reconoce por su `id`.
+- **Alternativas consideradas:**
+  - **Días de México:** más cercanos a como el staff piensa las fechas, pero los registros guardan UTC.
+  - **Reemplazar el archivo de un día al exportarlo de nuevo:** perdería los registros que solo estuvieran en el anterior.
+  - **Verificar solo el conteo,** como dice ADR-0037: no detecta un archivo con otros registros.
+  - **Borrar el día completo sin comparar:** borraría un registro que llegara después de exportar.
+  - **Almacenamiento externo (tipo S3):** cuando haya hosting (ADR-0031).
+- **Consecuencias:**
+  - La base guarda entre 3 meses y 3 meses y un día de auditoría.
+  - Para leer un archivo: `gunzip -c audit-AAAA-MM-DD*.jsonl.gz`; si hay más de uno del día, los repetidos tienen el mismo `id`.
+  - Si la API se escala a varias instancias, el job necesitará un candado: hoy sus corridas no se superponen dentro de un proceso (ADR-0101).
+  - En Windows no se fuerza la carpeta a disco, porque no se puede abrir; en Linux sí.
+  - Sin migración: el índice `(occurred_at, id)` ya existía.
+- **Estado:** Aceptada (plan de T-220 aprobado el 2026-10-02, con sus 2 recomendaciones y 5 ajustes). ADR-0149 incluye estas retenciones en la política de conservación configurable, que valida cada operador.
+
+---
+
+## ADR-0147 — Imagen de producción sin el CLI de Prisma, e imagen de migración aparte
+
+- **Fecha:** 2026-10-02
+- **Contexto:** Paso 3 del Sprint 6. La imagen de producción pesaba 924 MB, y unos 300 MB eran del CLI de Prisma y lo que trae: Prisma Studio, `@prisma/dev`, `effect`, `@electric-sql` y `typescript`.
+  - ADR-0093 lo incluyó porque el adaptador transaccional de `nestjs-cls` lo declara como dependencia par (*peer dependency*) obligatoria, aunque su código nunca lo importa.
+  - npm instala por su cuenta las dependencias par de las dependencias de producción, así que ni `npm prune --omit=dev --omit=peer` lo quita.
+- **Decisión:**
+  - **`prisma` vuelve a `devDependencies`:** genera el cliente, aplica migraciones y corre los scripts `db:*`; la API no lo usa al ejecutarse.
+  - **Etapa `prod-deps`:** instala con `npm ci --omit=dev --legacy-peer-deps --ignore-scripts`, sin dependencias par por su cuenta ni scripts:
+    - el cliente de Prisma ya está compilado en `dist`;
+    - `argon2` trae sus binarios precompilados.
+
+    La imagen `production` copia ese `node_modules` y el `dist` de la etapa `build`, y conserva `/app/storage/images` y `/app/storage/audit`.
+  - **Imagen `migrate`:** un target del mismo `Dockerfile`, a partir de la etapa `build`, con `prisma/`, `prisma.config.ts` y el CLI.
+    - Solo ejecuta `prisma migrate deploy` contra el `DATABASE_URL` que recibe, y corre como `node`.
+    - Es la candidata de P-05: un paso único antes de arrancar cada versión de la API, con un usuario de PostgreSQL que puede cambiar el esquema (`DATABASE.md` §13).
+  - **Prueba de arranque en la CI** (paso 10, `.github/scripts/smoke-test-images.sh`):
+    - construye las dos imágenes, levanta un PostgreSQL 18 vacío, lo migra con `migrate` y arranca `production`;
+    - comprueba que el catálogo responde 200 y que el login de un email desconocido responde 401, porque pasa por `argon2`;
+    - si falta un paquete que la API solo recibía como dependencia par, la API no arranca y la prueba falla. Se comprobó quitando `pg` de la imagen.
+  - **Imagen base:** sigue siendo `node:24-bookworm-slim`.
+- **Alternativas consideradas:**
+  - **Conservar el CLI en la imagen de producción:** casi no se reduce.
+  - **Borrar a mano carpetas de `node_modules` después de podar:** frágil con cada versión de Prisma.
+  - **Un adaptador transaccional propio, sin la dependencia par:** descartado en ADR-0093.
+  - **Alpine o distroless:** ahorrarían algo más, pero en Alpine `argon2` necesita su binario para musl, y distroless no tiene shell para los scripts de operador.
+  - **Solo construir las imágenes en la CI, sin arrancarlas:** no detectaría una dependencia faltante.
+- **Consecuencias:**
+  - La imagen de producción pasa de 924 MB a 557 MB, y su `node_modules` de 450 MB a 170 MB. La de migración pesa 1.43 GB, pero solo corre como paso único.
+  - Una dependencia de ejecución que llegue solo como dependencia par de otra debe declararse en `dependencies`; si no, la prueba de arranque falla.
+  - **OpenSSL en `migrate`:**
+    - el aviso de Prisma sigue, y la imagen migra sin errores contra una base sin TLS;
+    - si se instala `openssl`, Prisma busca otro motor de migraciones al ejecutarse y falla por permisos;
+    - si una base con TLS lo exige al decidir P-05, ese motor tendrá que descargarse al construir la imagen.
+  - Los `overrides` de ADR-0091 siguen: el CLI se instala en desarrollo, y `npm audit` revisa todo el árbol.
+- **Estado:** Aceptada (plan del paso 3 del Sprint 6 aprobado el 2026-10-02, con sus 3 recomendaciones). Modifica ADR-0093.
+
+---
+
+## ADR-0148 — Enlace de acceso a los pedidos de invitado
+
+- **Fecha:** 2026-10-03
+- **Contexto:** T-186 (UC-ORD-05), que ADR-0077 dejó fuera del MVP con un diseño previsto: recuperación solo con el email, para el invitado que perdió el código de su pedido. El usuario pidió desarrollarla antes de planear el Sprint 7, como paso 4 del Sprint 6.
+  - Sigue sin haber frontend ni proveedor de correo real (P-24): el token se toma del correo en el capturador local, como en la recuperación de contraseña (ADR-0056).
+  - Ordering no puede importar los enlaces de un solo uso de Identity & Access (ADR-0005).
+- **Decisión:**
+  - **Contrato:**
+    - `POST /v1/orders/access-links` con `{ contactEmail }` responde siempre 202 sin cuerpo.
+    - `POST /v1/orders/access` con `{ token }` responde 200 con `{ contactEmail, orders }`.
+    - El staff puede usar los dos, como la consulta (ADR-0138).
+  - **La respuesta no espera el enlace:**
+    - la solicitud publica `OrderAccessRequested` fuera de una transacción, y su manejador en Ordering emite y envía el enlace en segundo plano (ADR-0098);
+    - así, ni la respuesta ni su tiempo dicen si el email tiene órdenes. Hoy nada más lo revela, a diferencia de las cuentas, que el registro expone (ADR-0062);
+    - el evento lleva el email solo en memoria; el bus registra en el log el tipo y el `eventId`, nunca el contenido.
+  - **Emisión, solo para un email con órdenes de invitado:**
+    - una orden anonimizada ya no tiene el email, y una orden de cliente con el mismo email no cuenta;
+    - invalida los enlaces pendientes del email y guarda el SHA-256 de un token de 256 bits, vigente `ORDER_ACCESS_LINK_TTL` (30 minutos por defecto, de 5 minutos a 2 horas);
+    - después del commit envía "Consulta tus pedidos" con `FRONTEND_BASE_URL/order-access?token=…`, una página nueva del frontend, como las de ADR-0117;
+    - sin órdenes no se guarda ni se envía nada, y un correo que falla queda en el log sin la dirección y no se reintenta (ADR-0110).
+  - **Uso, una sola vez:**
+    - dentro de su vigencia y mientras no se pida otro; si no, 400 `invalid-or-expired-token`, el error de los enlaces de Identity & Access;
+    - responde las 50 órdenes de invitado más recientes del email como `OrderSummary`, sin líneas ni dirección y con su pago y su envío; el detalle se consulta con el email y cada código (§15.5);
+    - las órdenes se leen en la misma transacción que marca el enlace como usado, así que un fallo lo deja usable;
+    - la fila del enlace se bloquea (`SELECT … FOR UPDATE`), así que dos usos simultáneos corren en serie y el segundo falla.
+  - **Tabla `order_access_tokens` en Ordering:** `id`, `contact_email` normalizado, `token_hash` único, `expires_at`, `used_at`, `invalidated_at` y `created_at`, con un índice por email. No tiene FK: el email no es una entidad.
+  - **Bloqueo advisory del email:**
+    - clase "ORDA" (`0x4F524441`) con el `hashtext` del email, en la emisión y en la anonimización del invitado;
+    - la emisión nunca deja un enlace para las órdenes de un invitado ya anonimizado, y dos solicitudes simultáneas nunca dejan dos enlaces vigentes.
+  - **Datos personales:**
+    - la tabla guarda el email, así que la anonimización del invitado borra sus enlaces en la misma transacción (ADR-0145);
+    - la limpieza diaria `ordering.cleanup-access-tokens`, a las 3:00, borra por lotes los enlaces vencidos, usados o reemplazados (ADR-0144).
+  - **Límites (ADR-0065, ADR-0102):**
+    - la solicitud, 3 por email y 10 por IP por hora (`RATE_LIMIT_ORDER_ACCESS_EMAIL` y `RATE_LIMIT_ORDER_ACCESS_IP`), con una clave nueva que cuenta el `contactEmail` del cuerpo por su huella;
+    - el uso comparte el presupuesto `guest-order` de la consulta y la recompra: 10 por IP en 15 minutos.
+  - **Shared kernel:** `OneTimeLink`, `isUsableLink`, `InvalidOrExpiredTokenError`, `newLinkToken`, `hashLinkToken` y `lifetimeInWords` pasan de Identity & Access al shared kernel, para que los dos contextos usen las mismas reglas de enlace.
+- **Alternativas consideradas:**
+  - **Un correo con la lista de códigos públicos:** sin tabla, token ni página, y con la misma seguridad, porque el correo de orden recibida ya lleva el código; pero no es un enlace de acceso.
+  - **Emitir y enviar antes de responder,** como la recuperación de contraseña: el tiempo de respuesta revelaría si el email tiene órdenes.
+  - **Guardar un enlace también para emails sin órdenes,** para igualar el trabajo: llenaría la tabla con emails de personas que no compraron.
+  - **Un enlace reutilizable durante su vigencia:** permitiría recargar la página, pero los demás enlaces del sistema son de un solo uso.
+  - **Una respuesta paginada:** un enlace de un solo uso no sirve para pedir más páginas.
+  - **Guardar solo la huella del email:** el uso necesita el email para buscar sus órdenes.
+- **Consecuencias:**
+  - UC-ORD-05 entra al MVP y T-186 pasa a DONE.
+  - ADR-0077 queda reemplazada en su decisión de no implementar el enlace; se implementa su diseño previsto con estos detalles. Siguen vigentes el retiro del contrato provisional y los correos de la orden sin enlaces (ADR-0074).
+  - El modelo de datos (ADR-0066) suma `order_access_tokens`: 39 tablas.
+  - Nuevo efecto en segundo plano en `API_SPEC.md` §2.5: si la API se cae antes de enviarlo, el invitado pide otro enlace.
+  - Un email con más de 50 órdenes de invitado ve las 50 más recientes; las demás las atiende el staff, que busca por email (ADR-0133).
+- **Revisar si:** existe frontend, que debe servir `/order-access` con `Referrer-Policy: no-referrer` (ADR-0117), o hay proveedor de correo real (P-24).
+- **Estado:** Aceptada (plan de T-186 aprobado el 2026-10-03, con sus 4 recomendaciones). Reemplaza parcialmente a ADR-0077 y modifica ADR-0066. ADR-0150: `OrderAccessRequested` se publica como volátil, sin guardarse, porque lleva el email.
+
+---
+
+## ADR-0149 — Plazos de conservación configurables, con valores por defecto
+
+- **Fecha:** 2026-10-03
+- **Contexto:** Revisa P-61 y ADR-0070. ADR-0070 diseñó el ciclo de los datos personales de órdenes y envíos con plazos configurables, pero "sin valor por defecto hasta su validación legal", y por eso T-232 quedó diferida.
+  - base-shop es una base sin entidad vendedora definida: cada operador tendrá su propia validación legal.
+  - Los plazos pueden cambiar con la ley (el reglamento de la ley de 2025 sigue pendiente) y pueden definirse después de empezar a operar.
+  - Hoy hay plazos fijos en el código: 30 días para los eventos de webhooks, los refresh tokens gastados y los carritos de invitado (ADR-0029). Solo la retención de la auditoría es configurable (ADR-0146).
+- **Decisión:**
+  - **Política de conservación configurable:** cada plazo que conserva o borra datos personales es una variable de entorno, validada al arrancar dentro de un rango, con valor por defecto y declarada en `.env.example`. Al arrancar, el log registra la política vigente.
+  - **Valores por defecto,** una elección técnica conservadora, no asesoría legal:
+
+    | Plazo | Variable propuesta | Por defecto |
+    |---|---|---|
+    | Fase operativa de los datos personales de órdenes y envíos, desde que la orden concluye (ADR-0145) | `PERSONAL_DATA_OPERATIONAL_MONTHS` | 12 meses |
+    | Fase de bloqueo, al terminar la operativa | `PERSONAL_DATA_BLOCKED_MONTHS` | 60 meses: los 5 años del Código Fiscal que cita ADR-0070 |
+    | Ciclo de conservación activo | `PERSONAL_DATA_RETENTION_ENABLED` | `true` |
+    | Anonimización de cuentas de clientes sin actividad | `INACTIVE_CUSTOMER_ANONYMIZATION_MONTHS` | Vacía: desactivada |
+    | Auditoría en la base y en archivos | `AUDIT_RETENTION_MONTHS`, `AUDIT_ARCHIVE_RETENTION_MONTHS` | 3 y 24 meses, ya configurables (ADR-0146) |
+    | Eventos de webhooks procesados | `PROCESSED_WEBHOOK_EVENT_RETENTION_DAYS` | 30 días |
+    | Refresh tokens vencidos o revocados | `SPENT_REFRESH_TOKEN_RETENTION_DAYS` | 30 días |
+    | Carritos de invitado sin actividad | `INACTIVE_GUEST_CART_RETENTION_DAYS` | 30 días |
+
+    El plan de T-232 fija los nombres y los rangos definitivos.
+  - **Plazos que se quedan como están:**
+    - las 24 horas de las respuestas guardadas por idempotencia, que son una regla del protocolo (ADR-0063) y no un plazo legal;
+    - las vigencias de los enlaces por correo, que ya son configurables (ADR-0117, ADR-0118, ADR-0148).
+  - **Con los valores por defecto:**
+    - el bloqueo empieza 12 meses después de que la orden concluye; solo oculta datos, así que se puede revertir;
+    - la anonimización automática, que es irreversible, empieza 6 años después.
+  - **Plazos calculados en cada corrida,** a partir de la fecha en que concluyó la orden. Si la ley cambia, el operador cambia la variable, y el plazo nuevo se aplica también a las órdenes existentes.
+  - **Salvaguardas:**
+    - un plazo fuera de su rango impide arrancar la API;
+    - el job procesa por lotes con un tope por corrida (ADR-0144), así que acortar un plazo por error no anonimiza todo en una sola corrida;
+    - cada transición se audita sin los valores (BR-PRIV-04).
+  - **Política visible:** T-232 agrega una ruta pública con la política vigente, para que el frontend muestre los plazos reales en el aviso de privacidad.
+  - **Validación legal por operador:** P-61 se cierra. Pasan a la lista "Antes de operar con clientes reales" de `PROJECT.md`, que cada operador resuelve con su especialista:
+    - las preguntas de ADR-0070;
+    - el texto del aviso de privacidad con los plazos;
+    - la presentación del plazo de entrega estimado (ADR-0083).
+- **Alternativas consideradas:**
+  - **Plazos sin valor por defecto (ADR-0070):** el ciclo queda sin implementar hasta que exista un operador.
+  - **Ciclo apagado por defecto:** más prudente ante un operador que no revisa nada, pero sin minimización de datos hasta que alguien lo encienda.
+  - **Una tabla de configuración que el staff edita desde la API:** permite cambiar sin desplegar, pero agrega endpoints, un permiso y auditoría de la configuración. Un cambio legal es raro, y conviene que pase por un despliegue deliberado.
+  - **Configurar también qué campos son datos personales:** los fija ADR-0067; cambiarlos es un cambio del modelo, no de un plazo.
+- **Consecuencias:**
+  - T-232 deja de estar diferida (TODO) y se propone para el Sprint 8. Incluye también:
+    - la anonimización de cuentas inactivas, desactivada por defecto;
+    - volver configurables los plazos fijos de ADR-0029.
+  - ADR-0070 queda modificada: los plazos tienen valores por defecto.
+  - Quedan abiertas 8 decisiones.
+  - Un operador que no valide los plazos opera con los valores por defecto; la lista "Antes de operar" se lo advierte.
+- **Revisar si:** se publica el reglamento de la ley de 2025, o un operador necesita plazos distintos por tipo de dato o de cliente.
+- **Estado:** Aceptada (análisis aprobado el 2026-10-03, con sus 4 recomendaciones). Modifica ADR-0070 y cierra P-61. ADR-0150 suma `DELIVERED_EVENT_RETENTION_DAYS` (7 días por defecto) a la política configurable; los eventos no llevan datos personales. ADR-0151 fija los nombres y los rangos de las variables, e implementa la parte a de T-232. ADR-0152 implementa la anonimización de cuentas inactivas, apagada por defecto, y la ruta pública con la política vigente.
+
+---
+
+## ADR-0150 — Entrega garantizada de eventos (outbox transaccional)
+
+- **Fecha:** 2026-10-03
+- **Contexto:** T-109 parte a, Sprint 7. ADR-0014 despachó los eventos en proceso, sin outbox, con la conciliación de pagos como red de seguridad. ADR-0098 amplió el riesgo aceptado: si un manejador falla o la API se cae después del commit, el efecto no ocurre.
+  - La conciliación está en T-192, bloqueada (P-31). Hoy, un `PaymentCaptured` perdido deja el pago capturado y la orden en PENDING_PAYMENT hasta expirar.
+  - Lo mismo pasa con el despacho y la entrega de los envíos, el reembolso completado, la restauración del carrito y los correos.
+  - ADR-0014 pide revisarse "si el negocio pasa a depender de una notificación".
+- **Decisión** (plan de T-109 parte a, con sus 4 recomendaciones):
+  - **Outbox en dos tablas de la plataforma:**
+    - `domain_events`: el evento completo en JSON, con sus fechas marcadas para que vuelvan como fechas; el dinero se guarda como su JSON;
+    - `event_deliveries`: una fila por manejador (`Clase.método`), con estado PENDING, DELIVERED o FAILED, intentos, próximo intento, reserva (`locked_until`), último error y fecha de entrega.
+
+    Un reintento repite solo el manejador que falló.
+  - **Se guardan con el cambio:**
+    - `publish` acumula los eventos en la transacción y los escribe al terminar su trabajo, antes del commit (`TransactionScope.beforeCommit`). Un rollback los descarta, y un paso anidado deshecho también;
+    - si guardarlos falla, la transacción se revierte;
+    - el código que publica no cambia, porque `publish` sigue siendo síncrono;
+    - fuera de una transacción, los guarda en una propia, en segundo plano;
+    - un evento sin manejadores no se guarda.
+  - **Despacho inmediato, como hoy:**
+    - después del commit, en segundo plano y en orden de publicación, cada manejador toma primero su entrega;
+    - recibe el evento como lo leería un reintento, así que el despacho inmediato y el reintento le dan los mismos valores;
+    - lo que ve el cliente no cambia.
+  - **Reintentos:** el job `platform.deliver-events` corre cada minuto.
+    - Toma hasta 100 entregas vencidas, del evento más viejo al más nuevo. Cada una la toma una sola instancia (`FOR UPDATE SKIP LOCKED`), con una reserva de 5 minutos.
+    - Son 8 intentos, con esperas de 1, 5 y 15 minutos, y de 1, 3, 6 y 12 horas: unas 22 horas en total. Después, FAILED.
+    - Una entrega nueva espera un minuto, para dejarla al despacho inmediato.
+    - Un intento que nunca terminó se vuelve a tomar al vencer su reserva. Si era el último, la entrega pasa a FAILED.
+    - La entrega a un manejador que ya no existe pasa a FAILED.
+  - **Al menos una vez:** si la API se cae entre el manejador y la marca de entregado, el manejador corre otra vez. Los manejadores de estado ya lo toleran, y también un reintento fuera de orden (ADR-0141). Un correo puede llegar dos veces en ese caso raro; se prefiere eso a perderlo.
+  - **Eventos volátiles:** `publishVolatile` conserva el despacho anterior, sin guardar ni reintentar. Es solo para eventos con datos personales cuya pérdida no hace daño. Hoy solo `OrderAccessRequested`, que lleva un email: si se pierde, el invitado pide otro enlace (ADR-0148). Así, la tabla de eventos nunca guarda datos personales, y una prueba e2e lo comprueba.
+  - **Errores guardados:** clase y mensaje, con la redacción del logger (ADR-0097) y hasta 500 caracteres. El log dice el intento y cuándo se reintenta.
+  - **Correos de la orden (BR-NTF-04):** un fallo del servidor de correo ya no se queda en una advertencia. Llega a la entrega, que lo reintenta.
+  - **Parte b, para el staff** (plan aprobado el 2026-10-03, con sus 4 recomendaciones):
+    - **Permiso nuevo `events.manage`:** para el Administrador, por migración, y el Superadministrador, implícito; el Operador no lo tiene.
+    - **`GET /v1/admin/event-deliveries`:** paginado (ADR-0036), con las FAILED por defecto y filtros por estado, tipo de evento y manejador. Cada entrega trae su evento completo, que nunca lleva datos personales.
+    - **Reintento de una entrega:** `POST …/{deliveryId}/retry`. La entrega FAILED vuelve a PENDING con 0 intentos, así que tiene otros 8, y el job la toma en el siguiente minuto. Responde 202, y otra en otro estado responde 409 `invalid-state-transition`. Se audita `events.retry-delivery`.
+    - **Reintento en bloque:** `POST …/retry`, con todas las FAILED de un tipo de evento o de un manejador, o todas. Responde cuántas reactivó y se audita una vez `events.retry-deliveries`, con el filtro.
+    - **Limpieza diaria `platform.cleanup-events`, a las 3:00:** borra por lotes los eventos cuyas entregas están todas en DELIVERED desde hace `DELIVERED_EVENT_RETENTION_DAYS` (7 días por defecto, de 1 a 90, ADR-0149). Las pendientes y las fallidas se conservan hasta entregarse. A diferencia de las otras limpiezas, el `DELETE` no vuelve a comprobar el lote: las entregas de esos eventos ya no cambian, porque el staff solo reintenta las fallidas.
+    - **Dónde vive:** en la plataforma (`EventDeliveriesModule`), porque las tablas son suyas y ningún módulo las lee, y aparte de `EventsModule`, que las pruebas del bus usan sin base de datos.
+- **Alternativas consideradas:**
+  - **Una sola tabla por evento:** un reintento repetiría también los manejadores que ya funcionaron, como el cambio de la orden o un correo.
+  - **Marcar la entrega en la transacción del propio manejador, o deduplicar los correos por `eventId`:** daría exactamente una vez, pero cada manejador tendría que conocer el outbox.
+  - **Guardar también los eventos con datos personales:** la anonimización y la limpieza tendrían que cubrir la tabla.
+  - **Hacer `publish` asíncrono para escribir al publicar:** obligaba a cambiar cada publicación, sin ganancia.
+  - **Una cola externa (Redis, RabbitMQ):** otro servicio que operar, sin hosting decidido (P-06).
+- **Consecuencias:**
+  - Una caída de la API después del commit ya no pierde efectos: el job los entrega en el siguiente minuto.
+  - El job funciona con varias instancias; el resto de los jobs sigue necesitando un candado (ADR-0029).
+  - Los eventos entregados se borran 7 días después, y los fallidos los consulta y reintenta el staff con `events.manage` (parte b).
+  - El modelo de datos (ADR-0066) suma `domain_events` y `event_deliveries`: 41 tablas.
+  - Los tests de integración del bus controlan el reloj y vacían el outbox antes de cada prueba.
+- **Revisar si:** el volumen de eventos hace crecer las tablas más de lo que limpia la parte b, o se ejecuta más de una instancia de forma regular.
+- **Estado:** Aceptada (planes de T-109 partes a y b aprobados el 2026-10-03, con sus 4 recomendaciones cada uno). Reemplaza ADR-0014 y modifica ADR-0098. ADR-0154 agrega dos eventos volátiles, `PasswordResetRequested` y `EmailVerificationRequested`, que llevan un email.
+
+---
+
+## ADR-0151 — Ciclo de conservación: bloqueo y anonimización automáticos
+
+- **Fecha:** 2026-10-03
+- **Contexto:** T-232 parte a, Sprint 8. ADR-0070 diseñó las tres fases de los datos personales de órdenes y envíos, y ADR-0149 les dio plazos configurables con valores por defecto; el plan de T-232 debía fijar los nombres y los rangos. Faltaba decidir:
+  - **desde cuándo contar:** la orden no guardaba cuándo concluyó (ADR-0145), y una SHIPPED cuyo envío volvió concluye sin cambiar de estado (ADR-0053);
+  - **qué ve cada quien** de una orden bloqueada;
+  - **cuántas órdenes** procesa cada corrida.
+- **Decisión** (plan de T-232 parte a, con sus 4 recomendaciones):
+  - **Fecha de conclusión en la orden:** `orders.concluded_at`, que mantiene el dominio en cada transición:
+    - DELIVERED concluye con la fecha de entrega; EXPIRED, al vencer; REFUNDED, al completarse el reembolso; CANCELLED sin pago, al cancelarse. Una CANCELLED con pago concluye con su reembolso (ADR-0145);
+    - una SHIPPED concluye cuando vuelve su envío: Shipping publica ahora `ShipmentReturned`, y Ordering guarda esa fecha sin cambiar el estado;
+    - un pago tardío que reabre una orden vencida o cancelada sin pago (ADR-0012, ADR-0133) borra la conclusión y el bloqueo;
+    - la migración llena la fecha de las órdenes que ya concluyeron. Para las SHIPPED con su envío devuelto, la lee una sola vez de `shipments`.
+  - **Bloqueo:** `orders.blocked_at` y `shipments.blocked_at`. Los datos se quedan en la base, ocultos:
+    - el comprador deja de ver la orden, como una anonimizada (ADR-0145). No aparece en `/v1/me/orders`, ni en la consulta o el enlace de acceso del invitado, y no se recompra (404);
+    - el staff la ve con `blockedAt`, `contactEmail` en `null` y la dirección como la de una anonimizada; el destino de su envío, igual;
+    - la búsqueda del staff por email no la encuentra; por número interno o código público, sí;
+    - una restricción de la base impide bloquear una orden que no concluyó.
+  - **Job `ordering.retention`,** diario a las 3:00, hora de México (UC-SYS-02):
+    - bloquea las órdenes que concluyeron hace `PERSONAL_DATA_OPERATIONAL_MONTHS` meses calendario o más, con sus envíos;
+    - anonimiza, bloqueadas o no, las que concluyeron hace la suma de los dos plazos, con el procedimiento de ADR-0067: la orden, su envío y los enlaces de acceso del email de un invitado. Las respuestas guardadas por idempotencia duran 24 horas (ADR-0063), así que para entonces ya no existen;
+    - cada corrida hace hasta 1,000 bloqueos y hasta 1,000 anonimizaciones, empezando por la orden que concluyó primero; el resto espera al día siguiente;
+    - cada orden va en su propia transacción: se bloquea con `SELECT … FOR UPDATE` y se revisa otra vez. La que falla queda en el log, y las demás siguen;
+    - audita `orders.block` y `orders.anonymize` con actor SYSTEM y sin los valores (BR-PRIV-04). La anonimización lleva como motivo el vencimiento del plazo;
+    - con `PERSONAL_DATA_RETENTION_ENABLED=false` no hace nada.
+  - **Nombres y rangos definitivos de ADR-0149:**
+
+    | Variable | Por defecto | Rango |
+    |---|---|---|
+    | `PERSONAL_DATA_RETENTION_ENABLED` | `true` | — |
+    | `PERSONAL_DATA_OPERATIONAL_MONTHS` | 12 | 1 a 120 |
+    | `PERSONAL_DATA_BLOCKED_MONTHS` | 60 | 0 a 240; con 0 se anonimiza al terminar la fase operativa |
+    | `SPENT_REFRESH_TOKEN_RETENTION_DAYS` | 30 | 1 a 365 |
+    | `INACTIVE_GUEST_CART_RETENTION_DAYS` | 30 | 1 a 365 |
+    | `PROCESSED_WEBHOOK_EVENT_RETENTION_DAYS` | 30 | 7 a 365, para cubrir los reintentos del proveedor de pagos |
+
+    Al arrancar, el log `RetentionPolicy` escribe en una línea la política vigente, sin datos personales.
+- **Alternativas consideradas:**
+  - **Calcular la conclusión en cada corrida** con las fechas de cada estado: la fecha de una SHIPPED devuelta está en Shipping, que Ordering no lee, y la consulta no tendría índice.
+  - **Contar desde que se colocó la orden:** más simple, pero una orden que tardó en concluir perdería parte de su fase operativa.
+  - **Ocultar al staff la orden entera:** el staff la necesita para operar, por ejemplo por sus montos, su pago y su envío. Ver los datos del comprador con un permiso propio llega en la parte b.
+  - **Un solo tope para bloquear y anonimizar:** muchos bloqueos pendientes retrasarían las anonimizaciones.
+- **Consecuencias:**
+  - El ciclo corre por defecto desde el despliegue: la primera corrida bloquea las órdenes que concluyeron hace más de 12 meses, hasta 1,000 por día.
+  - Ordering suma un manejador de `ShipmentReturned`, y Shipping publica tres eventos.
+  - El modelo de datos suma `orders.concluded_at`, `orders.blocked_at` y `shipments.blocked_at` (migración `20261004120000_ordering_retention`), con un índice parcial de las órdenes sin anonimizar por fecha de conclusión.
+  - Quedan para la parte b: el permiso auditado para consultar los datos bloqueados, las cuentas inactivas y la ruta pública con la política vigente.
+- **Revisar si:** un operador necesita bloquear antes de que la orden concluya, o las órdenes que concluyen cada día superan el tope de la corrida.
+- **Estado:** Aceptada (plan de T-232 parte a aprobado el 2026-10-03, con sus 4 recomendaciones). Implementa en parte ADR-0070 y ADR-0149. ADR-0152 completa T-232 con la consulta de los datos bloqueados.
+
+---
+
+## ADR-0152 — Consulta de datos bloqueados, cuentas inactivas y política pública
+
+- **Fecha:** 2026-10-03
+- **Contexto:** T-232 parte b, Sprint 8, después del bloqueo y la anonimización automáticos de ADR-0151.
+  - ADR-0070 reserva los datos bloqueados a un permiso propio de los administradores, con cada consulta auditada.
+  - ADR-0149 pide anonimizar las cuentas de clientes inactivos, desactivado por defecto, y publicar la política vigente para el aviso de privacidad.
+  - Faltaba decidir cómo se pide la consulta, qué cuenta como actividad, qué pasa con las órdenes de una cuenta inactiva y qué publica la ruta.
+- **Decisión** (plan de T-232 parte b, con sus 4 recomendaciones):
+  - **Consulta de los datos bloqueados (UC-ORD-11):**
+    - permiso nuevo `orders.read-blocked`. Lo tienen el Administrador, por migración, y el Superadministrador, implícito; el Operador no;
+    - `POST /v1/admin/orders/{orderId}/blocked-data` con `{ reason }`, de 1 a 500 caracteres: la reclamación o el requerimiento que se atiende. Es POST porque deja registro y porque el motivo no debe ir en la URL (ADR-0071);
+    - responde el email de contacto, la dirección y el destino del envío, como se guardaron;
+    - una orden que no está bloqueada, cuyos datos ya se ven, o una anonimizada, que ya no los tiene, responde 409 `invalid-state-transition`;
+    - se audita `orders.read-blocked-data` con el motivo y sin los valores, en la misma transacción: si la auditoría falla, no se responde nada.
+  - **Cuentas de clientes inactivos (UC-SYS-03):**
+    - la actividad es registrarse, iniciar sesión o renovar la sesión. Se guarda en `users.last_active_at`, y una renovación la escribe a lo más una vez al día. La migración la llena con el último inicio de sesión o, si no hay, con la creación de la cuenta;
+    - `INACTIVE_CUSTOMER_ANONYMIZATION_MONTHS`, de 12 a 240 meses, está vacía por defecto: la función queda apagada;
+    - el job `privacy.anonymize-inactive-customers` corre a diario a las 3:00. Toma hasta 1,000 clientes, activos o suspendidos, empezando por el que lleva más tiempo sin actividad. Cada uno va en su propia transacción, con la cuenta bloqueada con `SELECT … FOR UPDATE` y revisada otra vez, así que un cliente que inicia sesión mientras tanto se queda;
+    - anonimiza solo la cuenta, como UC-IAM-19: sus datos, sesiones, enlaces, direcciones y carritos. Sus órdenes siguen su propio ciclo (ADR-0151);
+    - a un cliente con una orden sin concluir se le deshace la anonimización y se omite (E-31);
+    - se audita `customers.anonymize` con actor SYSTEM y la inactividad como motivo;
+    - no se avisa por correo antes de anonimizar.
+  - **Política pública (UC-IAM-23):**
+    - `GET /v1/privacy/retention-policy`, pública, con `Cache-Control: public, max-age=3600`;
+    - publica los plazos que conservan o borran datos personales: el ciclo de las órdenes, las cuentas inactivas, la auditoría, los refresh tokens, los carritos de invitado y los eventos de webhooks. Los eventos de dominio quedan fuera porque no llevan datos personales;
+    - el log de arranque y la ruta leen la misma configuración.
+- **Alternativas consideradas:**
+  - **`GET` con el motivo en la consulta:** el motivo quedaría en los logs y los historiales.
+  - **Mostrar los datos en el detalle normal a quien tenga el permiso:** habría que auditar cada lectura del pedido, o ninguna.
+  - **Contar como actividad solo `last_login_at`:** un cliente que solo renueva su sesión parecería inactivo.
+  - **Anonimizar también las órdenes de la cuenta inactiva, como una solicitud ARCO:** borraría antes de tiempo los datos que el bloqueo conserva para reclamaciones.
+  - **Avisar por correo antes de anonimizar:** queda para cuando un operador lo necesite.
+- **Consecuencias:**
+  - T-232 queda terminada, y con ella el ciclo de ADR-0070.
+  - El catálogo tiene 17 permisos.
+  - El modelo de datos suma `users.last_active_at`, con el índice `(type, last_active_at)` (migración `20261004210000_identity_last_active_at`).
+  - Renovar la sesión escribe en `users` a lo más una vez al día por cuenta.
+- **Revisar si:** un operador necesita avisar antes de anonimizar una cuenta, o la ley pide otro tratamiento para las cuentas inactivas.
+- **Estado:** Aceptada (plan de T-232 parte b aprobado el 2026-10-03, con sus 4 recomendaciones). Completa ADR-0070 y ADR-0149, después de ADR-0151.
+
+---
+
+## ADR-0153 — Auditoría de seguridad y matriz de rutas como control permanente
+
+- **Fecha:** 2026-10-03
+- **Contexto:** T-310, Sprint 9. La API tiene muchos controles de seguridad, descritos en `SECURITY.md`, pero nunca se habían revisado juntos contra una referencia externa. Cómo se protege cada ruta solo se comprobaba al recibir una solicitud: el guard falla cerrado en `/v1/admin` y `/v1/me` (ADR-0111), pero nada avisaba de una ruta pública nueva sin límite propio, ni de un permiso equivocado.
+- **Decisión** (plan de T-310, con sus 5 recomendaciones):
+  - **Método:** revisión de cada ruta contra el OWASP API Security Top 10 (2023), contraste de cada afirmación de `SECURITY.md` con el código y una prueba, y una pasada única de Semgrep con su imagen oficial de Docker, sin agregarlo al repositorio ni a la CI.
+  - **Matriz de rutas como control permanente:** `test/security/route-matrix.e2e-spec.ts` lee las rutas de la aplicación con los metadatos que leen sus guards e interceptores (acceso, límites propios e idempotencia) y las compara con `test/security/route-matrix.ts`, revisada a mano. Una ruta nueva, o un cambio en cómo se protege, falla hasta revisarse y escribirse allí. La misma prueba llama a cada ruta protegida: 401 sin token, 403 al staff sin sus permisos y a los clientes en las administrativas, y 403 al staff en las de solo clientes.
+  - **Informe:** `docs/SECURITY_AUDIT.md`, con los hallazgos SA-01 en adelante, su categoría OWASP, su severidad (crítica, alta, media, baja o informativa) y su estado.
+  - **Qué se corrige:** las críticas, altas y medias, cada una con su prueba. Las bajas e informativas quedan como riesgo aceptado, con su razón, o como tarea nueva; se corrigen las que contradicen lo que dice `SECURITY.md` o provocan un 500. Una corrección que cambie el contrato o una decisión se presenta con su recomendación antes de implementarla.
+  - **Entrega en dos partes:** la a, con la matriz, el informe y las correcciones que no cambian contratos; la b, con las que necesitan diseño, y ADR-0154 si alguna cambia una decisión vigente.
+  - **Correcciones de la parte a** (bajas, sin hallazgos críticos ni altos):
+    - `Cache-Control: no-store` en las respuestas públicas de carritos, cotización y órdenes de invitado, también en sus errores (`@NoStore()`);
+    - el guard de autorización y el filtro de errores comparan `/v1/admin` y `/v1/me` sin distinguir mayúsculas, como enruta Express;
+    - helmet y CORS van antes del rechazo de tipos de contenido, así que el 415 lleva sus encabezados;
+    - `page` va de 1 a 1,000,000, y `availableMax` llega al entero mayor de PostgreSQL: fuera de rango, 400 en lugar de 500;
+    - el parser JSON rechaza con 400 un cuerpo anidado a más de 32 niveles, antes de la validación y de la huella de idempotencia, que son recursivas;
+    - longitudes máximas en los filtros `q` y `sku` del staff, y de 1 a 50 roles por lista;
+    - las contraseñas que se comparan admiten 256 caracteres tal como se escriben, porque la política cuenta 64 después de NFKC (ADR-0115);
+    - Docker Compose publica sus puertos solo en `127.0.0.1`;
+    - la API no arranca si `IMAGE_STORAGE_DIR` es la carpeta de trabajo o la contiene.
+- **Alternativas consideradas:**
+  - **Revisión manual sin control permanente:** el resultado envejece con la siguiente ruta nueva.
+  - **Comprobar solo la configuración, sin llamar a las rutas:** no detecta un guard que no se aplique.
+  - **Agregar Semgrep a la CI:** con 2 resultados en 690 archivos, ninguno del código, no compensa el tiempo de cada corrida ni una herramienta más que mantener.
+  - **Activar el enrutado que distingue mayúsculas en Express:** `/V1/ADMIN` respondería 404, un cambio de contrato sin ganancia frente a comparar sin distinguirlas.
+- **Consecuencias:**
+  - Agregar o cambiar una ruta exige actualizar la matriz (`DEVELOPMENT_GUIDE.md`), y quien revisa el pull request ve el cambio de protección en el diff.
+  - Las 100 rutas protegidas se prueban sin credenciales en cada corrida de la CI.
+  - Quedan 5 hallazgos medios y 3 bajos para la parte b, y un bajo y un informativo pospuestos con el hosting (P-06).
+- **Revisar si:** cambia el OWASP API Security Top 10, se agrega otro tipo de autenticación, o una ruta deja de poder clasificarse con la matriz.
+- **Estado:** Aceptada (plan de T-310 aprobado el 2026-10-03, con sus 5 recomendaciones). Implementada en la parte a de T-310. Las correcciones de la parte b, que cambian decisiones, están en ADR-0154.
+
+## ADR-0154 — Correcciones de la auditoría de seguridad que cambian decisiones
+
+- **Fecha:** 2026-10-03
+- **Contexto:** T-310, parte b. La auditoría (ADR-0153, `SECURITY_AUDIT.md`) dejó 5 hallazgos medios y 3 bajos que necesitan diseño, y varios contradicen decisiones vigentes:
+  - los límites propios reemplazan al general por IP (ADR-0102);
+  - el login limita por email antes de comprobar las credenciales (ADR-0065, ADR-0114);
+  - quien tiene `staff.manage` puede darse cualquier permiso (ADR-0112, ADR-0116);
+  - el correo acepta conexiones sin cifrar (ADR-0110);
+  - la recuperación y el reenvío envían el correo dentro de la solicitud (ADR-0117, ADR-0118).
+- **Decisión** (recomendaciones de la parte b, aprobadas):
+  - **Límite general siempre (SA-01):** las 100 solicitudes por minuto por IP cuentan en toda ruta, y los límites propios se suman a ellas. Los límites propios cuentan por claves que elige el cliente, como el carrito o el email, así que sin el general no había tope por IP. Los webhooks siguen sin límite (ADR-0071).
+  - **Órdenes de invitado por email (SA-02):** `place-order-email` permite 5 órdenes de invitado por email de contacto por hora (`RATE_LIMIT_PLACE_ORDER_EMAIL`), además de las 10 por carrito en 10 minutos. Acota los correos "Recibimos tu pedido" que alguien puede mandar a un email ajeno. El stock apartado lo acotan este límite y el general por IP.
+  - **Nadie da lo que no tiene (SA-03, BR-USR-20):**
+    - dar de alta a un miembro del staff, o agregarle roles, exige tener todos los permisos de esos roles;
+    - el rol superadministrador solo lo asigna un superadministrador, aunque otro rol tenga todos los permisos;
+    - crear un rol, o agregarle permisos, exige tener esos permisos;
+    - reactivar a un miembro del staff cuenta como darle sus roles a quien reactiva, que recibe su contraseña temporal;
+    - quitar roles o permisos y suspender no tienen esa restricción, porque no dan nada a nadie; suspender una cuenta comprometida debe seguir siendo posible;
+    - la respuesta es 403 `forbidden`, auditado como cualquier acceso denegado (ADR-0100).
+  - **Login sin bloqueo por email (SA-04):** el login deja de limitar los fallos por email, y se elimina `RATE_LIMIT_LOGIN_EMAIL`.
+    - Comprobado antes de las credenciales, ese límite dejaba a cualquiera impedir que el titular entrara, el bloqueo que ADR-0065 rechaza.
+    - Comprobado después, no frenaría a nadie, porque la contraseña correcta entraría igual.
+    - Quedan los 20 intentos fallidos por IP en 15 minutos, comprobados antes de las credenciales, y la política de contraseñas de 15 caracteres sin contraseñas comunes (ADR-0115).
+  - **Cambio de contraseña (SA-15):** 5 contraseñas actuales incorrectas por usuario en 15 minutos (`RATE_LIMIT_PASSWORD_CHANGE`), con `FailedAttemptLimiter`, contra quien las prueba con un token robado. Una contraseña nueva que no cumple la política no cuenta.
+  - **Correo cifrado en producción (SA-05):**
+    - `FRONTEND_BASE_URL` debe usar `https`, o la API no arranca;
+    - el SMTP exige TLS con certificado verificado, con STARTTLS obligatorio o TLS desde el inicio en el puerto 465; si el servidor no lo ofrece, el correo no se envía;
+    - la autenticación SMTP se agrega con el proveedor (P-24).
+  - **Recuperación y reenvío en segundo plano (SA-16):**
+    - `POST /v1/auth/password-reset/request` y `POST /v1/auth/email-verification/resend` responden 202 en cuanto validan la solicitud;
+    - publican un evento volátil, `PasswordResetRequested` o `EmailVerificationRequested`, cuyo manejador emite y envía el enlace, como el enlace de acceso a los pedidos (ADR-0148);
+    - los eventos llevan el email, así que no se guardan ni se reintentan (ADR-0150): si se pierde uno, la persona pide otro enlace.
+  - **Texto de la gente en los correos (SA-17):**
+    - los nombres y la dirección que alguien escribió se citan en una línea, sin caracteres de control ni invisibles, y sin enlaces (`emailSafeText`);
+    - un punto antes de una letra y los dos puntos de un esquema llevan un espacio después (`tienda. com`, `https: //`): se leen igual, pero ningún cliente de correo los vuelve clicables;
+    - se aplica al escribir el correo, sin cambiar lo que se guarda ni lo que acepta la API.
+- **Alternativas consideradas:**
+  - **Contar los fallos del login por email e IP juntos:** el titular quedaría fuera si comparte la IP con quien ataca, y frena poco más que el límite por IP.
+  - **Comprobar el límite por email después de las credenciales:** no frena a nadie, y respondería 429 a una contraseña equivocada cuando la correcta funcionaría.
+  - **Sumar el límite general solo a algunas rutas:** cada ruta nueva con límite propio dependería de que alguien lo recuerde.
+  - **Rechazar al registrar los nombres con saltos de línea o enlaces:** cambia el contrato y no cubre los datos ya guardados; además, un punto entre palabras es válido en nombres y calles.
+  - **Guardar el evento de la recuperación en la outbox para reintentarlo:** guardaría el email en la tabla de eventos (ADR-0150).
+  - **Que solo un superadministrador gestione al staff:** dejaría sin uso `staff.manage`, que ADR-0112 permite dar a otros roles.
+- **Consecuencias:**
+  - Las rutas con límite propio también gastan el presupuesto general de su IP; un cliente normal no llega a 100 solicitudes por minuto.
+  - Un ataque a una cuenta desde muchas IP solo lo frenan el límite por IP y la política de contraseñas.
+  - Con `staff.manage` y sin ser superadministrador, nadie puede reactivar, dar de alta ni agregar roles con más permisos que los suyos; sí puede suspender o quitar roles.
+  - Producción no arranca con un `FRONTEND_BASE_URL` `http`, y un servidor SMTP sin TLS deja los correos sin enviar, con el código de error en el log.
+  - La recuperación y el reenvío ya no esperan el correo: un fallo solo queda en el log (ADR-0110).
+  - SA-05 queda parcial hasta P-24, que decide la autenticación SMTP.
+- **Revisar si:** se agrega un segundo factor o un CAPTCHA, con los que un límite por email podría volver sin bloquear al titular; se elige el proveedor de correo (P-24); o la API pasa a varias instancias (ADR-0065).
+- **Estado:** Aceptada (recomendaciones de la parte b de T-310 aprobadas el 2026-10-03). Modifica ADR-0065, ADR-0102, ADR-0110, ADR-0112, ADR-0114, ADR-0116, ADR-0117 y ADR-0118.
+
+## ADR-0155 — Contrato de la API comprobado y documento OpenAPI versionado
+
+- **Fecha:** 2026-10-03
+- **Contexto:** T-320, Sprint 9, paso 2. ADR-0096 genera el OpenAPI desde el código y solo lo sirve en local. `API_SPEC.md` pide que el documento generado coincida con él, pero nada lo comprobaba, y el documento no estaba en el repositorio. Al compararlos aparecieron diferencias:
+  - 10 rutas no estaban en las tablas de resumen de `API_SPEC.md`: geografía, auditoría, entregas de eventos, privacidad y las tres de recompra;
+  - Swagger deja que la respuesta de un manejador reemplace la de su controlador con el mismo estado. Por eso, en OpenAPI, `/v1/me/password` y `/v1/me/email` perdían el 401 `unauthenticated`, y la captura manual y el reembolso manual, su 403 `forbidden`;
+  - tres rutas no documentaban ningún error, y el reintegro de stock no documentaba los de idempotencia.
+- **Decisión** (plan de T-320, con sus 5 recomendaciones):
+  - **Dos partes:** la a, con los controles automáticos y el documento versionado; la b, con la revisión manual de descripciones, ejemplos y errores ruta por ruta.
+  - **Prueba de contrato** (`test/api-contract.e2e-spec.ts`), dentro de las e2e de la CI:
+    - **`API_SPEC.md`:** las tablas de resumen de cada sección (`| Método | Ruta | Acceso | UC |`) listan exactamente las rutas de la aplicación. Una fila marcada "pendiente" es una ruta por construir, que todavía no debe existir. La columna de acceso coincide con lo que exige cada ruta, incluido `Idempotency-Key`; "Solo cliente" también describe una ruta de cuenta que el staff no puede usar para comprar.
+    - **Documento OpenAPI:**
+      - una operación por ruta, con resumen y una respuesta de éxito con esquema, salvo 202 y 204;
+      - en todas, los errores comunes;
+      - cada respuesta de error lista tipos del catálogo con su estado, una vez cada uno, con el esquema `ProblemDetails`;
+      - la autenticación y los accesos denegados siguen la matriz de rutas de ADR-0153: `bearer` y 401 en las protegidas; 403 `forbidden` en las de staff y en las de solo clientes; `password-change-required` donde aplica; `staff-cannot-purchase` en las de compras;
+      - `Idempotency-Key` y sus tres errores, solo en las rutas idempotentes.
+  - **Documento versionado:** `docs/openapi/v1.json` es el documento de `v1`, con las claves ordenadas para que sus cambios se lean línea por línea. La prueba lo compara con el que genera la aplicación, y `npm run openapi:update` lo reescribe.
+  - **Correcciones de la parte a:**
+    - `@ApiProblemResponses` en un controlador se suma a los tipos de cada manejador, sin repetir ninguno;
+    - `@Idempotent` documenta los tres errores de idempotencia;
+    - se documentan los errores de las tres rutas que no tenían;
+    - las tablas de `API_SPEC.md` incluyen las 10 rutas que faltaban.
+  - **Ejemplos:** por campo, solo donde el formato no se deduce del esquema, en el comentario de la propiedad del DTO. Se agregan en la parte b.
+  - **Diferencias:** manda `API_SPEC.md`, salvo que un ADR posterior la haya cambiado; entonces se corrige el documento. Una corrección que cambie el contrato se presenta antes de implementarla.
+- **Alternativas consideradas:**
+  - **Un script y un job propio en la CI con `git diff --exit-code`:** tendría que arrancar la API con base de datos en otro job.
+  - **Un snapshot de Jest:** el documento quedaría en `__snapshots__`, sin una ruta estable para leerlo ni compartirlo.
+  - **Comparar las descripciones de OpenAPI con el texto de `API_SPEC.md`:** el lenguaje no se compara de forma automática; queda para la revisión manual.
+  - **Servir el documento en producción:** ADR-0096 lo descartó.
+- **Consecuencias:**
+  - Un cambio en un DTO, una descripción o un error obliga a regenerar `v1.json`, así que el cambio del contrato se ve en el diff del pull request.
+  - Una ruta nueva va en la tabla de resumen de su sección de `API_SPEC.md`, además de la matriz de rutas.
+  - Regenerar el documento necesita Docker, como cualquier prueba e2e.
+- **Revisar si:** aparece `v2`, cambia la forma de las tablas de `API_SPEC.md`, o `@nestjs/swagger` cambia cómo combina las respuestas de un controlador y sus manejadores.
+- **Estado:** Aceptada (plan de T-320 aprobado el 2026-10-03, con sus 5 recomendaciones). Implementada en la parte a de T-320; modifica ADR-0096. Parte b (plan aprobado el 2026-10-03, con sus 5 recomendaciones): la prueba exige además una descripción en toda operación, en todo parámetro y en cada campo de los cuerpos que envía el cliente, también los anidados; cada parámetro de ruta se describe una sola vez, por su nombre, en `PATH_PARAMETERS` (`api-docs.ts`), porque significa lo mismo en todas las rutas; los IDs que son UUID declaran `format: uuid`; y las descripciones publicadas en inglés pasan al español. La revisión de los errores de cada ruta contra `API_SPEC.md` no encontró diferencias después de la parte a. Seguimiento (2026-10-05, huecos G-10 y G-11 que encontró el equipo de la SPA de administración): el documento no declaraba los campos de `CursorMetaDto` ni los parámetros `cursor` y `limit` de auditoría y movimientos de stock, porque estaban en `cursor.ts` y el plugin solo lee los archivos `*.dto.ts`; tampoco declaraba `quantity` de `AdjustmentDto`, que el plugin omite por su `@Min(-MAX_STOCK_QUANTITY)`. Las clases pasan a `cursor.dto.ts`, `quantity` declara su esquema, y `page`, `pageSize` y `limit` dejan de figurar como obligatorios. La prueba de contrato compara ahora los campos que valida el pipe en cada cuerpo y consulta con los del documento, y rechaza objetos de respuesta sin campos. El contrato de `API_SPEC.md` no cambia.
+
+## ADR-0156 — Detección de secretos en worktrees de git, sin falsos aprobados
+
+- **Fecha:** 2026-10-03
+- **Contexto:** Seguimiento de T-310. En un worktree de git (como los de `.claude/worktrees/`), `.git` es un archivo que apunta a una ruta absoluta del equipo, `<repositorio>/.git/worktrees/<nombre>`. El montaje de ADR-0119 (`-v .:/repo:ro`) solo lleva al contenedor el directorio de trabajo, así que git no encuentra el repositorio (`fatal: not a git repository`). gitleaks registra el error (`stderr is not empty`), revisa 0 commits, dice "no leaks found" y termina con 0: un falso aprobado, tanto de los cambios preparados como del historial. ADR-0119 descartó un script de Node porque Docker resolvía la ruta relativa en todos los sistemas; eso solo vale fuera de un worktree.
+- **Decisión:**
+  - **`scripts/secrets-scan.ts`** arma y corre el `docker run`; Node 24 ejecuta TypeScript sin compilar. `package.json` sigue fijando la imagen por digest y los argumentos de gitleaks, sin cambios: `node scripts/secrets-scan.ts <imagen> git /repo <flags>`.
+  - **Montajes:** el script pregunta a git por el directorio de trabajo, el directorio de git y el compartido (`git rev-parse --show-toplevel --git-dir --git-common-dir`). Monta el de trabajo en `/repo` y el compartido en `/git`, los dos en solo lectura, y pasa `GIT_DIR` y `GIT_WORK_TREE=/repo`. `GIT_DIR` es el directorio de git dentro de `/git`: `/git` en un clon normal y `/git/worktrees/<nombre>` en un worktree.
+    - Un clon normal sigue el mismo camino, así que la CI prueba el mismo código que un worktree.
+    - `safe.directory=*` va en variables de entorno de git. La imagen ya lo trae en su configuración global; así no depende de ella.
+  - **Falla cerrado:**
+    1. antes de escanear, git dentro del contenedor debe leer el mismo `HEAD` que en el equipo; si no, termina con 1 sin correr gitleaks;
+    2. si gitleaks registra `stderr is not empty`, termina con 1 aunque gitleaks diga "no leaks found". gitleaks registra así todo error de git, salvo los avisos que considera inofensivos.
+  - **Sin shell:** Node llama a `git` y a `docker` directamente, así que las rutas de Windows no pasan por cmd ni por la conversión de rutas de Git Bash.
+  - **Test:** `test/repository/secrets-scan.spec.ts` comprueba, sin Docker:
+    - los montajes y las variables de un clon normal en Linux, como en la CI, y de un worktree en Windows y en Linux;
+    - que todo montaje sea de solo lectura, y que una coma en la ruta no rompa `--mount`;
+    - que se rechace un directorio de git fuera del compartido;
+    - que la salida real de gitleaks con un error de git cuente como fallo, y que sus avisos inofensivos no;
+    - que los dos scripts de `package.json` pasen por `scripts/secrets-scan.ts` con `/repo`, y que la imagen siga solo en `package.json`.
+- **Alternativas consideradas:**
+  - **Solo hacer fallar el escaneo en un worktree:** obligaría a escanear desde el clon principal, que tiene otra rama y otros cambios preparados.
+  - **Agregar los montajes al comando de `package.json`:** las rutas absolutas cambian por equipo, y `$(git rev-parse …)` no funciona en cmd ni en PowerShell.
+  - **Montar la carpeta del clon principal en lugar del directorio de trabajo:** monta de más, y la ruta de Windows que guarda el archivo `.git` (`C:/Projects/…`) sigue sin existir en el contenedor.
+  - **Revisar solo la salida de gitleaks:** depende de un texto que puede cambiar con una versión nueva; la comprobación del `HEAD` no depende de gitleaks.
+  - **Instalar gitleaks en el equipo:** cada sistema operativo necesita su binario, y la versión ya no la fija el digest (ADR-0119).
+- **Consecuencias:**
+  - `npm run secrets:scan` funciona igual en un clon normal y en un worktree, desde PowerShell, Git Bash y Linux, y un escaneo que no lee el repositorio ya no pasa.
+  - Cada revisión arranca dos contenedores, la comprobación del `HEAD` y gitleaks: cerca de un segundo más.
+  - Actualizar gitleaks sigue igual: se cambian los dos scripts de `package.json`. Si una versión nueva cambia el texto `stderr is not empty`, la comprobación del `HEAD` sigue cubriendo los montajes.
+  - `npm run lint:code` revisa también `scripts/`.
+  - Modifica ADR-0119 en el montaje, y adopta la alternativa del script de Node que ese ADR descartó.
+- **Revisar si:** gitleaks empieza a terminar con error cuando git falla, o git cambia cómo guarda los worktrees.
+- **Estado:** Aceptada (pedida por el usuario el 2026-10-03 como seguimiento de T-310). Modifica ADR-0119.
+
+## ADR-0157 — Cobertura de toda la suite con umbral en la CI, y prueba de los rellenos de datos
+
+- **Fecha:** 2026-10-04
+- **Contexto:** T-300, Sprint 9, paso 3. ADR-0030 no fijó un porcentaje mínimo de cobertura al inicio. `npm run test:cov` medía solo las pruebas unitarias, y cada suite cubre a propósito una parte de `src/`: los repositories se prueban en integración y los controladores en las e2e, así que ninguna, medida sola, dice qué queda sin probar. La suite e2e tenía `test/` como directorio raíz, y su cobertura no veía `src/`. Los rellenos de `orders.concluded_at` y `users.last_active_at` (T-232) no tenían prueba: las pruebas migran una base vacía.
+- **Decisión** (plan de T-300, con sus 5 recomendaciones):
+  - **Cobertura de toda la suite:** las tres corridas de Jest (unitarias, integración y e2e) escriben su `coverage-final.json` en `coverage/<suite>/`. `scripts/coverage.ts` los une con las bibliotecas de Istanbul (`istanbul-lib-coverage`, `istanbul-lib-report` e `istanbul-reports`, dependencias directas de desarrollo), escribe un resumen y un informe HTML en `coverage/merged/` y falla bajo los umbrales, o si falta el archivo de alguna suite.
+    - `npm run test:cov` corre las tres suites con cobertura y después `npm run coverage:check`.
+    - En la CI, los pasos 5 y 6 corren las suites con `--coverage`, y un paso más, después de las e2e, corre `npm run coverage:check`.
+  - **Umbrales globales,** tomados de la cobertura medida al terminar T-300 y redondeados hacia abajo: 98% de sentencias, 84% de ramas, 99% de funciones y 99% de líneas. Valen para el total, no por archivo ni por suite.
+  - **Qué se mide:** `src/` sin sus pruebas, sin el cliente generado de Prisma, sin `src/main.ts` y sin `src/scripts/`. El arranque y los scripts de operación se prueban al correrlos (la prueba de humo de las imágenes y `npm run geo:import`), no con Jest. Las tres configuraciones miden los mismos archivos, y `test/repository/coverage.spec.ts` lo comprueba.
+  - **Directorio raíz de las e2e:** pasa de `test/` a la raíz del repositorio, con `roots: ["<rootDir>/test"]`, para que su cobertura vea `src/`.
+  - **Rellenos de datos:** `test/integration/migration-database.ts` crea una base propia en el PostgreSQL de las pruebas y le aplica las migraciones anteriores a la que se prueba. La prueba inserta filas como eran entonces, aplica la migración, revisa las filas y borra la base. `migration-backfills.int-spec.ts` prueba así los dos rellenos de T-232.
+  - **Huecos:** se revisó cada línea sin cubrir. Las que son lógica tienen prueba ahora: carreras con claves foráneas en los repositories, fallos del outbox y del registro de auditoría, el límite de memoria del contador de intentos fallidos, cursores con un ID inválido, el detalle de un producto con categorías e imágenes, y otras. Las demás quedan sin cubrir, justificadas:
+    - el `throw error` que relanza un error que no se esperaba, después de reconocer los conocidos;
+    - las invariantes defensivas que solo existen para el compilador;
+    - las funciones de los decoradores de los DTO, que class-validator y class-transformer llaman solo cuando llega el campo;
+    - lo que solo corre en Linux, como sincronizar la carpeta de los archivos de auditoría, que la CI sí cubre.
+  - **Código muerto:** el interceptor de idempotencia tenía dos respaldos que Express nunca alcanza: el código de la respuesta según `@HttpCode` y la ruta según la URL. Express fija los dos antes de cualquier interceptor, así que se borraron.
+- **Alternativas consideradas:**
+  - **Un umbral por suite:** cada suite cubre su parte a propósito; exigirlo obligaría a duplicar pruebas.
+  - **Un umbral por archivo:** un archivo corto con un relanzamiento sin probar haría fallar la CI.
+  - **Un servicio externo de cobertura (Codecov, Coveralls):** otra cuenta y otro token, sin necesidad.
+  - **`nyc merge` o `c8`:** otra herramienta de línea de comandos; las bibliotecas de Istanbul son las que ya usa Jest.
+  - **Una sola corrida con `projects` de Jest:** las suites tienen preparaciones distintas (Testcontainers, `--runInBand`), y la CI corre cada una en su paso.
+  - **Probar los rellenos con `prisma migrate deploy`:** aplica todas las migraciones pendientes juntas, sin detenerse antes de una.
+- **Consecuencias:**
+  - Código nuevo sin probar puede dejar la cobertura bajo un umbral y hacer fallar la CI; el chequeo dice qué métrica y cuánto. Al fijarlos, el margen era pequeño en funciones (99.10%) y en ramas (84.12%): tres funciones nuevas sin probar ya hacen fallar la CI. Dos corridas completas cubrieron exactamente las mismas sentencias, ramas y funciones.
+  - Medir la cobertura instrumenta el código: las suites tardan algo más.
+  - Una migración que llena columnas de filas existentes se prueba con `MigrationDatabase` (`DEVELOPMENT_GUIDE.md`).
+  - Modifica ADR-0030, que no fijaba un porcentaje mínimo, y ADR-0105 en los pasos 5 y 6.
+- **Revisar si:** la cobertura sube de forma estable (se suben los umbrales), una suite se divide en otra corrida, o Jest cambia el formato de su cobertura.
+- **Estado:** Aceptada (plan de T-300 aprobado el 2026-10-04, con sus 5 recomendaciones). Modifica ADR-0030 y ADR-0105.
+
+## ADR-0158 — Cierre del proyecto como MVP
+
+- **Fecha:** 2026-10-04
+- **Contexto:** Review del Sprint 9. El backlog ya no tiene tareas sin bloquear. Quedan:
+  - T-192, el adaptador de PayPal semiimplementado, con la conciliación de pagos y el reintento de reembolsos fallidos;
+  - T-191, su verificación, bloqueada por P-31 y por la falta de cuenta y sandbox;
+  - T-193 (Mercado Pago y Stripe) y T-200 (promociones), ya diferidas;
+  - T-330, el despliegue, sin hosting (ADR-0031).
+
+  Las 8 decisiones abiertas dependen del hosting, de PayPal, de validaciones externas o del negocio, y todavía no hay una entidad que vaya a usar el proyecto.
+- **Decisión** (del usuario, en la review del Sprint 9):
+  - **El MVP es lo construido hasta el Sprint 9:** la API del alcance de `PROJECT.md` (§3), en el entorno local (ADR-0031).
+  - **Pagos en el MVP:** el puerto `PaymentGateway` con el método manual, que sigue siendo solo para pruebas (ADR-0040, ADR-0055). Ningún proveedor de pago en línea entra en el MVP.
+  - **Fuera del MVP, hasta que una entidad quiera usar el proyecto:**
+    - las tareas T-191, T-192, T-193, T-200 y T-330, todas en DEFERRED;
+    - las decisiones P-05, P-06, P-07, P-13, P-14, P-24, P-31 y P-69, que siguen abiertas sin bloquear nada de lo construido.
+  - **Sin sprints nuevos:** `SPRINT.md` queda sin sprint actual.
+  - **Dependabot:** se pausan las actualizaciones de versión, con `open-pull-requests-limit: 0` en npm y en GitHub Actions. Las alertas y las actualizaciones de seguridad siguen activas: tienen su propio límite y no dependen de esa opción.
+  - **Para retomarlo:**
+    1. La entidad que use el proyecto resuelve la lista de "Antes de operar con clientes reales" (`PROJECT.md` §9) y las decisiones abiertas que le apliquen.
+    2. Se quita la pausa de Dependabot y se ponen al día las dependencias.
+    3. Una revisión contra los ADR, como el paso 0 de cada sprint.
+    4. El primer sprint se planea con las tareas diferidas que esa entidad necesite.
+- **Alternativas consideradas:**
+  - **Preparar las decisiones para operar (hosting, correo, secretos y observabilidad):** dependen de quién opere el proyecto y de su presupuesto.
+  - **Construir el adaptador de PayPal sin verificarlo (T-192):** sin cuenta ni sandbox se desactualizaría antes de poder probarlo, como ya advertía ADR-0040.
+  - **Preparar varias instancias** (bloqueos en los jobs, contadores compartidos del rate limit): solo sirve con un hosting de más de una instancia.
+  - **Dejar Dependabot como estaba:** abriría cada semana pull requests de versiones que nadie revisaría.
+  - **Apagar Dependabot por completo:** dejaría de proponer las correcciones de seguridad.
+- **Consecuencias:**
+  - El MVP no cobra a clientes reales: el pago manual es solo para pruebas, y no hay proveedor en línea.
+  - Las rutas de PayPal siguen marcadas como pendientes en `API_SPEC.md`, y el webhook responde 404 mientras PayPal no esté habilitado (§19).
+  - Las dependencias se atrasan mientras dure la pausa. Las vulnerabilidades siguen llegando como pull requests de seguridad, que pasan por la CI.
+  - Modifica ADR-0018 (alcance del MVP), ADR-0040 (PayPal) y ADR-0106 (Dependabot), y resuelve el pendiente de ADR-0013 sobre qué proveedores entran en el MVP.
+- **Revisar cuando:** una entidad quiera usar el proyecto.
+- **Estado:** Aceptada (decidida por el usuario el 2026-10-04, en la review del Sprint 9). Modificada por ADR-0159: el MVP se publica como la versión 1.0.0, y el desarrollo puede seguir por versiones sin retomar el proyecto completo. En la versión 1.2, ADR-0161 hace del pago manual el cobro real de la tienda física.
+
+## ADR-0159 — Versiones después del MVP
+
+- **Fecha:** 2026-10-05
+- **Contexto:**
+  - ADR-0158 cerró el proyecto como MVP, sin sprints nuevos hasta que una entidad quiera usarlo. Sus pasos para retomarlo empiezan por la lista para operar con clientes reales.
+  - El usuario quiere agregar funcionalidades puntuales, empezando por varios almacenes propios, sin retomar lo que quedó fuera.
+  - `package.json` declaraba la versión 0.0.1, el repositorio no tenía tags ni releases, y `CHANGELOG.md` tenía todo bajo "Unreleased".
+- **Decisión** (del usuario, entre reabrir el proyecto, una rama larga sin fusionar o seguir por versiones):
+  - **El MVP es la versión 1.0.0.** La declaran `package.json` y su sección de `CHANGELOG.md`. Se publica con el tag `v1.0.0` sobre el commit que la fusiona y un GitHub Release. Incluye las dos correcciones fusionadas después del cierre (#99 y #100).
+  - **Versionado semántico de la aplicación,** independiente de la versión de la API (`/v1`, ADR-0034):
+    - **menor** (1.1.0): funcionalidades compatibles dentro de `/v1`, como rutas y campos nuevos;
+    - **parche** (1.0.1): correcciones sin funcionalidad nueva;
+    - **mayor** (2.0.0): solo con un cambio incompatible, que además exige `/v2` (ADR-0034).
+  - **Cada versión menor es un incremento:**
+    1. El usuario aprueba su alcance con un plan. Queda en `SPRINT.md` como "Versión X.Y", con el formato de un sprint: paso 0, partes, resultados y review.
+    2. Sus tareas y ADR siguen las reglas de siempre.
+    3. Sus cambios se anotan en la sección "Unreleased" de `CHANGELOG.md`, que al terminar pasa a ser la de la versión.
+    4. El último pull request sube la versión de `package.json`. Al fusionarlo, se publican el tag `vX.Y.Z` y su GitHub Release, con la aprobación del usuario: el repositorio es público.
+  - **Sin cambios en ADR-0158:** lo que dejó fuera del MVP sigue fuera, salvo que el plan de un incremento lo incluya; Dependabot sigue en pausa; y retomar el proyecto completo sigue sus cuatro pasos.
+  - **Primer incremento:** la versión 1.1, varios almacenes propios.
+- **Alternativas consideradas:**
+  - **Reabrir el proyecto (ADR-0158):** exige la lista para operar con clientes reales, que no aplica sin una entidad.
+  - **Una rama larga sin fusionar:** contradice GitHub Flow (ADR-0030) y se separa de `main` con el tiempo.
+  - **Un interruptor de configuración por funcionalidad:** no hace falta para varios almacenes, porque con uno solo activo el comportamiento no cambia.
+- **Consecuencias:**
+  - Cada versión publicada queda en un tag y un release del repositorio público.
+  - La versión de la aplicación no aparece en la API: el documento OpenAPI sigue con la versión `1` de `/v1`.
+  - `SPRINT.md` registra cada incremento como registraba los sprints.
+  - Modifica ADR-0158.
+- **Revisar si:** una entidad quiere usar el proyecto (entonces aplica ADR-0158), o hace falta `/v2`.
+- **Estado:** Aceptada (decidida por el usuario el 2026-10-05).
+
+## ADR-0160 — Varios almacenes propios
+
+- **Fecha:** 2026-10-05
+- **Contexto:** Primer incremento de las versiones posteriores al MVP (ADR-0159): la versión 1.1. ADR-0081 dejó un solo almacén en el MVP y pidió definir, al habilitar varios, la prioridad y las reglas de asignación. El modelo ya separa el stock por variante y almacén, las entradas y los ajustes reciben `warehouseId`, y los envíos guardan `warehouse_id`. Pero el comportamiento depende de un único almacén activo:
+  - un índice único parcial (`warehouses_single_active`) impide que haya más de uno activo;
+  - `InventoryFacade` busca "el activo" para verificar el stock, reservar, reintegrar y dar el origen de los envíos (`activeWarehouseId`);
+  - la tienda une las variantes con el almacén activo sin agrupar, así que con dos almacenes activos duplicaría cada variante;
+  - el reintegro vuelve al almacén activo, no al de origen;
+  - la API no crea ni desactiva almacenes (ADR-0081).
+- **Decisión** (del usuario, con las recomendaciones del análisis):
+  - **Un almacén por orden:** el pedido completo sale de un solo almacén. No se dividen pedidos ni hay envíos parciales (ADR-0018).
+  - **Asignación por prioridad:** cada almacén tiene una prioridad de 1 a 1000, donde 1 es la primera; si empatan, decide el `code`. La reserva recorre los almacenes activos de mayor a menor prioridad y reserva el pedido completo en el primero que lo cubre. Cada intento es todo o nada y se deshace solo (ADR-0133), con el orden de bloqueo por `stock_item_id` (BR-INV-14).
+  - **Sin un almacén que cubra todo, falta stock,** aunque la suma de los almacenes alcance.
+  - **Disponibilidad:**
+    - en la tienda, una variante está disponible si algún almacén activo tiene al menos una unidad libre (ADR-0061);
+    - el carrito sigue respondiendo `canFulfill` por línea: algún almacén la cubre;
+    - la cotización responde por el pedido completo con `readyToPlace`. Marca `canFulfill: false` en las líneas que le faltan al almacén más cercano: el que deja menos líneas fuera, el primero por prioridad si empatan. Sin esas líneas, el pedido cabe en ese almacén;
+    - si ningún almacén cubre el pedido, el 409 `insufficient-stock` de la reserva lista esas mismas líneas, así que la cotización y el error coinciden.
+  - **Reintegro al origen:** cada unidad vuelve al almacén del que salió, según sus movimientos de venta; el staff puede indicar otro.
+  - **Ciclo de vida:** el staff crea almacenes, edita su prioridad y los desactiva si no tienen unidades reservadas. Un almacén inactivo no vende ni reserva su stock. Sigue sin reactivación (ADR-0076).
+  - **Transferencias:** mover stock entre almacenes es, por ahora, un ajuste en cada uno con el motivo nuevo `WAREHOUSE_TRANSFER` (suma o resta, ADR-0069). La transferencia como operación propia queda en T-163 (DEFERRED).
+  - **Permisos globales:** `inventory.read` e `inventory.write` cubren todos los almacenes.
+  - **Costo y plazo de envío iguales para todos:** ADR-0042 y ADR-0083 no cambian.
+  - **Compatibilidad:** con un solo almacén activo, el comportamiento es el de hoy, y el almacén principal queda con la prioridad más alta.
+  - **Preparado para dividir pedidos** (pedido del usuario), sin hacerlo todavía:
+    - el almacén queda en cada línea de la reserva, por su stock item, sin una columna en `reservations`. La regla "un almacén por orden" vive en una política de asignación que se puede reemplazar;
+    - la asignación produce grupos `{almacén, líneas}`; hoy siempre uno;
+    - Ordering pasa esos grupos a Shipping, un envío por grupo; hoy uno, y `shipments.order_id` sigue siendo único;
+    - el reintegro calcula el origen por movimiento de venta, así que funciona aunque una línea salga de dos almacenes;
+    - la API mantiene `shipment` en singular. Al dividir pedidos se agregaría `shipments[]` sin quitar `shipment`, dentro de `/v1` (ADR-0034).
+  - **Para dividir pedidos faltaría,** con su propio ADR:
+    - quitar el `UNIQUE` de `shipments.order_id`;
+    - el estado de una orden con varios envíos (ADR-0009, BR-SHP-02);
+    - los manejadores de entrega y devolución de Ordering;
+    - correos, reembolsos y conservación de datos por envío;
+    - `shipments[]` en la API.
+  - **Implementación:** T-162, en dos partes:
+    - **(a)** la migración (sin `warehouses_single_active` y con la prioridad), la asignación, la disponibilidad agregada de la tienda, `canFulfill` por pedido y el origen del envío desde la reserva. La migración y la tienda van en la misma parte: sin el índice y con la tienda sin corregir, un segundo almacén duplicaría los productos;
+    - **(b)** la administración de almacenes (crear, prioridad y desactivar), el reintegro al origen, el motivo `WAREHOUSE_TRANSFER`, el filtro de envíos por almacén y el almacén del envío en la orden del staff.
+- **Alternativas consideradas:**
+  - **Dividir pedidos entre almacenes:** necesita envíos parciales, que cambian ADR-0018 y ADR-0009.
+  - **Elegir por cercanía al destino:** se puede agregar después, porque los almacenes ya tienen dirección validada.
+  - **Disponibilidad por la suma de los almacenes:** daría "disponible" a cantidades que ningún almacén surte solo.
+  - **`reservations.warehouse_id`:** aseguraría un almacén por orden en el esquema, pero cerraría la puerta a dividir pedidos.
+  - **Permisos por almacén** y **transferencias como operación propia (T-163):** se deciden cuando hagan falta.
+- **Consecuencias:**
+  - Un pedido puede fallar por falta de stock aunque la suma de los almacenes alcance; la cotización lo avisa, línea por línea.
+  - El stock de un almacén desactivado queda inmovilizado hasta ajustarlo.
+  - Cambios compatibles en `/v1`:
+    - rutas para crear y desactivar almacenes;
+    - `Warehouse.priority`;
+    - `warehouseId` opcional en los reintegros;
+    - el almacén del envío en la orden del staff;
+    - el filtro de envíos por almacén;
+    - el significado de `canFulfill` y `readyToPlace`.
+  - Al implementarse, reemplaza ADR-0081 y modifica ADR-0011, ADR-0061, ADR-0069, ADR-0127, ADR-0128, ADR-0129, ADR-0140 y ADR-0142, y las reglas BR-INV-08 y BR-INV-12.
+- **Revisar si:** se decide dividir pedidos, elegir por cercanía o limitar los permisos por almacén.
+- **Estado:** Aceptada (decidida por el usuario el 2026-10-05). Se implementa en T-162, en la versión 1.1. Parte a (plan aprobado el 2026-10-05, con sus 10 recomendaciones):
+  - la migración quita `warehouses_single_active` y agrega `priority`, con 1 para los almacenes existentes;
+  - la política `ONE_WAREHOUSE_PER_ORDER` produce los planes; cada intento de reserva es un savepoint propio, así que una orden solo retiene filas de un almacén a la vez;
+  - `InventoryFacade.allocationOf` da los almacenes de la reserva confirmada y reemplaza a `activeWarehouseId`. Ordering rechaza más de un grupo en vez de perderlo;
+  - la tienda agrega la disponibilidad con un `LATERAL` sobre los almacenes activos;
+  - el plan de la parte a precisó la cotización y el 409 por el almacén más cercano;
+  - mientras llega la parte b, el reintegro va al primer almacén activo por prioridad.
+  Parte b (plan aprobado el 2026-10-05, con sus 12 recomendaciones); T-162 queda en DONE:
+  - `POST /v1/admin/inventory/warehouses` crea almacenes activos, con un código único de 2 a 20 mayúsculas, dígitos y guiones, y una prioridad obligatoria; `PATCH` acepta `priority`;
+  - `POST …/{warehouseId}/deactivate` los desactiva para siempre. Responde 409 `resource-in-use` si tienen unidades reservadas, e `invalid-state-transition` si ya están inactivos o son el último activo (`reason: last-active-warehouse`);
+  - la desactivación bloquea todos los almacenes activos `FOR UPDATE`, y cada intento de reserva y cada entrada toman su almacén `FOR SHARE`: una reserva nunca cae en un almacén que se desactiva, y dos desactivaciones nunca dejan ninguno activo;
+  - el reintegro vuelve a los stock items de los que salió cada línea, según los movimientos de venta de la orden y descontando lo ya reintegrado ahí, aunque el almacén esté inactivo; con `warehouseId`, va a ese almacén activo;
+  - los ajustes aceptan almacenes inactivos, y el motivo `WAREHOUSE_TRANSFER` llega con dos migraciones, porque un valor nuevo de un enum de PostgreSQL no se usa en la transacción que lo crea;
+  - el listado de envíos filtra por `warehouseId`, y `AdminOrder.shipment` lo muestra.
+
+  ADR-0161 agrega la política `fixedWarehouse`: una orden de la tienda física reserva solo en el almacén que eligió el staff, también al reservarse otra vez.
+
+## ADR-0161 — Ventas asistidas en la tienda física
+
+- **Fecha:** 2026-10-06
+- **Contexto:** Segundo incremento de las versiones posteriores al MVP (ADR-0159): la versión 1.2. El usuario quiere que un cliente en la tienda física, con la ayuda de un administrador o un vendedor, haga un pedido desde el portal administrativo. Hoy no se puede:
+  - el staff no compra (BR-USR-08, ADR-0043): `NoStaffPurchases` responde 403 en el carrito y el checkout, y ninguna ruta de `/v1/admin` crea órdenes. Solo la recompra copia una orden cancelada al carrito del cliente (ADR-0139);
+  - toda orden sale de un carrito (`orders.source_cart_id` es obligatorio), y al vencer sus líneas regresan a él (BR-ORD-14);
+  - el pago en tienda es solo para pruebas y no guarda el método (ADR-0040, BR-PAY-09);
+  - toda orden se envía: exige una dirección con teléfono, cobra el envío y crea un envío al pagarse. Recoger en tienda quedó fuera del MVP (ADR-0078);
+  - la reserva elige el almacén por prioridad, no el de la tienda (ADR-0160);
+  - la orden no registra quién la colocó ni por qué canal, y colocarla no se audita, porque no era una acción del staff (ADR-0132).
+
+  El único camino hoy es que el vendedor compre como invitado en la tienda en línea, sin que quede registrado quién lo hizo.
+- **Decisión** (del usuario, con las recomendaciones del análisis):
+  - **Dos escenarios, en dos partes de la versión 1.2:**
+    - **(a) pedido asistido con envío:** el vendedor arma el pedido con el cliente presente, el cliente paga en tienda y el pedido se envía como hoy;
+    - **(b) venta de mostrador:** el cliente paga y se lleva la mercancía en el momento, sin dirección ni costo de envío, con el stock de la tienda. Su plan precisa cómo se registra la entrega en tienda y si admite una venta sin email. Recoger en tienda los pedidos en línea queda para después, aunque usaría la misma entrega.
+  - **El staff registra pedidos a nombre de un cliente, sin comprar para sí:** BR-USR-08 pasa a "las cuentas de staff no compran para sí; pueden registrar pedidos a nombre de un cliente". El staff sigue sin carrito (BR-CRT-08), y `NoStaffPurchases` sigue en el carrito y el checkout de la tienda en línea.
+  - **Rutas del staff:** `POST /v1/admin/orders/quote` cotiza y `POST /v1/admin/orders` coloca. Las líneas van en la solicitud, sin carrito, con `expectedTotal` (BR-ORD-06) e `Idempotency-Key`. La orden no tiene carrito de origen: si vence, sus líneas no regresan a ninguno.
+  - **Para quién es el pedido:**
+    - un cliente registrado, que el staff busca (`customers.read`), con su email verificado (BR-USR-05) y una de sus direcciones o una escrita para la orden;
+    - o un invitado, con email de contacto y la versión del aviso de privacidad, como en la tienda en línea (ADR-0010).
+  - **Quién y por dónde:** la orden guarda `placedBy`, el miembro del staff, y `channel`, `ONLINE` o `STORE`. La primera fila del historial lleva al staff como actor y la colocación se audita como `orders.place`. El listado del staff filtra por canal y por quién colocó la orden.
+  - **Permiso y rol:**
+    - el permiso nuevo `orders.place`, que recibe también el rol Administrador;
+    - el rol sembrado "Vendedor", con `orders.read`, `orders.place`, `customers.read`, `catalog.read` e `inventory.read`;
+    - registrar el cobro sigue con `payments.manage`, que el Vendedor no tiene, así que quien coloca el pedido no confirma que se pagó. Un operador que quiera juntar las dos cosas crea su propio rol, dentro de BR-USR-20.
+  - **Pago en tienda real:** el pago manual deja de ser solo para pruebas (cambia ADR-0040 y BR-PAY-09). Sigue detrás de `MANUAL_PAYMENTS_ENABLED`, que el operador enciende cuando cobra en tienda, y guarda el método (efectivo, terminal o transferencia) con la referencia. Sirve también para las órdenes en línea que se pagan en tienda (ADR-0055).
+  - **Almacén:** la solicitud indica el almacén de la tienda, y la reserva usa solo ese almacén, con una política de asignación propia (ADR-0160). Los permisos por almacén siguen diferidos.
+  - **Aviso de privacidad:** el vendedor presenta el aviso a un invitado, y la orden guarda su versión, como hoy, y quién la capturó (`placedBy`). El cliente registrado lo aceptó al crear su cuenta.
+    - **PENDIENTE DE DECISIÓN:** la validación legal de que el staff capture datos personales en la tienda. Queda en la lista de `PROJECT.md` §9, antes de operar con clientes reales.
+  - **El mismo tiempo de apartado:** el TTL de la reserva (`RESERVATION_TTL`, 20 minutos) no cambia, porque el cliente paga en el momento. Apartar mercancía para pagarla días después queda fuera.
+  - **Fuera de esta versión:** la caja y los cortes de caja, la factura CFDI (ADR-0027), el apartado, recoger en tienda los pedidos en línea y el segundo factor del staff (ADR-0048).
+  - **Implementación:** T-187, en dos partes, cada una con su plan aprobado antes de implementarla:
+    - **(a)** el permiso y el rol; cotizar y colocar los pedidos del staff; `placedBy` y `channel`; el almacén fijo; la auditoría y los filtros; el pago en tienda con su método; y lo que la anonimización debe borrar de una orden del staff, como su respuesta guardada por idempotencia;
+    - **(b)** la venta de mostrador, con su entrega en tienda.
+- **Alternativas consideradas:**
+  - **Un carrito del staff:** reutilizaría el checkout, pero contradice BR-CRT-08 y juntaría en una cuenta los pedidos de varios clientes.
+  - **Armar el pedido en el carrito del cliente:** tocaría el carrito en línea que el cliente puede estar usando, y no sirve para un invitado.
+  - **Que el vendedor compre como invitado en la tienda en línea:** no registra quién vendió, no elige el almacén y no se audita.
+  - **Dar `payments.manage` al Vendedor:** el mismo usuario colocaría la orden y confirmaría su pago.
+  - **Solo el escenario (a):** dejaría fuera la venta de mostrador, la forma habitual de vender en una tienda física.
+- **Consecuencias:**
+  - El staff coloca órdenes, y queda registrado y auditado quién lo hizo.
+  - Cobrar en tienda a clientes reales pasa a ser una decisión de configuración del operador.
+  - **Fraude interno:** registrar un cobro sin recibir el dinero. Lo atenúan el permiso separado del cobro, la auditoría y el filtro por vendedor.
+  - Habrá más cuentas de staff sin segundo factor.
+  - Cambios compatibles en `/v1`: rutas nuevas, campos nuevos en `AdminOrder` y en el registro del pago, y filtros nuevos.
+  - Al implementarse, modifica ADR-0040, ADR-0043, ADR-0111, ADR-0132, ADR-0137 y ADR-0160, y las reglas BR-USR-08, BR-PAY-09 y BR-ORD-14. La parte (b) modifica además ADR-0078 y BR-SHP-11.
+- **Revisar si:** se agregan la caja, la factura, el apartado o recoger en tienda los pedidos en línea.
+- **Estado:** Aceptada (decidida por el usuario el 2026-10-06). Se implementa en T-187, en la versión 1.2. Parte a, primer pull request (plan aprobado el 2026-10-06, con sus 14 recomendaciones):
+  - `orders.place` llega al catálogo, y la migración `20261006150000_identity_orders_place_permission` lo da al Administrador y siembra el rol Vendedor;
+  - la migración `20261006150100_ordering_store_orders` agrega `channel` (`ONLINE` por defecto para las órdenes existentes), `placed_by` y `warehouse_id`, deja `source_cart_id` opcional, y `orders_channel_check` exige un carrito a una orden `ONLINE` y la cuenta de staff y el almacén a una `STORE`;
+  - `POST /v1/admin/orders/quote` y `POST /v1/admin/orders`, con `StaffCheckout`, que comparte con el checkout los precios, el envío, el comprador, la dirección y el código público. Una variante que no existe responde 404 en las dos cotizaciones, en lugar de un error 500;
+  - la validación responde `exactlyOneBuyer`, `onlyForGuest` y `onlyWithCustomer`; un almacén que no existe o está inactivo responde 404, comprobado con su bloqueo compartido;
+  - la política `fixedWarehouse` reserva solo en ese almacén, y el 409 lista lo que ese almacén deja fuera. El pago tardío y el reintento de surtido reservan otra vez ahí; si ya está inactivo, falta stock;
+  - sin carrito, una orden vencida no restaura ninguno, y la recompra del staff de un invitado responde 409 `source-cart-unavailable`;
+  - la anonimización borra la respuesta que el staff guardó al colocar la orden, por la ruta y el `id` de la orden, sin tocar sus demás respuestas;
+  - el límite `admin-place-order`, de 30 por cuenta de staff cada 10 minutos (`RATE_LIMIT_ADMIN_PLACE_ORDER`);
+  - `AdminOrder` muestra `channel`, `placedBy` y `warehouseId`, y el listado filtra por `channel` y `placedBy`;
+  - el correo de una orden `STORE` no dice cómo pagar en la tienda ni hasta cuándo se apartan los productos.
+
+  Parte a, segundo pull request; la parte a queda hecha:
+  - la migración `20261006160000_payments_in_store_method` crea `payment_method` (`CASH`, `CARD_TERMINAL` y `TRANSFER`) y agrega `payment_attempts.method`, que solo lleva un intento CAPTURED (`payment_attempts_method_check`);
+  - `POST /v1/admin/orders/{orderId}/manual-capture` acepta `method`, opcional para no romper `/v1`: sin él, el pago queda sin método, como los anteriores;
+  - el intento capturado guarda el método; `AdminPayment.attempts[].method` y `AdminOrder.payment.method` lo muestran, y la auditoría `payments.manual-capture` lo registra;
+  - el pago manual deja de ser solo para pruebas en el código, `.env.example` y la documentación; `MANUAL_PAYMENTS_ENABLED` sigue en `false` por defecto;
+  - el reembolso manual no cambia.
+
+  Parte b (plan aprobado el 2026-10-06, con sus 13 recomendaciones, incluida la excepción a ADR-0034); T-187 queda en DONE:
+  - la migración `20261006170000_ordering_in_store_delivery` crea `order_fulfillment` y agrega `fulfillment`, `SHIPPING` para las órdenes existentes. Deja opcionales la dirección y los días de entrega; `orders_fulfillment_check` los exige en `SHIPPING`, y en `IN_STORE` exige una orden `STORE` sin ellos y sin costo de envío;
+  - la cotización y la colocación del staff aceptan `fulfillment`. Una orden `IN_STORE` no tiene dirección (`onlyForShipping`), su envío cuesta 0 y no consulta el método de envío;
+  - el comprador de una venta `IN_STORE` puede no dar datos: la orden queda sin cliente, email ni aviso de privacidad, y los CHECKs del email y del aviso lo admiten solo ahí. Sin email no recibe correos ni se consulta como invitado;
+  - una orden `IN_STORE` pagada no crea envío. `POST /v1/admin/orders/{orderId}/hand-over`, con `orders.place` y `version`, la lleva de PAID a DELIVERED, con el staff en el historial, y se audita como `orders.hand-over`;
+  - `Order`, `AdminOrder` y los listados agregan `fulfillment`, y en una orden `IN_STORE` muestran `shippingAddress` y `estimatedDelivery` en `null`: la excepción a ADR-0034;
+  - los correos de una orden `IN_STORE` dicen "Entrega: en la tienda" y "Te entregamos tus productos en la tienda", sin plazo de entrega;
+  - anonimizar una orden `IN_STORE` deja su dirección en `null`.
+
+## ADR-0162 — Pago manual habilitado desde la API
+
+- **Fecha:** 2026-10-06
+- **Contexto:** Tercer incremento de las versiones posteriores al MVP (ADR-0159): la versión 1.3. Al construir el backoffice apareció un hueco (G-02): no hay forma de saber si el pago manual está habilitado.
+  - `MANUAL_PAYMENTS_ENABLED` es una variable de entorno, `false` por defecto (ADR-0040, ADR-0134), que se lee una sola vez al arrancar. Payments la comprueba antes de registrar un pago o un reembolso manual (403 `manual-payments-disabled`), y Notifications decide con ella si el correo de orden recibida da instrucciones de pago en tienda (ADR-0143).
+  - Ninguna ruta la expone, y cambiarla exige reiniciar la API. El backoffice muestra "Registrar pago" y "Registrar reembolso" a quien tiene `payments.manage`, y la acción falla con el 403 si el pago manual está apagado.
+  - Desde la versión 1.2 es el cobro real de la tienda física (ADR-0161): encenderlo o apagarlo es una decisión de operación, no de despliegue.
+  - El usuario decidió el 2026-10-05, al planear el backoffice, que el backend tenga una ruta para consultar si el pago manual está habilitado y otra para encenderlo o apagarlo, y que solo un superadministrador pueda cambiarlo.
+  - La autorización solo conoce permisos (ADR-0111). El superadministrador los tiene todos, y nada se reserva a él, salvo asignar su rol (BR-USR-20).
+- **Decisión** (del usuario, con las recomendaciones del análisis):
+  - **El valor vive en la base:** una tabla de Payments, `payment_settings`, con una sola fila, que garantiza un CHECK: `manual_payments_enabled`, `version` y `updated_at`. La migración la crea deshabilitada, el mismo valor por defecto de hoy.
+  - **Se lee en cada operación, sin caché:** el pago y el reembolso manual, y cada correo de orden recibida, leen la fila. Así todas las réplicas ven el mismo valor, y un cambio vale de inmediato. Un pago que ya pasó la comprobación cuando se apaga termina normalmente.
+  - **Consulta:** `GET /v1/admin/payment-settings`, con `orders.read`, el permiso de las lecturas de pagos (`API_SPEC.md` §16). La ven el cajero, el Administrador y el Vendedor, que así sabe si el mostrador puede cobrar. 200 `PaymentSettings { manualPaymentsEnabled, version, updatedAt }`.
+  - **Cambio:** `PUT /v1/admin/payment-settings`, con el permiso nuevo `payments.configure`, como el método de envío (ADR-0075, ADR-0122):
+    - request `{ "manualPaymentsEnabled", "version" }`, los dos obligatorios; 200 `PaymentSettings`;
+    - una `version` anterior responde 409 `version-conflict`;
+    - cada cambio se audita como `payment-settings.update`, con el valor anterior y el nuevo; sin cambios no se guarda ni se audita.
+  - **Una ruta propia:** `/v1/admin/payments` es la colección de pagos, y `settings` chocaría con `GET /v1/admin/payments/{paymentId}`.
+  - **Permiso reservado al superadministrador:** `payments.configure` no se da a ningún rol inicial, y ningún otro rol puede tenerlo.
+    - Crear o editar un rol con él responde 400 `validation-error` en `permissions`, como hoy un `PATCH` a los permisos del rol superadministrador (ADR-0112).
+    - El catálogo de `GET /v1/admin/identity/permissions` agrega `superadminOnly` a cada permiso, para que el editor de roles no lo ofrezca.
+    - El backoffice muestra la pantalla para cambiarlo según `payments.configure` en `GET /v1/me`.
+  - **Sin la variable:** `MANUAL_PAYMENTS_ENABLED` se quita del código, de `.env.example` y de las pruebas. La validación del entorno ignora las variables desconocidas, así que una que quede no impide arrancar. Después de migrar, el pago manual queda deshabilitado hasta que un superadministrador lo encienda.
+  - **Correos:** Notifications pregunta a Payments al enviar cada correo, con un puerto propio y un adaptador a la fachada de Payments, desde su API pública (ADR-0005).
+  - **El 403 no cambia** de código ni de lugar en el orden de las validaciones; su texto dice que un superadministrador lo habilita.
+  - **El reembolso manual sigue necesitando el pago manual habilitado** (ADR-0135).
+  - **Implementación:** T-194, en una parte.
+- **Alternativas consideradas:**
+  - **Dejar la variable y exponerla en una ruta de solo lectura:** el backoffice sabría el estado, pero cambiarlo seguiría exigiendo un despliegue.
+  - **Conservar la variable como valor inicial:** una migración no lee el entorno, y crear la fila al arrancar mezcla datos con el arranque (ADR-0122).
+  - **Un permiso que el superadministrador pueda delegar:** más simple, pero entonces no sería solo el superadministrador quien lo cambia.
+  - **Comprobar en el caso de uso que quien cambia es superadministrador, sin permiso nuevo:** la matriz de rutas y el OpenAPI dirían otro permiso, y el backoffice no sabría por `GET /v1/me` quién puede cambiarlo.
+  - **Consulta con `payments.manage`:** más restrictiva, pero el Vendedor no sabría si el mostrador puede cobrar.
+  - **El valor en caché:** varias réplicas verían valores distintos hasta que venciera.
+  - **`/v1/admin/payments/settings`:** chocaría con `GET /v1/admin/payments/{paymentId}`.
+- **Consecuencias:**
+  - El backoffice sabe si mostrar las acciones del pago en tienda, y un superadministrador las enciende sin desplegar.
+  - Encender el cobro de la tienda pasa a depender de una cuenta de staff, que no tiene segundo factor (ADR-0048). Lo atenúan el permiso reservado y la auditoría.
+  - Apagar el pago manual también impide registrar los reembolsos manuales pendientes hasta encenderlo otra vez, como ya pasaba con la variable.
+  - Cambio para el operador: la variable deja de existir, y el pago manual se enciende con la ruta. Hoy no hay despliegues.
+  - Cambios compatibles en `/v1`: dos rutas nuevas y el campo `superadminOnly` en el catálogo de permisos. Por eso es una versión menor (ADR-0159).
+  - Al implementarse, modifica ADR-0040, ADR-0043, ADR-0111, ADR-0112, ADR-0134, ADR-0143 y ADR-0161, y la regla BR-PAY-09.
+- **Revisar si:** otra configuración de la tienda debe cambiar sin desplegar, o se agrega el segundo factor del staff.
+- **Estado:** Aceptada (decidida por el usuario el 2026-10-05; el diseño, aprobado el 2026-10-06, con sus 12 recomendaciones). Se implementa en T-194, en la versión 1.3. T-194 queda en DONE (versión 1.3):
+  - la migración `20261006180000_payments_settings` crea `payment_settings` con una fila de clave fija, `01a11302-41ef-7d33-9e36-93a5239b19ba`, y `payment_settings_single_row_check`, que no admite otra; la fila empieza deshabilitada;
+  - `PaymentsFacade` lee la fila en cada pago y reembolso manual y en cada inicio de un pago `MANUAL`, sin caché; sus comprobaciones son asíncronas, y Ordering las espera;
+  - `GET /v1/admin/payment-settings` (`orders.read`) y `PUT` (`payments.configure`), con `ConfigurePaymentSettings`: versión, auditoría `payment-settings.update` y nada guardado sin cambios;
+  - `payments.configure` va en `SUPERADMIN_ONLY_PERMISSIONS`: `Role` rechaza crear o editar otro rol con él (`SuperadminOnlyPermissionError`), y el catálogo responde `superadminOnly`;
+  - Notifications pregunta con su puerto `InStorePayments`, cuyo adaptador usa la fachada de Payments;
+  - `MANUAL_PAYMENTS_ENABLED` sale del entorno y de `.env.example`; el texto del 403 dice que un superadministrador lo habilita;
+  - las e2e empiezan cada archivo con el pago manual habilitado (`test/e2e-manual-payments.ts`), y las de integración que lo necesitan lo encienden y lo apagan.
+
+## ADR-0163 — Datos para el ticket, nota del pago y GTIN
+
+- **Fecha:** 2026-10-14
+- **Contexto:** Cuarto incremento de las versiones posteriores al MVP (ADR-0159): la versión 1.4. El usuario trajo requerimientos nuevos del backoffice, y el análisis separó lo que hace la API de lo que hace su cliente:
+  - **Tickets y códigos de barras:** el cliente arma e imprime el ticket con los datos de `AdminOrder`. A la API le faltan los datos generales de la tienda para el encabezado, y el almacén del que salieron los productos: la orden trae solo su `id`, y traducirlo exige `inventory.read`.
+  - **Códigos del fabricante:** la mayoría de los productos traen el código de barras de su fabricante, un EAN o un UPC, que hoy se llaman GTIN. La variante solo tiene el SKU, un código interno que queda fijo al publicar (BR-PRD-12), y no hay una búsqueda exacta para un lector de códigos.
+  - **Nota del pago:** `manual-capture` recibe `note`, pero solo queda como motivo de la auditoría `payments.manual-capture`, igual que la del reembolso manual. Leerla exige `audit.read`, que el cajero no tiene, y la consulta llega a 3 meses atrás (ADR-0146).
+  - **Decisiones del análisis para las versiones siguientes** (2026-10-14):
+    - la nota de servicio es una orden de trabajo, con folio, equipo recibido, diagnóstico y estados, y va con los servicios;
+    - los servicios se venden solo en la tienda física, sin fecha, cita ni cupo, con el stock actual en una cantidad alta; falta impedir que se vendan en la tienda en línea;
+    - el precio preferente del vendedor (regateo) se descarta por su complejidad y su riesgo; se trabajará con promociones (T-200);
+    - la carga masiva de productos, variantes y stock se decide en detalle en su propia versión.
+- **Decisión** (del usuario, con las recomendaciones del análisis):
+  - **Datos del ticket:** variables de configuración generales, iguales para todas las tiendas: `STORE_NAME`, `STORE_ADDRESS`, `STORE_TAX_ID` (RFC), `STORE_PHONE` y `TICKET_FOOTER`, con "Este ticket no es un comprobante fiscal." por defecto. Se validan al arrancar, y cambiarlas exige reiniciar, como `VAT_RATE_BP` (ADR-0122).
+  - **`GET /v1/admin/store-profile`:** publica esos datos con `orders.read`, para que todo cliente imprima lo mismo.
+  - **El ticket no tiene fines legales:** no es un comprobante fiscal, la factura CFDI sigue fuera (ADR-0027), y su leyenda lo dice. El cliente lo arma y lo imprime; la API no genera PDF ni imágenes.
+  - **Almacén en la orden:** `AdminOrder` muestra el código y el nombre del almacén del que salieron los productos: el de la venta en tienda (ADR-0161) o el del envío (ADR-0160).
+  - **Nota del pago:** el intento capturado y el reembolso manual guardan su nota. `AdminPayment` la muestra en `attempts[].note` y `refunds[].note`, y `AdminOrder` en `payment.note`. Una migración copia las notas que ya están en la auditoría.
+  - **La anonimización conserva la nota:** el usuario acepta el riesgo, y la operación indicará no escribir datos sensibles en ella.
+  - **GTIN:** la variante agrega `gtin`, opcional:
+    - solo dígitos, de 8, 12, 13 o 14, con su dígito verificador;
+    - sin repetirse entre variantes, comparado completado a 14 dígitos: un UPC de 12 y el mismo código como EAN-13 con un 0 al frente son el mismo;
+    - se puede corregir aunque el producto esté publicado, a diferencia del SKU.
+  - **Búsqueda exacta para el lector:** `GET /v1/admin/catalog/variants/lookup?code=…`, con `catalog.read`, encuentra la variante por SKU o por GTIN y responde su producto, sus opciones y su estado. El `q` del listado de productos también busca por GTIN.
+  - **Implementación:** en dos partes: T-142, el GTIN y su búsqueda; y T-188, los datos del ticket, junto con T-197, la nota del pago.
+- **Alternativas consideradas:**
+  - **Los datos del ticket en el cliente:** cada cliente los repetiría, y podrían no coincidir.
+  - **Los datos del ticket editables en la base, como la configuración de pagos (ADR-0162):** casi nunca cambian, y el usuario prefirió variables de configuración.
+  - **Un ticket en PDF generado por la API:** la impresión depende del dispositivo, como una impresora térmica de 58 u 80 mm, que conoce el cliente.
+  - **Leer la nota desde la auditoría:** exige `audit.read` y solo llega a 3 meses atrás.
+  - **Usar el SKU como código del fabricante:** el SKU es interno y queda fijo al publicar; el código del fabricante es el mismo en todas las tiendas.
+  - **Varios GTIN por variante:** casi todo producto trae uno; se puede agregar después.
+  - **Registrar códigos propios en GS1 México:** solo hace falta para vender productos propios en otras cadenas. Un producto sin código del fabricante usa su SKU impreso como Code 128.
+- **Consecuencias:**
+  - El cliente imprime el ticket con los datos de la tienda, el almacén y la leyenda, y escanea el código del fabricante sin volver a etiquetar.
+  - El cajero ve la nota del pago sin `audit.read`.
+  - La nota de un pago puede conservar datos personales después de anonimizar la orden: el usuario acepta ese riesgo.
+  - Cambios compatibles en `/v1`: dos rutas nuevas y campos nuevos en `AdminOrder`, `AdminPayment` y las variantes. Por eso es una versión menor (ADR-0159).
+  - Al implementarse, modifica ADR-0067 y ADR-0145 (la anonimización conserva la nota), ADR-0134 y ADR-0135 (la nota del pago y del reembolso), y la regla BR-PRD-12 (el GTIN no queda fijo).
+- **Revisar si:** los datos del ticket deben cambiar por tienda, o una variante necesita varios GTIN.
+- **Estado:** Aceptada (decidida por el usuario el 2026-10-14, con las recomendaciones del plan). Se implementa en T-142, T-188 y T-197, en la versión 1.4. Parte 1, T-142 (plan aprobado el 2026-10-14, con sus 10 recomendaciones):
+  - la migración `20261014120000_catalog_variant_gtin` agrega `gtin`, como se capturó, y `gtin_key`, el mismo completado a 14 dígitos. `product_variants_gtin_check` exige 8, 12, 13 o 14 dígitos, y `product_variants_gtin_key_check` que la llave sea la del código, con `IS NOT DISTINCT FROM`, para que un código sin llave no pase como `NULL`;
+  - el índice único parcial `product_variants_active_gtin_key` no repite un GTIN entre variantes activas de ningún producto: 409 `duplicate-value` con `field: gtin`. Una descontinuada deja libre el suyo, y reactivarla con uno tomado responde el mismo 409;
+  - el formato se valida en el DTO (`matches` en `gtin`) y el dígito verificador en el dominio (`gtinCheckDigit`);
+  - el GTIN se cambia o se quita también después de publicar, y se audita con la variante;
+  - `GET /v1/admin/catalog/variants/lookup?code=…` responde una lista, con las activas primero y `matchedBy`, porque un SKU de dígitos puede coincidir con el GTIN de otra variante y varias descontinuadas pueden compartir uno; sin coincidencias, la lista sale vacía;
+  - el `q` del listado de productos busca también por parte del GTIN; la tienda pública no lo muestra.
+
+  Parte 2, T-188 y T-197 (plan aprobado el 2026-10-14, con sus 10 recomendaciones):
+  - `STORE_NAME` (obligatoria en producción, "base-shop" en desarrollo), `STORE_ADDRESS`, `STORE_TAX_ID` (con el formato del RFC, en mayúsculas), `STORE_PHONE` y `TICKET_FOOTER`, que vacía vuelve a su leyenda; `GET /v1/admin/store-profile`, con `orders.read`, los publica (UC-ORD-15);
+  - `AdminOrder.fulfilledFrom`, solo en el detalle: el almacén de una orden `STORE` o el del envío de una `ONLINE`, con su código y nombre, por la consulta nueva `InventoryFacade.warehouse` y el puerto `OrderWarehouses`;
+  - la migración `20261014130000_payments_notes` agrega `note` a `payment_attempts` y `refunds`, de 1 a 500 caracteres, y copia las anteriores desde la auditoría, la única vez que Payments lee `audit_logs`;
+  - `AdminPayment` muestra la nota en `attempts[]` y `refunds[]`, y `AdminOrder.payment` en `note` y en sus reembolsos.
+
+## ADR-0164 — Carga masiva de productos y de existencias
+
+- **Fecha:** 2026-10-15
+- **Contexto:** Quinto incremento de las versiones posteriores al MVP (ADR-0159): la versión 1.5, prevista por ADR-0163 (T-146). El usuario pidió analizar las plantillas para subir productos, y dejó el detalle para esta versión. Hoy, dar de alta un catálogo es de uno en uno:
+  - un producto y cada una de sus variantes son una solicitud, con la marca y las categorías por su ID;
+  - cada entrada de mercancía es una solicitud, con la variante y el almacén por su ID;
+  - solo los precios tienen carga masiva (ADR-0126): CSV, todo o nada, modo de prueba, errores por línea y columna, y hasta 5,000 filas en una transacción.
+- **Decisión** (del usuario, con las recomendaciones del plan):
+  - **Dos cargas nuevas con las reglas de la de precios (ADR-0126):**
+    - CSV (RFC 4180) en UTF-8, con o sin BOM y con encabezado; las columnas, en inglés, van en cualquier orden y sin distinguir mayúsculas;
+    - `multipart/form-data` con el archivo en `file`, y `?dryRun=true` hace las mismas revisiones sin guardar nada;
+    - todo o nada: con cualquier error no se guarda nada, y la respuesta es 400 `validation-error` con los primeros 100, en `rows[<línea>].<columna>`, y los del archivo completo en `file`;
+    - hasta 5,000 filas, en una sola transacción con escrituras en bloque.
+  - **Orden de alta de un catálogo:** marcas y categorías, desde el backoffice; productos con sus variantes; precios, con la carga que ya existe; existencias; e imágenes y publicación, desde el backoffice.
+  - **Carga de productos:** `POST /v1/admin/catalog/product-imports`, con `catalog.write`. Responde 200 `{ rows, products, variants, dryRun }`.
+    - **Solo crea:** cada `slug` del archivo es un producto nuevo. Un slug que ya existe, o un SKU que ya se usó alguna vez (BR-PRD-09), es un error de su fila. Editar sigue por las rutas de cada producto, porque uno publicado tiene fijos su slug, sus SKU y sus opciones (BR-PRD-12). Repetir el archivo no cambia nada.
+    - **Una fila por variante:** las filas con el mismo `slug` forman un producto. Sus columnas de producto (`title`, `description`, `brand` y `categories`) van en su primera fila; las siguientes las dejan vacías o las repiten iguales, y un valor distinto es un error.
+    - **Columnas:** `slug`, obligatorio; `title`; `description`; `brand` y `categories` por su slug, hasta 10 categorías separadas por `|`, que deben existir y estar activas; `sku`; `gtin`; una columna `option:<nombre>` por opción, hasta 3 por producto, las mismas en todas sus variantes y con combinaciones distintas; y `weightGrams`, `lengthCm`, `widthCm` y `heightCm`, opcionales.
+    - **Las mismas reglas que las rutas** (BR-PRD-02, BR-PRD-09, BR-PRD-19, ADR-0071), revisadas también entre las filas del archivo.
+    - **En borrador:** los productos nacen en DRAFT y se publican aparte, después de revisar sus precios e imágenes.
+    - **Sin imágenes:** se suben aparte, como hoy (ADR-0024). El archivo no trae URLs que la API descargaría.
+    - **Hasta 5 MB**, por las descripciones.
+    - **Auditoría:** una entrada `products.import`, con los conteos y los IDs de los productos creados.
+  - **Carga de existencias:** `POST /v1/admin/inventory/receipt-imports`, con `inventory.write`. Responde 200 `{ rows, units, dryRun }`.
+    - **Cada fila es una entrada de mercancía (UC-INV-02):** columnas `sku`, `warehouse` (su código), `quantity` (de 1 a 100,000) y `note` (hasta 500 caracteres). Suma al stock y deja su movimiento `RECEIPT`, con la nota y quién la registró.
+    - **Las mismas reglas que una entrada:** la variante, en cualquier estado; el almacén, activo (BR-INV-08).
+    - **El mismo archivo no se carga dos veces:** se guarda la huella SHA-256 de cada archivo cargado, y uno idéntico responde 409 con la fecha de la carga anterior. Una entrega igual de verdad cambia la nota, por ejemplo con el número de remisión.
+    - **Hasta 1 MB**, como los precios.
+    - **Bloqueos:** los almacenes en modo compartido, como una entrada (ADR-0160), y los stock items en orden ascendente de ID, como las reservas (BR-INV-14).
+    - **Auditoría:** una entrada `inventory.receipt-import`, con los conteos; cada movimiento guarda quién lo registró y su nota.
+  - **CSV, no Excel:** desde Excel se guarda como "CSV UTF-8". Las plantillas de ejemplo de las tres cargas viven en `docs/templates/`, y las pruebas end-to-end las importan, así que siempre son válidas.
+  - **Servicios:** su columna llega con la versión 1.6 (T-189), cuando exista la marca "solo en tienda".
+  - **Implementación:** T-146, en dos partes: la parte a, los productos; y la parte b, las existencias.
+- **Alternativas consideradas:**
+  - **Crear o actualizar desde el archivo:** choca con los campos fijos de un producto publicado, y un error de dedo cambiaría un producto existente.
+  - **Crear marcas y categorías desde el archivo:** un error de dedo crearía una categoría basura.
+  - **Publicar al cargar:** publicaría productos sin revisar sus precios ni sus imágenes.
+  - **Imágenes por URL:** la API haría solicitudes a direcciones que alguien escribió (SSRF) y dependería de servidores ajenos.
+  - **Leer Excel:** agrega una dependencia con historial de vulnerabilidades, y Excel ya guarda CSV.
+  - **Una columna `options` con `nombre=valor`:** más compacta, pero más fácil de escribir mal en una hoja de cálculo.
+  - **Existencias como conteo físico, que fija la cantidad:** sería un ajuste con motivo (ADR-0069); puede venir después.
+  - **Aceptar dos veces el mismo archivo de existencias:** duplicaría el stock sin aviso.
+  - **Una entrada de auditoría por producto o por movimiento:** la carga de precios ya eligió una por carga (ADR-0126), y los movimientos guardan quién y su nota.
+- **Consecuencias:**
+  - Un catálogo se da de alta con tres archivos, más sus imágenes y su publicación.
+  - Un error en un archivo hace que no se cargue nada; `dryRun` permite revisarlo antes.
+  - Si dos cargas toman el mismo slug o SKU a la vez, una falla completa con 409 y se repite.
+  - Más de 5,000 filas o archivos mayores tendrían que procesarse en segundo plano.
+  - Cambios compatibles en `/v1`: dos rutas nuevas. Por eso es una versión menor (ADR-0159).
+- **Revisar si:** hace falta actualizar productos desde un archivo, cargar conteos físicos o más de 5,000 filas.
+- **Estado:** Aceptada (decidida por el usuario el 2026-10-15, con las 16 recomendaciones del plan). Se implementa en T-146, en la versión 1.5. Parte a, la carga de productos (plan aprobado el 2026-10-15, con sus 13 recomendaciones):
+  - **Piezas compartidas por las tres cargas:** `readCsvFile` lee un CSV con columnas obligatorias, opcionales y con prefijo (`src/platform/files/csv-file.ts`); `CsvFileUpload` recibe el archivo con su límite y responde 413 con `maxBytes` (`csv-upload.ts`); y `ImportRowErrors` junta los errores por fila (shared kernel). La carga de precios las usa con sus mismas reglas; el mensaje de `columns` dice ahora qué columna falta, no reconoce o repite;
+  - `POST /v1/admin/catalog/product-imports` (UC-CAT-16): las celdas, las filas de cada producto y el archivo completo se revisan antes que el catálogo, con una consulta por tipo; la marca y las categorías, por slug, con `findBySlugs`;
+  - **Inserciones en bloque:** tres sentencias que reciben arreglos (`unnest`), como la carga de precios. `createMany` de Prisma tardó 8 s con 5,000 productos de 10 categorías cada uno, más que el límite de 5 s de una transacción; con arreglos, cabe. Las fechas las pone el reloj de la API (ADR-0124);
+  - **Cambios entre la revisión y el guardado:** un error de una consulta directa (Prisma P2010) solo trae el código de PostgreSQL, así que `isUniqueViolation` e `isForeignKeyViolation` reconocen también 23505 y 23503. Un slug, SKU o GTIN tomado responde 409 `duplicate-value`, y una marca o categoría borrada, 400 `unknownBrand` o `unknownCategories`; en los dos casos no se guarda nada;
+  - **Auditoría:** `products.import`, sobre el recurso `product-import`, con los conteos y los IDs de los productos creados;
+  - **Plantillas:** `docs/templates/products.csv` y `prices.csv`, con un README del orden y las columnas; la prueba end-to-end las importa en ese orden, como las guarda una hoja de cálculo.
+
+  Parte b, la carga de existencias (plan aprobado el 2026-10-15, con sus 13 recomendaciones); con ella, T-146 queda en DONE:
+  - `POST /v1/admin/inventory/receipt-imports` (UC-INV-12): cada fila es una entrada de mercancía, por el SKU de la variante, en cualquier estado, y el código de un almacén activo; un SKU puede repetirse, y cada fila deja su movimiento en el orden del archivo. Una fila que llevaría la existencia por encima de 2,147,483,647 unidades es un error de esa fila (`onHandLimit`);
+  - **El mismo archivo no se carga dos veces:** la migración `20261015120000_inventory_receipt_imports` crea `stock_receipt_imports`, con la huella SHA-256 de los bytes de cada archivo cargado, única, sus conteos, quién y cuándo (BR-INV-15). Un archivo idéntico responde 409 `duplicate-value` con `field: "file"` e `importedAt`, también con `dryRun`. La carga guarda su huella antes que nada en su transacción, así que el mismo archivo enviado dos veces a la vez espera ahí, y solo uno se guarda;
+  - **Bloqueos:** los almacenes del archivo, en modo compartido y en orden de ID, como una entrada, y uno desactivado mientras la carga espera es un error de sus filas; después, sus existencias, creadas si faltan, en orden ascendente de ID, como las reservas (BR-INV-14). La carga suma sobre lo que dejó un cambio que terminó antes;
+  - **Escrituras en bloque:** existencias, movimientos y la carga con sentencias que reciben arreglos, con las fechas del reloj de la API (ADR-0124);
+  - **Auditoría:** `inventory.receipt-import`, sobre el recurso `stock-receipt-import`, con los conteos y la huella del archivo; cada movimiento guarda quién y su nota;
+  - **Plantilla:** `docs/templates/stock.csv`; la prueba end-to-end importa las tres plantillas en orden.
+
+## ADR-0165 — Servicios solo en tienda y órdenes de trabajo
+
+- **Fecha:** 2026-10-15
+- **Contexto:** Sexto incremento de las versiones posteriores al MVP (ADR-0159): la versión 1.6, prevista por ADR-0163 (T-189). El usuario decidió el 2026-10-14 que los servicios se venden solo en la tienda física, sin fecha, cita ni cupo, con su existencia en un número alto, y que la nota de servicio es una orden de trabajo, con folio, equipo recibido, diagnóstico y estados. Hoy:
+  - nada distingue un servicio de un producto: uno publicado se vende en línea y en la tienda física;
+  - lo que se vende en línea lo deciden la tienda pública (una consulta SQL), el carrito y el checkout en línea (la fachada de Catalog) y la recompra; la venta de mostrador y los pedidos del staff comparten la validación del checkout en línea;
+  - no hay órdenes de trabajo; sí, los datos de la tienda para imprimir (ADR-0163) y la venta de mostrador para cobrar (ADR-0161).
+- **Decisión** (del usuario, con las recomendaciones del plan):
+  - **Productos solo en tienda:**
+    - `storeOnly` en el producto, para todas sus variantes; por defecto `false`, y se cambia en cualquier momento, también publicado. Está en el alta, la edición, `AdminProduct` y la carga masiva (ADR-0164);
+    - en línea no se vende: la tienda pública no lo muestra (listado, búsqueda, detalle y marcas), el carrito lo rechaza con el 409 `variant-not-sellable` de siempre y lo deja fuera del subtotal, el checkout en línea lo rechaza, y la recompra lo omite. `storeVisibility` dice que es solo de tienda;
+    - en la tienda física se vende como hoy, en la venta de mostrador y en los pedidos del staff;
+    - cambiar la marca vacía la cache de la tienda pública;
+    - su existencia se carga con un número alto, como cualquier entrada; no hay productos sin control de existencias.
+  - **Órdenes de trabajo,** un módulo nuevo en `/v1/admin/work-orders`:
+    - **Permisos nuevos:** `work-orders.read` y `work-orders.manage`; los reciben el rol Vendedor, que atiende el mostrador, y el Administrador;
+    - **Datos:** un folio consecutivo y único, como `OT-000123`; el cliente, con nombre y teléfono obligatorios y email opcional, o un cliente registrado; el equipo, con tipo, marca, modelo, número de serie opcional, accesorios recibidos y estado al recibirlo; la falla reportada, obligatoria, el diagnóstico, el trabajo realizado y un costo estimado informativo; la tienda que lo recibió, quién lo recibió y un técnico asignado opcional. Sin fecha de entrega comprometida;
+    - **Estados:** Recibida → Diagnosticada → En reparación → Lista → Entregada, y Cancelada desde cualquiera antes de Entregada, cuando el cliente se lleva su equipo sin el servicio. Cada cambio guarda quién, cuándo y una nota, en su historial;
+    - **Cobro:** la orden de trabajo no cobra. Se le ligan ventas de mostrador (ADR-0161) con los servicios y las refacciones, una o varias, como un anticipo y la liquidación, y muestra si están pagadas. Entregarla no exige pago, por garantías o revisiones sin costo;
+    - **Impresión:** la API da los datos de la orden de trabajo y de la tienda, y el cliente imprime la nota de servicio con su línea de firma, que no se guarda. La variable nueva `WORK_ORDER_FOOTER` lleva las condiciones de la nota; queda vacía por defecto hasta que el usuario defina su texto con su asesor;
+    - **Búsqueda:** por folio, nombre o teléfono del cliente, número de serie y estado;
+    - **Datos personales:** los del cliente siguen el ciclo de conservación de las órdenes (ADR-0151), con las mismas variables: se bloquean a los `PERSONAL_DATA_OPERATIONAL_MONTHS` meses de entregada o cancelada, y se anonimizan a la suma de los dos plazos. La validación legal pendiente de `PROJECT.md` §9 los incluye;
+    - **Auditoría:** el alta, cada cambio de datos y de estado, y cada venta ligada.
+  - **Implementación:** T-189, en tres partes: a, productos solo en tienda; b, el núcleo de las órdenes de trabajo (datos, estados, búsqueda y permisos); c, las ventas ligadas, la impresión y la conservación de datos.
+- **Alternativas consideradas:**
+  - **Un tipo de producto "servicio" sin existencias:** el usuario prefirió manejar la existencia con un número alto, y lo que hace falta es que no se venda en línea.
+  - **La marca en la variante:** un producto es servicio o no lo es; en el producto se ve y se cambia una vez.
+  - **Cobrar en la orden de trabajo:** duplicaría el pago de la venta de mostrador, que ya tiene método, nota, reembolsos y ticket.
+  - **Exigir el pago para entregar:** impediría entregar un equipo en garantía o una revisión sin costo.
+  - **Un texto de condiciones fijo en la API:** las condiciones son de cada negocio y conviene revisarlas con un asesor.
+  - **Guardar la firma o fotos del equipo:** agrega archivos con datos personales; puede venir después.
+- **Consecuencias:**
+  - Un servicio no aparece ni se compra en línea, y se vende en el mostrador como cualquier producto.
+  - La nota de servicio tiene folio, historial y las ventas que la cobraron, y se imprime con los datos de la tienda.
+  - Las órdenes de trabajo guardan datos personales de clientes sin cuenta, con su ciclo de conservación.
+  - Cambios compatibles en `/v1`: rutas, campos y permisos nuevos. Por eso es una versión menor (ADR-0159).
+- **Revisar si:** hace falta avisar al cliente cuando su equipo esté listo, dar citas, guardar fotos o firmas, o llevar las refacciones aparte de la venta.
+- **Estado:** Aceptada (decidida por el usuario el 2026-10-15, con las 17 recomendaciones del plan). Se implementa en T-189, en la versión 1.6. Parte a, productos solo en tienda (plan aprobado el 2026-10-15, con sus 10 recomendaciones):
+  - la migración `20261015130000_catalog_product_store_only` agrega `products.store_only`, `false` por defecto; el alta, la edición, `AdminProduct`, el filtro del listado y la carga masiva (columna `storeOnly`) la llevan, y se audita con los demás datos;
+  - **una sola regla de lo que se vende en línea** (BR-PRD-20): la consulta de la tienda excluye estos productos, así que desaparecen del listado, la búsqueda, el detalle, las marcas y las imágenes; el carrito, que siempre es en línea, los trata como no vendibles, lo que cubre agregar, cambiar, la vista y la recompra; y la validación compartida de los checkouts recibe el canal, así que el checkout en línea los rechaza y la venta de mostrador los acepta;
+  - `storeVisibility` suma `STORE_ONLY`, un valor nuevo de un campo del panel administrativo, un cambio compatible dentro de `v1`, porque los clientes toleran valores que no conocen (ADR-0034, ADR-0050): sin él, un servicio publicado aparecería sin precio;
+  - el evento `ProductStoreOnlyChanged` se publica solo si el producto está publicado, y vacía la cache pública; el cambio de la marca es su propio método del producto, porque necesita la hora;
+  - la plantilla de productos suma la columna y un servicio de ejemplo, con su precio y una existencia alta.
+
+  Parte b, el núcleo de las órdenes de trabajo, en ADR-0166, que precisa tres puntos de esta decisión: el nombre y el teléfono del cliente se piden siempre, los estados avanzan saltando pasos y una orden cerrada ya no se edita.
+
+  Parte c, en ADR-0167 y en dos pull requests: c1, las ventas ligadas y la nota de servicio; c2, la conservación de los datos del cliente.
+
+---
+
+## ADR-0166 — Órdenes de trabajo: folio, cliente, estados y edición
+
+- **Fecha:** 2026-10-15
+- **Contexto:** T-189 parte b, el núcleo de las órdenes de trabajo de ADR-0165. Al planearla quedaron tres puntos que ADR-0165 no fijaba o fijaba de otra forma:
+  - pide "nombre y teléfono, o un cliente registrado", pero la cuenta de un cliente no guarda teléfono, y la tienda lo necesita para avisar que el equipo está listo;
+  - la secuencia de estados no dice si se pueden saltar pasos ni si se puede regresar;
+  - nada dice hasta cuándo se corrigen los datos.
+- **Decisión** (del usuario, con las 16 recomendaciones del plan):
+  - **Módulo `work-orders`:** un contexto nuevo, con las tablas `work_orders` y `work_order_status_history`. Usa a Identity y a Inventory solo por sus fachadas: si un cliente está activo, si una cuenta es de staff activa (el método nuevo `isActiveStaff`) y si un almacén está activo.
+  - **Folio:** sale de una secuencia de PostgreSQL, como el número interno de las órdenes (ADR-0049), y se muestra como `OT-000123`. Puede saltarse un número si falla la transacción que lo tomó. La búsqueda acepta `OT-000123`, `ot-123` o `123`.
+  - **El cliente:** el nombre y el teléfono, de 10 dígitos, son siempre obligatorios, y el email es opcional; `customerId` solo liga la orden a un cliente registrado, que debe estar activo. Precisa ADR-0165, que los pedía solo sin cliente registrado.
+  - **Equipo y trabajo:** el tipo y la falla son obligatorios; la marca, el modelo, el número de serie, los accesorios y el estado al recibirlo, opcionales. El diagnóstico y el trabajo realizado se registran después. El costo estimado, en centavos, es informativo.
+  - **La tienda y las personas:** la tienda es un almacén activo, como en la venta de mostrador (ADR-0161); quien recibe sale de la sesión; el técnico, opcional, es una cuenta de staff activa. Las respuestas dan solo sus IDs.
+  - **Alta con `Idempotency-Key` obligatoria:** un doble envío no imprime dos folios.
+  - **Estados:** hacia adelante, saltando pasos si hace falta (RECEIVED → DIAGNOSED → IN_REPAIR → READY → DELIVERED), y nunca hacia atrás; CANCELLED, con nota, desde cualquiera antes de DELIVERED. DELIVERED y CANCELLED son finales y fijan `closedAt`, desde donde la parte c contará los plazos de conservación. Precisa ADR-0165.
+  - **Edición:** con `version`, de los datos del cliente y del equipo, la falla, el diagnóstico, el trabajo, el costo y el técnico; no de la tienda ni de quien recibió. Una orden entregada o cancelada ya no se edita, porque la nota se imprimió y se firmó. Agrega esta regla a ADR-0165.
+  - **Búsqueda:** por el folio exacto, o parte del nombre o del teléfono del cliente, o del número de serie, sin distinguir mayúsculas; filtros por estado, almacén, técnico, cliente y fechas de recepción; orden por recepción o por folio.
+  - **Permisos:** `work-orders.read` y `work-orders.manage`, para los roles Vendedor y Administrador, por migración.
+  - **Auditoría:** `work-orders.create`, `work-orders.update` y `work-orders.status`, este con la nota como motivo. El nombre, el teléfono, el email, el número de serie y los textos largos quedan solo como cambiados (ADR-0067).
+  - **Sin bloqueo de fila:** todo cambio lleva la `version` leída, y el guardado la vuelve a comprobar, así que un `SELECT … FOR UPDATE` no cambiaría nada. Si la parte c agrega cambios sin `version`, como ligar ventas, agrega el bloqueo con su prueba.
+  - **OpenAPI** (ajusta ADR-0112): un campo de texto o de número que puede ser `null` declara solo `nullable: true` con `@ApiProperty`, sin `type`. El plugin de Swagger deduce su tipo también en las pruebas, así que el documento no cambia, y un `type` explícito dejaba sin llamar la función de tipo que genera el plugin: 17 de ellas bajaron la cobertura de funciones de su umbral de 99% (ADR-0157). Las fechas, las listas y los campos con otros DTO siguen declarando su `type`.
+- **Alternativas consideradas:**
+  - **Nombre y teléfono solo sin cliente registrado:** la orden de un cliente con cuenta quedaría sin teléfono.
+  - **Estados estrictamente consecutivos:** una revisión sin reparación tendría que pasar por En reparación.
+  - **Un folio sin huecos, con una tabla de contador:** serializaría todas las altas para evitar un hueco que solo deja una transacción fallida.
+  - **Corregir una orden cerrada:** cambiaría lo que el cliente firmó.
+- **Consecuencias:**
+  - El mostrador recibe equipos con folio, los busca y lleva su estado; las ventas que la cobran y la impresión llegan en la parte c.
+  - Rutas y permisos nuevos, compatibles dentro de `/v1`.
+  - Las órdenes de trabajo guardan el nombre, el teléfono y el email de clientes sin cuenta; su conservación llega en la parte c. La respuesta guardada por idempotencia del alta los lleva 24 horas, como la de una venta de mostrador.
+- **Revisar si:** hace falta regresar de estado, por ejemplo cuando una reparación falla en la prueba, o buscar sin distinguir acentos.
+- **Estado:** Aceptada (plan de T-189 parte b aprobado el 2026-10-15, con sus 16 recomendaciones). Implementada en T-189 parte b, con las migraciones `20261015140000_work_orders` y `20261015150000_identity_work_orders_permissions`.
+
+---
+
+## ADR-0167 — Órdenes de trabajo: ventas ligadas, nota de servicio y conservación de datos
+
+- **Fecha:** 2026-10-16
+- **Contexto:** T-189 parte c, lo que queda de ADR-0165: las ventas de mostrador que cobran una orden de trabajo (UC-WRK-05), los datos para imprimir su nota (UC-WRK-06) y la conservación de los datos del cliente. Hoy:
+  - Ordering no da a otros módulos el estado de una venta; su fachada sirve a Notifications y a Privacy;
+  - los datos de la tienda para el ticket viven en Ordering (ADR-0163) y salen de la configuración;
+  - las órdenes de trabajo guardan nombre, teléfono, email y número de serie de clientes que pueden no tener cuenta, sin ciclo de conservación.
+- **Decisión** (del usuario, con las 17 recomendaciones del plan):
+  - **Dos pull requests:** c1, ventas ligadas y nota de servicio; c2, conservación de datos y anonimización.
+  - **Ventas ligadas (c1):**
+    - la tabla `work_order_sales` guarda la venta, quién la ligó y cuándo; una venta cobra una sola orden de trabajo (`UNIQUE`), y una orden de trabajo, una o varias;
+    - solo se ligan ventas de la tienda física (`channel` `STORE`), con cualquier forma de entrega; una vencida, cancelada o reembolsada responde 409 `sale-not-linkable` (E-37), con el estado de la venta en `saleStatus`;
+    - se ligan con `POST …/sales` y se desligan con `DELETE …/sales/{orderId}`, las dos con la versión de la orden de trabajo, así que ADR-0166 sigue sin bloqueo de fila; solo mientras la orden de trabajo está abierta (BR-WRK-04);
+    - **pagada:** la venta está pagada, por surtir, enviada o entregada. Ordering la resume como `PAID`, `PENDING` o `NONE` en el método nuevo `OrderingFacade.storeSales`, así que Work Orders no conoce sus estados;
+    - la orden de trabajo muestra sus ventas con su estado al momento, y los totales de lo pagado y de lo que espera su pago;
+    - se auditan como `work-orders.sale-link` y `work-orders.sale-unlink`.
+  - **Nota de servicio (c1):** `GET …/service-note` da la orden de trabajo con sus ventas, los datos de la tienda (las mismas variables del ticket, leídas de la configuración sin pasar por Ordering) y las condiciones de `WORK_ORDER_FOOTER`: opcional, vacía por defecto, hasta 2,000 caracteres, con saltos de línea escritos `\n` entre comillas dobles. La línea de firma la dibuja el frontend.
+  - **Conservación (c2):** se bloquean a los `PERSONAL_DATA_OPERATIONAL_MONTHS` meses de `closedAt` y se anonimizan a la suma de los dos plazos, con un job diario; la anonimización borra el nombre, el teléfono, el email, el número de serie y los textos que pueden citar al cliente, y conserva el resto; los datos bloqueados se consultan con `work-orders.read-blocked`, con motivo; Privacidad anonimiza las órdenes de trabajo cerradas de un cliente al anonimizar su cuenta, y una orden de trabajo de un cliente sin cuenta se anonimiza sola, con `customers.manage`.
+- **Alternativas consideradas:**
+  - **Ligar la venta desde el checkout del staff:** Ordering dependería de Work Orders, y Work Orders ya lee a Ordering.
+  - **Ligar ventas en línea o después de entregar:** una venta en línea no es de mostrador, y una orden de trabajo cerrada ya no cambia.
+  - **Que Work Orders decida qué estados son "pagada":** acoplaría Work Orders a los estados internos de Ordering.
+  - **Leer los datos de la tienda desde Ordering:** agregaría a su fachada algo que no es suyo; los dos leen la misma configuración.
+- **Consecuencias:**
+  - El mostrador ve qué ventas cobran cada orden de trabajo y si están pagadas, sin cobrar dos veces.
+  - Work Orders depende ahora de Ordering, por su fachada; Ordering nunca usa Work Orders.
+  - Un tipo de error nuevo, `sale-not-linkable`, y una variable nueva, `WORK_ORDER_FOOTER`; cambios compatibles en `/v1`.
+- **Estado:** Aceptada (plan de T-189 parte c aprobado el 2026-10-16, con sus 17 recomendaciones). Parte c1 implementada, con la migración `20261015160000_work_order_sales`. Parte c2 implementada:
+  - las migraciones `20261016120000_work_orders_retention`, con `blocked_at`, `anonymized_at`, el índice `work_orders_retention_idx` y un `CHECK` que solo deja sin nombre, teléfono ni falla una orden de trabajo anonimizada, y `20261016130000_identity_work_orders_read_blocked_permission`, que da `work-orders.read-blocked` al Administrador;
+  - el job diario `work-orders.retention`, en lotes de 1,000 y una transacción por orden de trabajo, como el de las órdenes;
+  - **el bloqueo de fila que ADR-0166 dejó pendiente:** bloquear y anonimizar no llevan versión, así que bloquean la fila (`SELECT … FOR UPDATE`); una prueba comprueba que el job espera a otro cambio y salta la orden de trabajo que ese cambio anonimizó;
+  - una orden de trabajo de un cliente con una abierta detiene la anonimización de su cuenta con el mismo 409 `active-orders-exist` de las órdenes; la respuesta de la anonimización suma `anonymizedWorkOrderCount`;
+  - la anonimización de un cliente inactivo (ADR-0152) no toca sus órdenes de trabajo, que siguen su propio ciclo, como las órdenes.
+
+---
+
+## ADR-0168 — Promociones
+
+- **Fecha:** 2026-10-16
+- **Contexto:** Séptimo incremento de las versiones posteriores al MVP (ADR-0159): la versión 1.7, prevista por ADR-0163 (T-200), que trabaja con promociones en lugar del precio preferente del vendedor, descartado. El usuario dejó los tipos de promoción para el plan de esta versión. Hoy:
+  - **Ofertas por fechas:** Pricing programa un precio rebajado por variante, con su precio anterior (`compareAtAmount`), igual para todos los canales y compradores; la orden guarda solo el precio cobrado, sin lo que se ahorró;
+  - **Descuento en la orden:** `discountTotal` existe desde el inicio (ADR-0018), siempre en 0. La base exige que el total sea el subtotal más el envío menos el descuento, y el envío gratis compara el subtotal menos el descuento (ADR-0079);
+  - **IVA:** se calcula por línea, sobre su importe (ADR-0094). La línea no guarda descuento, y su `CHECK` exige que su importe sea el precio por la cantidad;
+  - **Reembolsos y pagos:** los reembolsos son totales (ADR-0051), y un pago no puede ser de $0;
+  - **Marca y categorías:** solo Catalog las conoce; su fachada no las da.
+- **Decisión** (del usuario, con las recomendaciones del plan y sus ajustes):
+  - **Módulo nuevo `promotions`,** en `/v1/admin/promotions`: crear, listar, consultar, editar y terminar promociones. Permisos nuevos `promotions.read` y `promotions.manage`: el Administrador recibe los dos, y el Vendedor solo `promotions.read`, para saber qué ofrecer en el mostrador.
+  - **Tipos:** un porcentaje de descuento, de 1% a 100%, o un monto fijo. Aplica a toda la compra, o solo a ciertos productos, categorías, con sus subcategorías, o marcas.
+  - **Condiciones:**
+    - vigencia con inicio y un fin opcional;
+    - canales: en línea, tienda física o ambos; por defecto, ambos;
+    - compra mínima opcional, sobre el subtotal con IVA;
+    - automática, que se aplica sola, o con cupón.
+  - **Edición:** antes de su inicio se cambia todo; ya iniciada, solo el nombre y el fin, o se termina, como un precio que ya empezó (BR-PRC-04). Las órdenes guardan su propia copia. Se audita el alta, cada cambio y el fin.
+  - **Dónde se aplica:** en las tres cotizaciones (invitado, cliente y staff) y al colocar la orden, en línea y en la tienda física. El carrito sigue mostrando su subtotal sin descuento.
+  - **Sin combinar:** una sola promoción por orden: la del cupón, si se da; si no, la automática que más descuente.
+  - **Cálculo:**
+    - el descuento se reparte en centavos entre las líneas a las que aplica, y cada línea guarda el suyo;
+    - con porcentaje, se calcula por línea y se redondea como el IVA (ADR-0094);
+    - con monto fijo, se reparte en proporción al importe de cada línea, sin pasar de lo que aplica, y los centavos del redondeo van a las líneas de mayor importe;
+    - aplica sobre el precio vigente, aunque esté en oferta por fechas;
+    - **la orden paga al menos $1:** si el descuento la dejaría por debajo, se reduce, también con el 100%.
+  - **IVA:** el de cada línea se calcula sobre su importe con descuento, porque el descuento reduce la base. Se suma a la validación pendiente con el contador (P-69).
+  - **La orden guarda** el descuento de cada línea, `discountTotal` y la promoción aplicada, con su nombre y su código; los muestran la cotización, `Order` y `AdminOrder`, y con ella el ticket. El correo ya muestra el descuento cuando no es 0. El subtotal sigue siendo antes del descuento, y el total, el subtotal más el envío menos el descuento.
+  - **Envío gratis:** sigue comparando el subtotal menos el descuento (ADR-0079), así que un descuento puede hacer que una compra pierda el envío gratis.
+  - **`expectedTotal`:** incluye el descuento; si la promoción cambia entre la cotización y la orden, se responde 409 `total-mismatch`, como hoy (ADR-0019).
+  - **Cupones:**
+    - un código único, sin distinguir mayúsculas, de 4 a 30 letras, números o guiones, que llega como `couponCode`, opcional, en la cotización y en la orden;
+    - límites opcionales: usos totales y "una vez por cliente", contado por su cuenta o por el email del invitado. Una venta de mostrador sin datos del comprador no puede usar un cupón de una vez por cliente. Los usos por cliente se cuentan en sus órdenes, sin guardar datos personales nuevos;
+    - un uso cuenta al colocar la orden y se devuelve si la orden vence o se cancela;
+    - un tipo de error nuevo, `coupon-not-applicable`, con el motivo; un código que no existe y uno que no está vigente responden igual, para no confirmar códigos. Las cotizaciones limitan los intentos, y el contador de usos se bloquea al colocar la orden, para que dos órdenes a la vez no pasen el límite.
+  - **Implementación:** T-200, en tres partes: a, las promociones y su administración; b, aplicarlas en las cotizaciones y las órdenes; c, los cupones y sus límites.
+- **Alternativas consideradas:**
+  - **Combinar promociones,** como una automática por producto más un cupón: el usuario la aceptaba si su costo y su riesgo eran asumibles. Costo: un orden de aplicación, varias promociones por línea y por orden en el modelo y en el contrato, y buscar la mejor combinación. Riesgo: descuentos que se acumulan sin control, cuando la API no conoce el costo de los productos y no puede impedir vender por debajo de él. No se combinan en esta versión; como cada línea guarda su descuento, combinar después no cambia lo que ya se guardó.
+  - **El descuento solo en el total de la orden:** el IVA de las líneas quedaría sobre el precio sin descuento, y una devolución parcial futura no sabría qué descuento le toca a cada línea.
+  - **Usar las ofertas por fechas:** cambian el precio para todos los canales y compradores, no registran el ahorro, y no tienen cupones, compra mínima, categorías ni marcas.
+  - **Órdenes en $0:** necesitarían un flujo sin pago; el usuario prefirió que la orden pague al menos $1.
+  - **Mostrar el descuento en el carrito:** el carrito no calcula IVA ni envío, y la cotización ya da el total.
+  - **El precio preferente del vendedor:** descartado por su complejidad y su riesgo (ADR-0163).
+- **Consecuencias:**
+  - La tienda ofrece promociones automáticas y cupones en línea y en la tienda física, y la orden registra lo que se descontó en cada línea y por qué promoción.
+  - `discountTotal` deja de ser siempre 0: los clientes de la API deben mostrarlo.
+  - El IVA de una orden con descuento baja con él; la validación con el contador lo incluye (P-69).
+  - Las restricciones de la base cambian: la línea guarda su descuento, y el IVA de la orden no pasa de su total.
+  - La fachada de Catalog da la marca y las categorías de cada variante.
+  - Cambios compatibles en `/v1`: rutas, campos, permisos y un tipo de error nuevos. Por eso es una versión menor (ADR-0159).
+  - Al implementarse, modifica ADR-0018 (las promociones dejan de estar fuera) y la regla BR-ORD-13 (el descuento deja de ser 0).
+- **Revisar si:** hace falta combinar promociones, ofrecer 2x1, 3x2, regalos o envío gratis como promoción, promociones para ciertos clientes, mostrarlas en la tienda pública, o devoluciones parciales.
+- **Estado:** Aceptada (decidida por el usuario el 2026-10-16, con las 21 recomendaciones del plan y sus ajustes: el porcentaje llega al 100%, y no se combinan). Se implementa en T-200, en la versión 1.7. El plan de la parte a, aprobado el mismo día con sus 16 recomendaciones, precisa que una promoción mezcla productos, categorías y marcas, que los porcentajes son enteros, que el monto fijo se descuenta una vez por orden y que sus productos, categorías y marcas deben existir y estar en uso al agregarse. Parte a implementada:
+  - el módulo `promotions`, con las tablas `promotions` y `promotion_targets` (migración `20261016140000_promotions`) y los permisos de `20261016150000_identity_promotions_permissions`;
+  - el estado se calcula con las fechas y no se guarda; terminarla guarda `ended_at` y `ended_by`, y nada se borra;
+  - la fachada de Catalog suma `entries`, que da los productos, las categorías y las marcas por su ID, con su nombre y su estado;
+  - la misma lista de productos, categorías y marcas en otro orden no es un cambio, y una promoción vigente acepta sus demás términos si llegan iguales.
+
+  El plan de la parte b, aprobado el mismo día con sus 18 recomendaciones, precisa que una categoría cuenta aunque esté inactiva, que a igual descuento gana la promoción que empezó antes, que el mínimo de un peso se aplica a los productos y que el correo nombra la promoción. Parte b implementada:
+  - Promotions expone `PromotionsFacade.discountFor`, que elige la promoción y reparte su descuento; Ordering la usa por un puerto, y la fachada de Catalog suma `classifications`, con la marca y las categorías de cada variante y todas sus categorías superiores, en una consulta recursiva;
+  - **el mínimo de un peso en los productos:** el envío gratis depende del descuento, y aplicar el mínimo al total haría que cada uno dependiera del otro. Con un 100% y envío, la orden paga $1 más el envío;
+  - la migración `20261017120000_ordering_promotions` agrega `order_lines.discount_amount`, `orders.promotion_id` y `orders.promotion_name`, y las restricciones del descuento: hasta el importe de la línea, el IVA de lo que queda, la promoción con su nombre solo con descuento, y el peso que pagan los productos;
+  - sin candado sobre la promoción: si alguien la termina mientras se coloca una orden, esa orden aún puede recibirla; `expectedTotal` protege al cliente.
+
+  El plan de la parte c, aprobado el mismo día con sus 19 recomendaciones, precisa que el cupón reemplaza a la automática aunque descuente menos y que uno que no aplica es un error sin otra promoción; que el código y una vez por cliente no cambian una vez iniciado, y el límite sí, nunca por debajo de los usos; que una vez por cliente se cuenta por el email de contacto de la orden, también para un cliente registrado, cuyo contacto es su email de cuenta; que un pago tardío vuelve a contar su uso aunque pase el límite; y que la recompra no lleva el cupón. Parte c implementada:
+  - `couponCode`, opcional, en las seis rutas; la cotización del cliente acepta un cuerpo opcional, y su ruta lo documenta así;
+  - `coupon-not-applicable` (E-38) con `reason`: `unavailable` para un código que nadie tiene, uno que no está vigente o uno de otro canal, que responden igual; `minimumNotMet`; `noEligibleLines`; `exhausted`; `alreadyUsed`; y `buyerRequired`, una venta de mostrador sin datos del comprador con un cupón de una vez por cliente;
+  - **los usos se cuentan en la fila del cupón,** con un `UPDATE` que comprueba el límite en la misma sentencia y bloquea la fila hasta que termina la transacción de la orden: de dos órdenes por el último uso, la segunda espera y responde `exhausted`. Una vez por cliente se revisa después de contar, así que una segunda orden del mismo comprador espera a la primera y la encuentra;
+  - la migración `20261017140000_promotions_coupons` agrega `code`, único, `usage_limit`, `once_per_customer` y `uses`, con sus restricciones; `20261017150000_ordering_coupons`, `orders.promotion_code` y el índice parcial `orders_promotion_contact_idx`, para contar los usos de un email;
+  - el vencimiento y la cancelación devuelven el uso en su transacción, y el pago tardío de una orden vencida lo vuelve a contar, por el puerto `OrderCoupons`;
+  - **el límite de intentos:** 10 códigos que responden `unavailable` por IP en 15 minutos (`RATE_LIMIT_COUPON_ATTEMPTS`), con el mismo `FailedAttemptLimiter` del login, en las seis rutas; los demás motivos no cuentan, porque responden con un código que existe;
+  - una promoción automática no audita `oncePerCustomer`, que solo tiene un cupón.

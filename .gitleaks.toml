@@ -1,0 +1,9 @@
+# gitleaks configuration (ADR-F003). Keeps the default rules and allows reviewed example values that
+# live in docs/api/, which is a verbatim copy of the base-shop documentation and cannot be edited
+# (ADR-F002). An allowlist by value survives squash merges, unlike a fingerprint in .gitleaksignore.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Example Idempotency-Key value (a random UUID) in the API spec; base-shop ignores it too"
+regexes = ['''5b1e9c2a-7d7f-4f55-9c6e-2f0e8a1d3b44''']

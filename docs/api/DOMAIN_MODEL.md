@@ -1,0 +1,187 @@
+# DOMAIN MODEL
+
+Modelo de dominio por bounded context. Estado: **aprobado** (ADR-0004, ADR-0005). Las reglas de negocio detalladas están en `BUSINESS_RULES.md`.
+
+Convención: los nombres de código (aggregates, eventos, casos de uso) van en inglés; las explicaciones, en español.
+
+## Mapa de contextos
+
+| Contexto | Tipo | Responsabilidad |
+|---|---|---|
+| Identity & Access | Generic | Autenticación, usuarios, roles, asignación de permisos, direcciones del cliente |
+| Catalog | Supporting | Productos, variantes, categorías, marcas, imágenes, publicación. No maneja precio ni stock |
+| Pricing | Core | Listas de precios, precios históricos y programados, resolución del precio vigente |
+| Inventory | Core | Almacenes, existencias, reservas, movimientos |
+| Shopping | Supporting | Carrito |
+| Ordering | Core | Checkout y ciclo de vida de la orden |
+| Payments | Generic | Cobros vía proveedores, intentos, reembolsos, conciliación |
+| Shipping | Supporting | Cotización de envíos, envíos, rastreo |
+| Work Orders | Supporting | Órdenes de trabajo: el equipo que un cliente deja en la tienda física, su diagnóstico, el trabajo y su estado (ADR-0165, ADR-0166) |
+| Promotions | Supporting | Promociones: un porcentaje o un monto de toda la compra o de ciertos productos, categorías y marcas, por canal y con compra mínima (ADR-0168) |
+
+Capacidades transversales (no son contextos): auditoría técnica, notificaciones por correo (ADR-0074), privacidad (anonimización de clientes y compradores invitados, ADR-0145) y catálogo geográfico de estados y municipios del INEGI (dato de referencia de solo lectura, ADR-0057).
+
+Shared kernel: `Money`, tipos de ID, error de dominio base, forma común de domain event, y los puertos `Clock`, `TransactionManager`, `DomainEventPublisher`, `AuditTrail`, `EmailSender` y `FrontendLinks` (ADR-0093, ADR-0094, ADR-0098, ADR-0100, ADR-0110).
+
+---
+
+## Identity & Access
+
+| Elemento | Detalle |
+|---|---|
+| Aggregates | `User` (tipo cliente o staff, email, passwordHash, status, roleIds solo para staff, emailVerifiedAt, cambio de contraseña obligatorio); `Role` (nombre, permisos); `CustomerAddressBook` (direcciones, predeterminada) |
+| Value Objects | `Email`, `PermissionCode`, `Address` (formato de ADR-0057), `PersonName` (nombres y apellidos) |
+| Eventos | `UserRegistered`, `UserSuspended`, `RolePermissionsChanged` |
+| Repositories | `UserRepository`, `RoleRepository`, `AddressBookRepository`, `SessionRepository` (refresh tokens por sesión, ADR-0114) |
+| Casos de uso | RegisterCustomer, Authenticate (`SignIn`), RefreshSession, Logout (`SignOut`), ChangePassword, RequestPasswordReset, ResetPassword, CreateStaffUser, AssignRoles, DefineRole, SuspendUser, ReactivateUser (ADR-0076), ManageAddresses, AnonymizeCustomer (por la fachada, para Privacidad, ADR-0145), AnonymizeInactiveCustomer (ADR-0152) |
+| No sale del contexto | passwordHash, tokens, intentos de login, datos de recuperación |
+
+Autenticación: ADR-0022, ADR-0023 y ADR-0114. La política de contraseñas (ADR-0047) es una regla del dominio (`domain/password.ts`), aplicada por `PasswordPolicy` con el puerto `CommonPasswords` (ADR-0115). Los refresh tokens de un inicio de sesión forman una sesión, que se revoca completa. Suspender una cuenta revoca sus sesiones en la misma transacción (ADR-0111), no en respuesta a `UserSuspended`.
+
+## Catalog
+
+| Elemento | Detalle |
+|---|---|
+| Aggregates | `Product` (título, descripción, brandId, categoryIds, status, si se vende solo en la tienda física (`storeOnly`, ADR-0165); contiene `ProductVariant`, con peso y dimensiones opcionales y el código de barras de su fabricante, GTIN (ADR-0163), y `ProductImage`); `Category` (árbol por parentId); `Brand` |
+| Value Objects | `Sku`, `Gtin` (con su dígito verificador y su llave de 14 dígitos), `Slug`, `VariantOptions` |
+| Eventos | `ProductPublished`, `ProductArchived`, `VariantDiscontinued`, `ProductStoreOnlyChanged` (ADR-0165) |
+| Repositories | `ProductRepository`, `CategoryRepository`, `BrandRepository`; `CatalogQueryService` (lectura) |
+| Casos de uso | CreateProduct, UpdateProductDetails, AddVariant, DiscontinueVariant, ReactivateVariant, PublishProduct, ArchiveProduct, ReactivateProduct (ADR-0076), AttachImage, ReorderImages, ManageCategories, ManageBrands; consultas ListProducts, GetProductBySlug y LookUpVariants, por SKU o GTIN (UC-CAT-15) |
+| Exporta | Snapshot de variante: SKU, nombre, opciones, peso y dimensiones (opcionales, ADR-0058), estado, y si su producto se vende solo en la tienda física (ADR-0165); fachada `CatalogFacade.variants` (ADR-0125) |
+
+## Pricing
+
+| Elemento | Detalle |
+|---|---|
+| Aggregates | `PriceList` (código, moneda, prioridad, status, alcance, indicador de impuesto incluido); `VariantPrice` (por lista y variante, con periodos `PricePeriod`) |
+| Value Objects | `Money`, `EffectivePeriod` |
+| Domain services | `PriceResolver`; en el MVP, `PricingFacade.quote` resuelve con la lista predeterminada (ADR-0125) |
+| Eventos | `PriceScheduled`, `PriceChanged` (solo si tienen consumidor; ninguno todavía, ADR-0125) |
+| Repositories | `PriceListRepository`, `VariantPriceRepository` |
+| Casos de uso | CreatePriceList (fuera del MVP), SetPrice, SchedulePrice, CancelScheduledPrice (`VariantPrices`), BulkImportPrices (`ImportPrices`, ADR-0126), QuotePrices (API pública) |
+| Exporta | Precio resuelto por variante e instante (`PricingFacade.quote`, ADR-0125) |
+
+## Inventory
+
+| Elemento | Detalle |
+|---|---|
+| Aggregates | `Warehouse`; `StockItem` (por variante y almacén: onHand, reserved, version); `Reservation` (referencia, líneas, status, expiresAt) |
+| Registros | `StockMovement` (append-only, no es aggregate) |
+| Domain services | Asignación de almacén: la política `ONE_WAREHOUSE_PER_ORDER` reserva cada orden completa en el primer almacén activo, por prioridad, que la tiene toda; un plan por almacén candidato, preparado para políticas que dividan pedidos; `restockDestinations` devuelve cada línea reintegrada a los almacenes de los que salió (ADR-0160) |
+| Eventos | `StockReserved`, `ReservationReleased`, `ReservationExpired`, `ReservationCommitted`, `StockAdjusted` (solo si tienen consumidor; ninguno todavía, ADR-0128) |
+| Repositories | `WarehouseRepository`, `StockLedgerRepository` (cambios atómicos de `stock_items` con su movimiento, ADR-0127), `ReservationRepository` |
+| Casos de uso | ReceiveStock y AdjustStock (`StockEntries`), CreateWarehouse, UpdateWarehouse, DeactivateWarehouse (ADR-0160), StockListing (ADR-0127), RestockOrder (órdenes canceladas o con envío devuelto, ADR-0052, ADR-0053), ReserveStock, CommitReservation, ReleaseReservation, ExpireReservations (job), GetAvailability |
+| Exporta | `InventoryFacade`: `canFulfill` (sí o no por línea), `reserve`, `commit` y `release` por orden (ADR-0128); `reserve` es todo o nada por sí misma, también dentro de la transacción de quien llama (ADR-0133); `expire` por orden (ADR-0136); `canFulfillTogether`, si cada línea cabe en el pedido junto con las demás, y `allocationOf`, los almacenes de la reserva confirmada de una orden, de los que salen sus envíos (ADR-0140, ADR-0160); `restock`, con las líneas de la orden y lo vendido de cada una, y el tope por línea (ADR-0142) |
+
+## Shopping
+
+| Elemento | Detalle |
+|---|---|
+| Aggregates | `Cart` (ownerId opcional, líneas `CartLine`, status Active/CheckedOut/Merged) |
+| Eventos | Ninguno propio; reacciona a `OrderExpired` (ADR-0054). El carrito se marca dentro de la transacción del checkout, no por `OrderPlaced` (ADR-0019) |
+| Repositories | `CartRepository` |
+| Casos de uso | CreateCart, AddItem, ChangeQuantity, RemoveItem, MergeGuestCart, GetCartView, RestoreCartFromExpiredOrder (ADR-0054), CopyCancelledOrderToCart (ADR-0055) |
+| Exporta | `ShoppingFacade` para el checkout: líneas del carrito (variantId, cantidad), el carrito bloqueado y marcarlo CheckedOut (ADR-0132); `deleteCartsOf` para Privacidad (ADR-0145) |
+| Implementado | T-170 (ADR-0131): `Cart` con sus reglas (una línea por variante, de 1 a 30 unidades, hasta 100 variantes, solo el carrito activo cambia, fusión y adopción); puertos `CartCatalog`, `CartPrices` y `CartStock` hacia las fachadas de Catalog, Pricing e Inventory. T-181 parte a (ADR-0137): `CartRestoration` y el manejador de `OrderExpired` devuelven las líneas de una orden vencida. Parte b (ADR-0139): `CartCopies` copia las líneas de una orden para la recompra, por `ShoppingFacade`. T-231 (ADR-0144): `GuestCartCleanup` borra cada día los carritos de invitado inactivos. T-132 (ADR-0145): el puerto `CustomerCarts` borra los carritos de un cliente anonimizado |
+
+## Ordering
+
+| Elemento | Detalle |
+|---|---|
+| Aggregates | `Order` (número interno consecutivo, código público aleatorio, customerId opcional, email de contacto, líneas `OrderLine` con snapshot, dirección snapshot, envío snapshot, descuento por línea con la promoción que lo dio (ADR-0168), impuestos, totales, status, reservationId, canal `ONLINE` o `STORE` con la cuenta de staff y el almacén de una orden de la tienda física, modo de entrega `SHIPPING` o `IN_STORE` (ADR-0161), historial de estados) |
+| Value Objects | `Money`, `Address`, `OrderNumber` (interno), `OrderCode` (público, formato `XXXX-XXXX`) |
+| Eventos | `OrderPlaced`, `OrderPaid`, `OrderCancelled`, `OrderExpired`, `OrderShipped`, `OrderDelivered`; se publican los cuatro primeros, los que tienen consumidor (ADR-0136, ADR-0143). `OrderAccessRequested` es interno: Ordering lo atiende en segundo plano para emitir el enlace de acceso (ADR-0148) |
+| Repositories | `OrderRepository`, `OrderAccessTokenRepository` (ADR-0148); puertos `OrderNumberGenerator` (secuencia) y `OrderCodeGenerator` (aleatorio, ADR-0049) |
+| Casos de uso | QuoteCheckout, PlaceOrder, QuoteStoreOrder y PlaceStoreOrder (`StaffCheckout`, ADR-0161), HandOverInStore (ADR-0161), CancelOrder (solo staff, ADR-0021), MarkOrderPaid, ExpireUnpaidOrders (job), ResolveManualFulfillment; consultas GetOrder, ListMyOrders, ListOrders, GetGuestOrder (email + código público, ADR-0020, ADR-0049); RequestOrderAccessLink y OpenOrderAccessLink (UC-ORD-05, ADR-0148) |
+| Exporta | `OrderingFacade.orderNotice`: la orden para los correos, con su código público, contacto, líneas, totales y dirección, o solo su código si está anonimizada (ADR-0143, ADR-0145); `OrderingFacade.anonymizeOrders` para Privacidad (ADR-0145) |
+| Implementado | T-180 parte a (ADR-0132): `Order` nace en PendingPayment con sus líneas numeradas, totales e IVA por línea, código público aleatorio y vencimiento del pago; caso de uso `Checkout` (cotizar y colocar); puertos hacia las fachadas de Shopping, Catalog, Pricing, Inventory, Shipping, Identity & Access y Geo; desde T-200 parte b, también la de Promotions (`CheckoutPromotions`, ADR-0168), y desde la parte c, sus cupones, con `OrderCoupons` para devolver y volver a contar sus usos. T-180 parte b (ADR-0133): transiciones de cancelar, pagar, esperar surtido y surtir con su historial; caso de uso `OrderLifecycle` y manejador de `PaymentCaptured`. T-230 (ADR-0136): vencimiento con su reserva (`OrderExpiry`, job `ordering.expire-orders`) y `OrderExpired`. T-181 parte b (ADR-0139): `OrderReorders` y el puerto `ReorderCarts` para la recompra. T-195 parte a (ADR-0140): cada línea tiene su ID desde el dominio; el puerto `OrderShipments` crea el envío de la orden pagada y lo cancela con ella, y las vistas de la orden lo muestran. T-195 parte b (ADR-0141): SHIPPED y DELIVERED con los manejadores de `ShipmentDispatched` y `ShipmentDelivered`. T-161 (ADR-0142): `OrderRestocks` y la opción de reintegro al cancelar, por el puerto `OrderStock`. T-215 (ADR-0143): `OrderPlaced`, `OrderPaid` y `OrderCancelled`, y `OrderingFacade`. T-132 (ADR-0145): `Order.anonymize` con la regla de orden concluida; `OrderAnonymizations` anonimiza las órdenes de un comprador y sus envíos, y borra las respuestas guardadas de su colocación; una orden anonimizada no se paga ni se surte. T-186 (ADR-0148): `OrderAccessLinks` emite en segundo plano, por `OrderAccessRequested`, el enlace a las órdenes de invitado de un email y lo abre una vez; `AccessTokenCleanup` borra cada día los vencidos, usados o reemplazados, y la anonimización del invitado borra los suyos. T-232 parte a (ADR-0151): la orden guarda cuándo concluyó (`concludedAt`, también al volver su envío, por `ShipmentReturned`) y su bloqueo (`blockIfDue`); `PersonalDataRetention`, con el job `ordering.retention`, bloquea y anonimiza las órdenes por sus plazos. T-232 parte b (ADR-0152): `BlockedOrderData` da los datos de una orden bloqueada al staff con `orders.read-blocked`, auditado. T-187 parte a (ADR-0161): `Order.placeInStore`, sin carrito, con la cuenta de staff y su almacén; `StaffCheckout`, que comparte `OrderPlacement` con `Checkout`, cotiza y coloca con el stock de ese almacén por el puerto `OrderStock`, y audita `orders.place`. T-187 parte b (ADR-0161): la venta de mostrador (`IN_STORE`), sin dirección, envío ni datos del comprador si no los da; `Order.handOver` la entrega en la tienda, de Paid a Delivered, desde `OrderLifecycle`. T-188 (ADR-0163): `StoreProfile`, los datos de la tienda para el ticket, de la configuración; `OrderReader` agrega al detalle del staff el almacén del que salieron los productos, por el puerto `OrderWarehouses` |
+
+## Payments
+
+| Elemento | Detalle |
+|---|---|
+| Aggregates | `Payment` (uno por orden; contiene `PaymentAttempt` y `Refund`); `PaymentSettings` (una sola, ADR-0162) |
+| Estados | Pending, RequiresAction, Authorized, Captured, Failed, Cancelled, PartiallyRefunded, Refunded |
+| Eventos | `PaymentAuthorized`, `PaymentCaptured`, `PaymentFailed`, `RefundCompleted` |
+| Repositories | `PaymentRepository`, `PaymentSettingsRepository` |
+| Puertos | `PaymentGateway`: adaptador manual (pruebas) y PayPal semiimplementado (ADR-0040) |
+| Casos de uso | InitiatePayment, RegisterManualPayment (staff, en la tienda física, con su método, ADR-0161), HandleProviderWebhook, RefundPayment (total, al cancelar), RegisterManualRefund (staff), RetryRefund, ReconcilePayments (job) |
+| Exporta | Estado del pago por orderId |
+| Implementado | T-190 parte a (ADR-0134): `Payment` con sus intentos (iniciar y capturar a mano); `PaymentsFacade` para Ordering (iniciar, registrar el pago manual, pagos por orden) y `PaymentCaptured`. Parte b (ADR-0135): `Refund` (iniciar al cancelar, completar a mano), cancelar el pago pendiente y `RefundCompleted`. T-187 parte a (ADR-0161): el intento capturado de un pago en tienda guarda su método (`PaymentMethod`). T-194 (ADR-0162): `PaymentSettings`, si el pago manual está habilitado, que un superadministrador cambia; la fachada la lee en cada operación. T-197 (ADR-0163): el intento capturado y el reembolso manual guardan la nota del staff |
+
+## Shipping
+
+| Elemento | Detalle |
+|---|---|
+| Aggregates | `Shipment` (orderId, código de la orden, almacén, destino, ítems con SKU y nombre, paquetería, guía o entrega propia (ADR-0078), status: Pending, Dispatched, Delivered, DeliveryFailed, Returned, Cancelled — ADR-0050, ADR-0053, ADR-0140); `ShippingMethod` (costo fijo, monto mínimo para envío gratis y plazo de entrega estimado, ADR-0083) |
+| Domain services | `ShippingRateCalculator` |
+| Eventos | `ShipmentCreated`, `ShipmentDispatched`, `ShipmentDelivered`, `DeliveryFailed`, `ShipmentReturned`; se publican los que tienen consumidor: `ShipmentDispatched` y `ShipmentDelivered` (ADR-0141), y `ShipmentReturned` (ADR-0151) |
+| Repositories | `ShipmentRepository`, `ShippingMethodRepository` |
+| Puertos | Ninguno por ahora; `CarrierGateway` se crea con la primera integración real (ADR-0041) |
+| Casos de uso | QuoteShippingOptions (costo fijo con IVA incluido o gratis por monto, ADR-0042, ADR-0079), CreateShipmentForOrder (en la operación que deja pagada la orden, ADR-0140), CancelShipment (con su orden, ADR-0140), RegisterTracking (paquetería y guía, manual), MarkDispatched, MarkDelivered, MarkDeliveryFailed, MarkReturned (ADR-0053) |
+| Exporta | `ShippingFacade`: `quote` para el checkout (ADR-0122); `createShipment`, `cancelShipmentOf`, `anonymizeShipmentsOf` (ADR-0145) y `shipmentsOf` para Ordering, dentro de su transacción (ADR-0140) |
+| Implementado | T-196 (ADR-0122): `ShippingMethod` y la cotización. T-195 parte a (ADR-0140): `Shipment` con su creación, la captura de paquetería y guía (`ShipmentTracking`) y su cancelación; la consulta del staff. Parte b (ADR-0141): `ShipmentDelivery` despacha, entrega y registra la entrega fallida y la devolución, con sus notas, y publica `ShipmentDispatched` y `ShipmentDelivered`. T-132 (ADR-0145): `Shipment.anonymize`. T-232 parte a (ADR-0151): `Shipment.block`, `ShippingFacade.blockShipmentsOf` y `ShipmentReturned` |
+
+Envíos manuales (ADR-0041). Costo de envío fijo, gratis a partir de un monto mínimo (ADR-0042).
+
+Estados previstos para cuando exista integración con paqueterías (no implementados, ADR-0050): guía generada y en tránsito.
+
+---
+
+## Work Orders
+
+| Elemento | Detalle |
+|---|---|
+| Aggregates | `WorkOrder` (folio, cliente con nombre, teléfono y email, y el cliente registrado ligado; equipo, falla, diagnóstico, trabajo, costo estimado informativo, almacén de la tienda, quién lo recibió y técnico; status: Received, Diagnosed, InRepair, Ready, Delivered, Cancelled; historial de estados; las ventas de mostrador que la cobran, ADR-0167) |
+| Reglas | Avanza saltando pasos y nunca regresa; se cancela con nota antes de entregarse; entregada o cancelada, ya no cambia ni liga ventas (BR-WRK-03, BR-WRK-04, BR-WRK-06) |
+| Repositories | `WorkOrderRepository` |
+| Puertos | `WorkOrderWarehouses` (Inventory), `WorkOrderAccounts` (Identity) y `StoreSales` (Ordering), por sus fachadas |
+| Casos de uso | ReceiveWorkOrder (UC-WRK-01), UpdateWorkOrder (UC-WRK-03), WorkOrderLifecycle (UC-WRK-04), WorkOrderSales (UC-WRK-05), WorkOrderReader, con las ventas y la nota de servicio (UC-WRK-02 y 06), WorkOrderRetention y WorkOrderAnonymizations (ADR-0167) |
+| Eventos | Ninguno por ahora |
+| Exporta | `WorkOrdersFacade.anonymizeCustomerWorkOrders`, para Privacidad (ADR-0167) |
+| Implementado | T-189 parte b (ADR-0166) y parte c (ADR-0167): las ventas ligadas, la nota de servicio y la conservación de los datos del cliente |
+
+---
+
+## Promotions
+
+| Elemento | Detalle |
+|---|---|
+| Aggregates | `Promotion` (nombre, descuento en porcentaje entero o monto fijo, productos, categorías y marcas a los que se limita, canales, compra mínima, inicio, fin, quién y cuándo la terminó, y, en un cupón, su código, su límite de usos, si es de una vez por cliente y sus usos; status calculado: Scheduled, Active, Ended) |
+| Reglas | Programada, se edita todo; vigente, solo el nombre, el fin y el límite de usos, nunca por debajo de los usos; terminada, nada; nunca se borra (BR-PRM-01 a 05). Un cupón nunca se aplica solo (BR-PRM-10 a 12) |
+| Repositories | `PromotionRepository` |
+| Puertos | `PromotionCatalog` (Catalog), por su fachada |
+| Casos de uso | CreatePromotion (UC-PRM-01), PromotionReader (UC-PRM-02), UpdatePromotion y EndPromotion (UC-PRM-03) |
+| Eventos | Ninguno por ahora |
+| Exporta | `PromotionsFacade`, para Ordering: `discountFor`, la promoción automática de unas líneas y lo que quita a cada una; `couponFor`, lo que quita el cupón de un código o por qué no aplica; y `redeem`, `recount` y `release`, que cuentan y devuelven los usos de un cupón en la transacción de Ordering |
+| Implementado | T-200 parte a (ADR-0168): las promociones y su administración; parte b: la elección, el reparto del descuento y el mínimo de un peso (BR-PRM-06 a 09); parte c: los cupones y sus límites (BR-PRM-10 a 12) |
+
+---
+
+## Relaciones entre contextos
+
+| Upstream → Downstream | Qué fluye | Mecanismo |
+|---|---|---|
+| Identity → todos | userId y permisos | Token de acceso JWT de corta duración en `Authorization: Bearer`, emitido por Identity; los permisos se resuelven desde los roles del usuario (ADR-0017, ADR-0022, ADR-0023) |
+| Catalog → Pricing, Inventory, Shopping, Ordering, Shipping | variantId, snapshot de variante | Fachada síncrona; eventos `VariantDiscontinued`, `ProductArchived` |
+| Pricing → Shopping, Ordering | Precios cotizados | Fachada síncrona `QuotePrices` |
+| Ordering → Inventory | Reservar, confirmar, liberar; reintegrar con las líneas y lo vendido (P-73) | Comando síncrono en checkout; comandos por eventos (ADR-0132) |
+| Identity → Ordering | Contacto del cliente y direcciones guardadas | Fachada síncrona; Identity nunca usa a Ordering (ADR-0132) |
+| Identity, Inventory → Work Orders | Si un cliente o una cuenta de staff está activa; si un almacén está activo | Fachadas síncronas (ADR-0166) |
+| Catalog → Promotions | Nombre y estado de los productos, categorías y marcas de una promoción; la marca y las categorías, con las superiores, de cada variante | Fachada síncrona `CatalogFacade.entries` y `classifications`; Catalog nunca usa Promotions (ADR-0168) |
+| Promotions → Ordering | La promoción de las líneas de una cotización o una orden, o su cupón, y lo que quita a cada una; los usos del cupón, que Ordering cuenta al colocar la orden y devuelve al vencerla o cancelarla | Fachada síncrona `PromotionsFacade.discountFor`, `couponFor`, `redeem`, `recount` y `release`; Promotions nunca usa Ordering (ADR-0168) |
+| Ordering → Work Orders | Las ventas de la tienda física, con si la tienda tiene su dinero | Fachada síncrona `OrderingFacade.storeSales`; Ordering nunca usa Work Orders (ADR-0167) |
+| Shopping ↔ Ordering | Contenido del carrito / líneas de órdenes expiradas o canceladas | Fachada síncrona; el checkout marca el carrito en su transacción (ADR-0019); Shopping reacciona a `OrderExpired` |
+| Ordering ↔ Payments | Iniciar pago y reembolso / resultado | Comando síncrono / eventos `PaymentCaptured`, `PaymentFailed`, `RefundCompleted` (lleva la orden a Refunded, ADR-0051). Ordering escucha `PaymentCaptured { orderId, paymentId, amount }` desde T-180 (ADR-0133). Ordering usa `PaymentsFacade` y Payments nunca usa a Ordering (ADR-0134). Ordering escucha `RefundCompleted` desde T-190 parte b (ADR-0135) |
+| Ordering → Shipping | Orden pagada o cancelada; envíos de las órdenes | Fachada síncrona `ShippingFacade`, dentro de la transacción de la orden (ADR-0140) |
+| Shipping → Ordering | Progreso del envío | Eventos `ShipmentDispatched`, `ShipmentDelivered` y `ShipmentReturned`; Ordering declara sus propios tipos (ADR-0141, ADR-0151) |
+| Ordering, Payments, Shipping → Notificaciones | Datos para los correos al cliente | Eventos `OrderPlaced`, `OrderPaid`, `OrderCancelled`, `RefundCompleted`, `ShipmentDispatched`; email de contacto y datos de la orden por la fachada de Ordering (ADR-0074). Implementado en T-215 (ADR-0143). Desde T-194, si la tienda cobra en persona, por la fachada de Payments (ADR-0162) |
+| Identity, Ordering, Work Orders, Shopping → Privacidad | Anonimizar la cuenta, las órdenes con sus envíos, las órdenes de trabajo (ADR-0167) y los carritos | Fachadas síncronas, en una transacción; Privacidad no tiene dominio propio. Implementado en T-132 (ADR-0145) |
+
+## Flujo de checkout y pago (ADR-0019)
+
+1. Transacción: validar carrito, cotizar precios y comparar con `expectedTotal`, reservar stock, crear orden en PendingPayment, marcar carrito.
+2. Fuera de transacción: iniciar el pago con el proveedor (idempotency key = ID de la orden).
+3. Webhook: deduplicar evento del proveedor, actualizar Payment, publicar `PaymentCaptured`.
+4. Handlers idempotentes: marcar la orden como pagada y confirmar la reserva.
+5. Jobs: expirar reservas y órdenes impagas; conciliar pagos capturados con órdenes en PendingPayment.

@@ -1,0 +1,3 @@
+# Findings of the secret scan (ADR-F003, copied from base-shop ADR-0105) reviewed and accepted as false positives.
+# One fingerprint per line (commit:file:rule:line, printed by gitleaks). Add a comment saying why.
+# A real secret is never ignored here: rotate it and remove it from the history instead (docs/SECURITY.md).
