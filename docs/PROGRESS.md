@@ -4,7 +4,7 @@
 
 ## Current Phase
 
-Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública aprobados (TF-003), con cuatro sprints de pantallas planeados. Sigue el esqueleto del proyecto (TF-004). Solo entorno local (ADR-F004).
+Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública aprobados (TF-003), con cuatro sprints de pantallas planeados. Esqueleto del proyecto y CI completa en revisión (TF-004). Solo entorno local (ADR-F004).
 
 ## Completed
 
@@ -15,11 +15,10 @@ Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack deci
 
 ## In Progress
 
-Ninguna.
+- TF-004 Esqueleto del proyecto y CI completa (REVIEW: falta el ruleset de `main`, TF-005)
 
 ## Next
 
-- TF-004 Esqueleto del proyecto y CI completa
 - TF-005 Aplicar el ruleset de `main`
 - Sprint 1 de pantallas: TF-006 a TF-009 (`SPRINT.md`)
 
@@ -27,7 +26,7 @@ Ninguna.
 
 - TF-016 Aviso de privacidad: G-01 y PF-07.
 
-Otras brechas de la API que afectan pantallas, en `API_GAPS.md`: G-01 y G-03 afectan al checkout (TF-012), y G-08 a la verificación de email y la recuperación de contraseña.
+Otras brechas de la API que afectan pantallas, en `API_GAPS.md`: G-01 y G-03 afectan al checkout (TF-012).
 
 ## Pending Decisions
 
@@ -51,7 +50,8 @@ Otras brechas de la API que afectan pantallas, en `API_GAPS.md`: G-01 y G-03 afe
 | ADR-F008 | Vitest + MSW, Playwright con axe, ESLint + Prettier + vue-tsc (cierra PF-04) |
 | ADR-F009 | Organización por features con código copiado del backoffice |
 | ADR-F010 | Puerto 3002 y variables públicas (cierra PF-06) |
+| ADR-F011 | Auditoría de dependencias con excepciones revisadas que vencen |
 
 ## Notas
 
-- Versión de la API usada: 1.7.0 (`docs/api/README.md`).
+- Versión de la API usada: 1.8.0 (`docs/api/README.md`).

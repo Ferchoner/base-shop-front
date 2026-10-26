@@ -1,6 +1,6 @@
 # DEVELOPMENT GUIDE
 
-> Adaptado de `docs/DEVELOPMENT_GUIDE.md` de base-shop (commit `7af0f1d`, ADR-F001). Se conservan su flujo, el entorno (Node.js 24, npm, LF, scripts de instalación), Git, CI, versiones, pull requests y Definition of Done. Lo propio del backend (módulos de NestJS, Prisma, migraciones, eventos, Testcontainers) no aplica y se omitió. Las convenciones de código del frontend quedan `PENDIENTE DE DECISIÓN` hasta elegir el stack (PF-01).
+> Adaptado de `docs/DEVELOPMENT_GUIDE.md` de base-shop (commit `7af0f1d`, ADR-F001). Se conservan su flujo, el entorno (Node.js 24, npm, LF, scripts de instalación), Git, CI, versiones, pull requests y Definition of Done. Lo propio del backend (módulos de NestJS, Prisma, migraciones, eventos, Testcontainers) no aplica y se omitió. Las convenciones de código del frontend son las del backoffice base-ecomm-admin (ADR-F009).
 
 ## Flujo
 
@@ -16,7 +16,15 @@
 
 ## Convenciones
 
-Stack: Nuxt 4 SPA (ADR-F005), con sesión (ADR-F006), librerías (ADR-F007), tests y calidad (ADR-F008), organización (ADR-F009) y entorno local (ADR-F010). Las convenciones de código detalladas (nombres de archivo, componentes, composables) se escriben aquí al crear el esqueleto (TF-004), tomando las del backoffice base-ecomm-admin.
+Stack: Nuxt 4 SPA (ADR-F005), con sesión (ADR-F006), librerías (ADR-F007), tests y calidad (ADR-F008), organización (ADR-F009) y entorno local (ADR-F010).
+
+Código, como el backoffice:
+
+- Archivos en kebab-case (`use-api.ts`, `session.store.ts`), componentes Vue en PascalCase (`ProblemAlert.vue`) y páginas con el nombre de su ruta (`pages/products/[slug].vue`).
+- `<script setup lang="ts">` en todos los componentes; los composables empiezan con `use`.
+- Las llamadas a la API pasan por `useApi()` y TanStack Query, nunca `$fetch` directo; las rutas públicas llevan `auth: false`.
+- Los tipos de la API salen de `app/shared/api/generated/openapi.d.ts` (`Schemas['…']`); no se declaran a mano. Se regeneran con `npm run api:types` después de resincronizar `docs/api/`.
+- Prettier con la configuración de la API (`.prettierrc`: comillas simples, coma final y punto y coma): los archivos copiados del backoffice se formatean con ella.
 
 Ya decidido:
 
@@ -52,7 +60,7 @@ Resumen de `docs/api/API_SPEC.md` §1 a §8 para quien escribe pantallas. Ante u
 ### Accesibilidad y rendimiento
 
 - Objetivo WCAG 2.2 nivel AA: navegación con teclado, foco visible, textos alternativos (`Image.altText`), contraste, formularios con etiquetas y errores asociados al campo.
-- Presupuesto de rendimiento: se fija en los requisitos (TF-003). Las imágenes del catálogo llegan en su tamaño original y la SPA no las redimensiona: carga diferida y tamaños de visualización fijos (ver `API_GAPS.md`, G-02).
+- Presupuesto de rendimiento: `REQUIREMENTS.md` §6.2. Las imágenes del catálogo llegan en su tamaño original y la SPA no las redimensiona: carga diferida y tamaños de visualización fijos (ver `API_GAPS.md`, G-02).
 - axe revisa cada pantalla en los e2e (ADR-F008).
 
 ## Configuración local
@@ -62,9 +70,9 @@ El frontend corre solo en local por ahora (ADR-F004, como la API con base-shop A
 - La API se levanta desde su repositorio con `docker compose up --build` (ver su `README.md`): API en `http://localhost:3000`, Swagger UI en `http://localhost:3000/docs/v1` y Mailpit en `http://localhost:8025`.
 - En el `.env` de la API:
   - `CORS_ALLOWED_ORIGINS` debe incluir el origen exacto de la tienda, `http://localhost:3002` (ADR-F010), además del backoffice (`http://localhost:3001`); vacía por defecto, sin ella el navegador no puede llamar a la API (base-shop ADR-0085).
-  - `FRONTEND_BASE_URL` es la base de los enlaces de los correos. Hoy apunta al backoffice; para probar los enlaces de clientes en local se apunta a `http://localhost:3002` mientras dure la prueba (`API_GAPS.md`, G-08). Las páginas `/verify-email`, `/reset-password` y `/order-access` de la tienda reciben `?token=…` (base-shop ADR-0117, ADR-0118, ADR-0148).
+  - `FRONTEND_BASE_URL` es la base de los enlaces de los correos de la tienda, `http://localhost:3002` por defecto, y `BACKOFFICE_BASE_URL` la del backoffice, `http://localhost:3001` (base-shop 1.8.0, ADR-0169). La verificación de email y el acceso a pedidos van siempre a la tienda; la recuperación de contraseña, a la tienda para un cliente y al backoffice para el staff. Las páginas `/verify-email`, `/reset-password` y `/order-access` de la tienda reciben `?token=…` (base-shop ADR-0117, ADR-0118, ADR-0148).
 - Los correos de la API llegan a Mailpit; los enlaces de verificación, recuperación y acceso a pedidos se abren desde ahí.
-- La tienda corre en el puerto 3002 con `NUXT_PUBLIC_API_BASE_URL` y `NUXT_PUBLIC_PRIVACY_NOTICE_VERSION`, fijadas al construir (ADR-F010). Toda variable nueva se agrega a `.env.example` en el mismo cambio, con descripción y valor de ejemplo no real. `.env` nunca se versiona.
+- La tienda se instala con `npm ci` (Node.js 24) y corre con `npm run dev` en `http://localhost:3002`, con `NUXT_PUBLIC_API_BASE_URL` y `NUXT_PUBLIC_PRIVACY_NOTICE_VERSION`, fijadas al construir (ADR-F010). Toda variable nueva se agrega a `.env.example` en el mismo cambio, con descripción y valor de ejemplo no real. `.env` nunca se versiona.
 
 ## Entorno
 
@@ -73,7 +81,7 @@ Igual que base-shop (ADR-0025, ADR-0108):
 - Node.js 24, en su última actualización menor: `.nvmrc` y `engines` de `package.json`.
 - npm como gestor de paquetes; `package-lock.json` se versiona y las instalaciones en CI usan `npm ci`.
 - Fin de línea LF en todos los archivos de texto, forzado por `.gitattributes` (`* text=auto eol=lf`), igual que `.editorconfig` y Prettier.
-- `npm audit` debe quedar sin vulnerabilidades altas ni críticas, igual que en la CI.
+- `npm run audit` debe quedar sin vulnerabilidades altas ni críticas, salvo las excepciones revisadas de `audit-exceptions.json`, igual que en la CI (ADR-F011).
 - Scripts de instalación de las dependencias:
   - `package.json` los niega en `allowScripts`, y `.npmrc` (`strict-allow-scripts=true`) hace fallar la instalación si una dependencia trae uno sin revisar.
   - Si `npm ci` falla con `ESTRICTALLOWSCRIPTS`, se revisa el script que lista el error (`npm install-scripts ls`) y se decide: lo normal es negarlo con `npm install-scripts deny <paquete>`; solo si hace falta, se aprueba con `npm install-scripts approve --no-allow-scripts-pin <paquete>` y se registra el motivo en un ADR-F.
@@ -97,7 +105,7 @@ Igual que base-shop (ADR-0030, ADR-0105, ADR-0106):
 
 - GitHub Flow: `main` siempre está en estado desplegable; cada tarea se trabaja en una rama corta y se integra mediante pull request.
 - CI en `.github/workflows/ci.yml`, en cada pull request hacia `main` y en cada push a `main`, con dos jobs:
-  - `Pipeline`: hoy solo el escaneo de secretos del historial. Con el stack (TF-004) se agregan instalación, lint y formato, compilación, tests, auditoría de dependencias y build.
+  - `Pipeline`: instalación, lint y formato, tipos del contrato al día, typecheck, tests unitarios y de componentes, auditoría de dependencias (ADR-F011), build, e2e con axe en Chromium (escritorio y móvil) y escaneo de secretos del historial. Lo mismo se corre en local con los scripts de `README.md` antes de abrir un pull request.
   - `Commit messages`: revisa el título del pull request y los commits.
 - Ruleset de `main` como código en `.github/rulesets/main.json`, igual al de la API: exige pull request y los checks `Pipeline` y `Commit messages` en verde, con la rama al día; 0 aprobaciones y ninguna excepción. Se aplica con `gh api --method POST repos/Ferchoner/base-shop-front/rulesets --input .github/rulesets/main.json` (la primera vez) o `--method PUT …/rulesets/<id>` después; requiere administrador del repositorio. Un cambio hecho en la interfaz de GitHub se copia al archivo.
 - Los nombres de los jobs son los checks obligatorios de `main`: cambiarlos exige actualizar el ruleset.

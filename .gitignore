@@ -1,14 +1,13 @@
 # Dependencies
 /node_modules
 
-# Build output (the framework adds its own folders when it is chosen, PF-01)
+# Build output (Nuxt, ADR-F005)
 /dist
-/build
-/out
-/.next
 /.nuxt
 /.output
-/.svelte-kit
+/.data
+/.nitro
+/.cache
 
 # Tests
 /coverage

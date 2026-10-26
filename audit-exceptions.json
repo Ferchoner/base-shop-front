@@ -1,0 +1,8 @@
+[
+  {
+    "url": "https://github.com/advisories/GHSA-86w9-cpqp-85rv",
+    "package": "node-forge",
+    "reason": "Only the Nuxt dev server uses it (listhen, to create a self-signed HTTPS certificate). It never reaches the static build the store serves, and no version of node-forge fixes it yet.",
+    "reviewBy": "2027-01-31"
+  }
+]

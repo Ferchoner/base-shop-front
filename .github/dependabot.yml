@@ -1,6 +1,6 @@
 # Dependency updates (ADR-F003, copied from base-shop ADR-0030 and ADR-0106). Version updates run
 # every Monday. Security updates are opened as soon as an advisory is published and are not delayed
-# by the cooldown. The npm ecosystem has nothing to update until the stack adds dependencies (PF-01).
+# by the cooldown.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -24,6 +24,9 @@ updates:
     ignore:
       # @types/node follows the Node.js major version of the project (base-shop ADR-0025).
       - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+      # TypeScript stays on 5.x: TypeScript 7 drops the API that openapi-typescript and vue-tsc use (ADR-F007).
+      - dependency-name: typescript
         update-types: ['version-update:semver-major']
 
   - package-ecosystem: github-actions

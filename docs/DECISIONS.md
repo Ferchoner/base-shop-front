@@ -32,6 +32,7 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
 | ADR-F008 | Tests y calidad | Aceptada |
 | ADR-F009 | Organización por features y código copiado del backoffice | Aceptada |
 | ADR-F010 | Entorno local: puerto y variables | Aceptada |
+| ADR-F011 | Auditoría de dependencias con excepciones revisadas | Aceptada |
 
 ---
 
@@ -203,4 +204,21 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - Sin variables secretas: es una SPA (ADR-F006).
 - **Alternativas consideradas:** el puerto 5173, que la API trae por defecto en `FRONTEND_BASE_URL` (no sirve de nada mientras esa variable apunte al backoffice, y es el puerto de Vite, que puede chocar con otros proyectos).
 - **Consecuencias:** para probar en local los enlaces de verificación, recuperación y acceso a pedidos de clientes, `FRONTEND_BASE_URL` de la API se apunta a `http://localhost:3002` temporalmente, hasta que la API tenga una URL por frontend (G-08).
+- **Nota (2026-10-26):** desde base-shop 1.8.0 (ADR-0169) la API tiene una URL por frontend: `FRONTEND_BASE_URL` es la tienda, con `http://localhost:3002` por defecto, y `BACKOFFICE_BASE_URL` el backoffice. Ya no hace falta apuntarla temporalmente (G-08 resuelta).
+- **Estado:** Aceptada (aprobada por el usuario el 2026-10-26).
+
+---
+
+## ADR-F011 — Auditoría de dependencias con excepciones revisadas
+
+- **Fecha:** 2026-10-26
+- **Contexto:** ADR-F008 pide que la CI falle con `npm audit --audit-level=high`, como la API. Al crear el esqueleto (TF-004), `npm audit` reporta una vulnerabilidad alta en `node-forge` ([GHSA-86w9-cpqp-85rv](https://github.com/advisories/GHSA-86w9-cpqp-85rv)) que no tiene versión corregida. Llega por `nuxt → nitropack → listhen`: el servidor de desarrollo de Nuxt la usa para crear un certificado HTTPS propio. No llega al build estático que sirve la tienda (`nuxt generate`, ADR-F005), y el backoffice tiene la misma dependencia. `npm audit` no permite ignorar una vulnerabilidad, así que con `--audit-level=high` la CI fallaría en cada pull request sin que haya nada que corregir.
+- **Decisión:**
+  - `npm run audit` corre `scripts/audit.ts`: lee `npm audit --json` y falla con toda vulnerabilidad alta o crítica que no esté en `audit-exceptions.json`.
+  - Cada excepción nombra una vulnerabilidad por su URL de GitHub, el paquete, por qué no llega a la tienda y una fecha de revisión. Pasada la fecha, la auditoría vuelve a fallar hasta que alguien la revise. Una excepción que ya no hace falta se avisa para quitarla.
+  - La primera excepción es la de `node-forge`, a revisar el 2027-01-31.
+  - Una excepción nueva solo se agrega con su motivo en el pull request y revisión humana (`TEAM_GUIDE.md`); una vulnerabilidad en código que llega al navegador nunca lleva excepción: se actualiza o se reemplaza la dependencia.
+  - Se corrigieron las que tenían arreglo: `happy-dom` pasó a la 21 (vulnerabilidad alta, solo de tests) y `esbuild` se actualizó con `npm audit fix`.
+- **Alternativas consideradas:** `npm audit --audit-level=critical` (dejaría pasar cualquier alta nueva); `--omit=dev` (no sirve: `nuxt` es dependencia de producción aunque `node-forge` solo se use en desarrollo); `overrides` hacia otra versión (no hay ninguna corregida); quitar la auditoría de la CI hasta que haya arreglo (ADR-F008 la exige).
+- **Consecuencias:** la CI sigue fallando con cualquier vulnerabilidad alta o crítica nueva. Cuando salga una versión corregida de `node-forge` o Nuxt deje de usarla, el script avisa que la excepción sobra.
 - **Estado:** Aceptada (aprobada por el usuario el 2026-10-26).

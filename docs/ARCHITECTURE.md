@@ -25,7 +25,7 @@ Propios del frontend:
 
 Fija, sin importar el stack:
 
-- Contrato: `docs/api/API_SPEC.md` y `docs/api/openapi/v1.json` (base-shop 1.7.0).
+- Contrato: `docs/api/API_SPEC.md` y `docs/api/openapi/v1.json` (base-shop 1.8.0).
 - Transporte: HTTPS en producción, JSON, `Authorization: Bearer`, sin cookies del lado de la API (base-shop ADR-0023, ADR-0085).
 - Errores: Problem Details (RFC 9457), decididos por `type`.
 - Lo que la API no ofrece: `API_GAPS.md`.
@@ -54,4 +54,15 @@ app/
 - Estado: TanStack Query para los datos de la API; Pinia solo para la sesión y el `cartId` (ADR-F007).
 - Las piezas de `shared` se copian del backoffice al crear el esqueleto, cada una con su origen (ADR-F009).
 
-El detalle se completa al crear el esqueleto (TF-004).
+Creado en TF-004:
+
+| Ruta | Contenido | Origen |
+|---|---|---|
+| `app/shared/api/client.ts`, `problem.ts`, `types.ts`, `use-api.ts` | Cliente HTTP, Problem Details y tipos del contrato | Copiados del backoffice; `problem.ts` suma los tipos que solo recibe la tienda |
+| `app/shared/api/generated/openapi.d.ts` | Tipos generados con `npm run api:types` desde `docs/api/openapi/v1.json`; la CI falla si no están al día | Generado |
+| `app/shared/utils/money.ts`, `dates.ts` | Dinero en MXN desde centavos y fechas en la zona del navegador | Copiados del backoffice |
+| `app/plugins/01.api.ts`, `02.vue-query.ts` | Cliente de la API y TanStack Query; la sesión se conecta en TF-010 | Adaptados del backoffice |
+| `app/layouts/default.vue`, `app/pages/index.vue`, `app/error.vue` | Encabezado y pie provisionales, inicio que comprueba la conexión con la API y página de error | Provisionales hasta TF-006 y TF-007; `error.vue` adaptado del backoffice |
+| `tests/unit/`, `tests/e2e/` | Vitest (con MSW en el cliente HTTP) y Playwright con axe sobre el build estático | Parte copiados del backoffice |
+
+Los archivos copiados dicen en su primer comentario de qué archivo y commit del backoffice vienen (`bbcd5af`).

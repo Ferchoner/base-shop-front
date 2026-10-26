@@ -5,7 +5,11 @@ docs/
 prompts/
 
 # Generated files
+.nuxt/
+.output/
 dist/
-build/
 coverage/
+playwright-report/
+test-results/
 package-lock.json
+app/shared/api/generated/

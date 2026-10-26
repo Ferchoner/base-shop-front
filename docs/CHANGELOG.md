@@ -4,6 +4,15 @@
 
 ## Unreleased
 
+- Documentación de la API resincronizada con base-shop 1.8.0 (tag `v1.8.0`, commit `8bde9da`). La API tiene ahora una URL por frontend para los enlaces de sus correos (base-shop ADR-0169), así que `API_GAPS.md` G-08 queda resuelta. El contrato de `/v1` no cambió (`openapi/v1.json` igual) y los tipos generados no cambian.
+
+- TF-004: esqueleto del proyecto y CI completa.
+  - Nuxt 4 SPA con Nuxt UI, TanStack Query, Pinia, ofetch, Zod y tipos generados del OpenAPI, en el puerto 3002.
+  - Del backoffice (commit `bbcd5af`) se copiaron el cliente HTTP, Problem Details, dinero y fechas, la configuración de ESLint, Vitest y Playwright, y sus tests, cada archivo con su origen.
+  - Inicio provisional que comprueba la conexión con la API, y página de error.
+  - CI: el job `Pipeline` suma instalación, lint, formato, tipos del contrato al día, typecheck, tests, auditoría, build y e2e con axe.
+  - Auditoría con excepciones revisadas (ADR-F011, aprobada): `node-forge`, que solo usa el servidor de desarrollo y no tiene versión corregida.
+
 - TF-003: requisitos de la tienda pública, aprobados por el usuario.
   - `REQUIREMENTS.md` detalla cada pantalla con su ruta del frontend, las rutas de la API, estados, errores por `type` y criterios de aceptación, además de errores, precios, idempotencia, carrito y accesibilidad comunes a todas.
   - Navegadores soportados y presupuesto de rendimiento.
