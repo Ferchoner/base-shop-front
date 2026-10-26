@@ -2,7 +2,7 @@
 
 > Estructura inspirada en `docs/REQUIREMENTS.md` de base-shop (ADR-F001). Los casos de uso, estados, errores y reglas de negocio son los de la API: `docs/api/REQUIREMENTS.md` y `docs/api/BUSINESS_RULES.md`. Este documento dice qué pantallas los cubren y cómo se comportan en el navegador. Las secciones (§) sin prefijo son de `docs/api/API_SPEC.md`.
 
-**Estado:** detallado en TF-003, pendiente de aprobación del usuario antes de implementar pantallas.
+**Estado:** aprobado por el usuario el 2026-10-26 (TF-003). Un cambio de alcance o de comportamiento se aprueba de nuevo antes de implementarlo.
 
 ## 1. Actores
 
@@ -315,5 +315,4 @@ Sin API que lo respalde, no se construye ni se simula (CLAUDE.md, regla 17): ban
 
 ## 8. Pendientes
 
-- Aprobación de este documento por el usuario (TF-003).
 - Lo que falta en la API para cubrir estas pantallas: `API_GAPS.md`.

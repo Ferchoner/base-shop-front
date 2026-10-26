@@ -4,10 +4,10 @@
 
 ## Unreleased
 
-- TF-003: requisitos de la tienda pública.
+- TF-003: requisitos de la tienda pública, aprobados por el usuario.
   - `REQUIREMENTS.md` detalla cada pantalla con su ruta del frontend, las rutas de la API, estados, errores por `type` y criterios de aceptación, además de errores, precios, idempotencia, carrito y accesibilidad comunes a todas.
   - Navegadores soportados y presupuesto de rendimiento.
-  - Tareas de pantallas TF-006 a TF-016 y cuatro sprints propuestos en `SPRINT.md`.
+  - Tareas de pantallas TF-006 a TF-016 y cuatro sprints planeados en `SPRINT.md`.
   - `API_GAPS.md`: nueva G-11 (instrucciones de pago del invitado solo con el carrito de origen).
 
 - TF-002 (ADR-F005 a ADR-F010): decisiones del stack.

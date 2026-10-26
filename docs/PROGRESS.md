@@ -4,17 +4,18 @@
 
 ## Current Phase
 
-Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública detallados y en revisión (TF-003), con cuatro sprints de pantallas propuestos. Solo entorno local (ADR-F004).
+Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública aprobados (TF-003), con cuatro sprints de pantallas planeados. Sigue el esqueleto del proyecto (TF-004). Solo entorno local (ADR-F004).
 
 ## Completed
 
 - [x] Repositorio creado con licencia Apache-2.0
 - [x] TF-001 Reglas y contexto para IAs heredados de base-shop (2026-10-26)
 - [x] TF-002 Decisiones del stack (2026-10-26)
+- [x] TF-003 Requisitos de la tienda pública (2026-10-26)
 
 ## In Progress
 
-- TF-003 Requisitos de la tienda pública (REVIEW: falta la aprobación del usuario)
+Ninguna.
 
 ## Next
 
