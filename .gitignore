@@ -1,0 +1,43 @@
+# Dependencies
+/node_modules
+
+# Build output (the framework adds its own folders when it is chosen, PF-01)
+/dist
+/build
+/out
+/.next
+/.nuxt
+/.output
+/.svelte-kit
+
+# Tests
+/coverage
+/playwright-report
+/test-results
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+/.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# dotenv environment variable files
+.env
+.env.*
+!.env.example
+
+# temp directory
+.temp
+.tmp
+
+# Claude Files
+prompts
