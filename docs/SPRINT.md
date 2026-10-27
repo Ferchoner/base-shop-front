@@ -4,7 +4,7 @@
 
 ## Sprint actual
 
-Sprint 2 (pantallas): un cliente se registra, verifica su email, inicia sesión y conserva su carrito (TF-010, TF-011). Empezó el 2026-10-27. TF-010 y TF-011 hechas; falta medir el rendimiento para cerrarlo.
+Sprint 3 (pantallas): invitado y cliente colocan una orden y reciben las instrucciones de pago; el invitado consulta su pedido (TF-017, TF-012, TF-014). Empieza cuando el usuario lo indique, con TF-017 primero.
 
 ## Próximos sprints
 
@@ -14,12 +14,23 @@ Cada sprint termina en algo que se puede probar de punta a punta contra la API l
 |---|---|---|
 | 1 | Un visitante navega el catálogo, ve un producto y arma un carrito de invitado | TF-006, TF-007, TF-008, TF-009 |
 | 2 | Un cliente se registra, verifica su email, inicia sesión y conserva su carrito | TF-010, TF-011 |
-| 3 | Invitado y cliente colocan una orden y reciben las instrucciones de pago; el invitado consulta su pedido | TF-012, TF-014 |
+| 3 | Invitado y cliente colocan una orden y reciben las instrucciones de pago; el invitado consulta su pedido | TF-017, TF-012, TF-014 |
 | 4 | Mi cuenta y mis pedidos; presupuesto de rendimiento en la CI | TF-013, TF-015 (y TF-016 si G-01 se resolvió) |
 
 Criterio de cierre de cada sprint: sus tareas en DONE y el presupuesto de rendimiento medido (`REQUIREMENTS.md` §6.2).
 
 ## Historial
+
+### Sprint 2 (pantallas), 2026-10-27
+
+- **Objetivo:** un cliente se registra, verifica su email, inicia sesión y conserva su carrito.
+- **Resultado:** cumplido.
+  - TF-010: sesión del cliente, renovación entre pestañas, carrito del cliente y fusión del de invitado (PR #14).
+  - TF-011: registro, verificación de email y recuperación de contraseña (PR #15).
+- **Presupuesto de rendimiento:** medido (`REQUIREMENTS.md` §6.2), dentro de los topes de ADR-F012 tras descargar las páginas al interactuar.
+  - LCP: inicio 2.67 s, catálogo 3.97 s, producto 3.48 s; `/login` 3.10 s y `/register` 3.26 s, como referencia.
+  - JavaScript inicial: 174 KB comprimido. CLS de 0 a 0.03.
+  - El catálogo quedó a 30 ms de su tope. El usuario eligió ajustar el reparto de chunks antes del checkout (TF-017, seguimiento de ADR-F012).
 
 ### Sprint 1 (pantallas), 2026-10-26 a 2026-10-27
 
