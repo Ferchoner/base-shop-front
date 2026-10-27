@@ -81,10 +81,16 @@ jobs:
           npx playwright install --with-deps chromium
           npm run test:e2e
 
+      # REQUIREMENTS 6.2 and the local LCP caps of ADR-F012, on the build of step 7 with a simulated
+      # API: median of 3 Lighthouse runs per page, with the Chromium of step 8. The table goes to the
+      # job summary.
+      - name: 9. Performance budget
+        run: npm run perf:budget
+
       # The same scan as before a local commit: gitleaks, pinned by digest in package.json, reads
       # the whole history offline; --redact keeps any finding out of the public log. Reviewed false
       # positives live in .gitleaksignore.
-      - name: 9. Secret scan
+      - name: 10. Secret scan
         run: npm run secrets:scan:history
 
   commit-messages:

@@ -29,6 +29,7 @@ npm run dev            # http://localhost:3002
 | `npm test` | Tests unitarios y de componentes (Vitest) |
 | `npm run build` | Build estático en `.output/public` (`nuxt generate`) |
 | `npm run test:e2e` | Playwright con axe sobre el build; requiere antes `NUXT_PUBLIC_PRIVACY_NOTICE_VERSION=e2e-2026-10 npm run build`, como la CI, para que el registro esté disponible |
+| `npm run perf:budget` | Presupuesto de rendimiento de `REQUIREMENTS.md` §6.2 sobre el build, con Lighthouse y una API simulada en el puerto 3000; falla si se pasa un tope (TF-015) |
 | `npm run audit` | Vulnerabilidades altas y críticas, con las excepciones revisadas de `audit-exceptions.json` (ADR-F011) |
 | `npm run api:types` | Regenera los tipos de la API desde `docs/api/openapi/v1.json` |
 | `npm run secrets:scan` | gitleaks con Docker sobre lo preparado y todo el historial; antes de cada commit |
