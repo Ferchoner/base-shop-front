@@ -4,7 +4,7 @@
 
 ## Sprint actual
 
-Sprint 2 (pantallas): un cliente se registra, verifica su email, inicia sesión y conserva su carrito (TF-010, TF-011). Empezó el 2026-10-27. TF-010 en revisión.
+Sprint 2 (pantallas): un cliente se registra, verifica su email, inicia sesión y conserva su carrito (TF-010, TF-011). Empezó el 2026-10-27. TF-010 y TF-011 hechas; falta medir el rendimiento para cerrarlo.
 
 ## Próximos sprints
 

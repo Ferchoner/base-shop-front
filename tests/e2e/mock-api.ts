@@ -391,3 +391,85 @@ export async function mockSessionApi(
   );
   return { calls };
 }
+
+/** Debe coincidir con NUXT_PUBLIC_PRIVACY_NOTICE_VERSION del build de las pruebas (ci.yml). */
+export const PRIVACY_NOTICE_VERSION =
+  process.env.NUXT_PUBLIC_PRIVACY_NOTICE_VERSION ?? 'e2e-2026-10';
+// Token inventado; .gitleaks.toml lo permite por valor.
+export const VALID_LINK_TOKEN = 'q8Xz3Lr0VbN7kT2mWc9YhD4sFj6Ae1Pu5Gi8Ko0RnSv';
+export const COMMON_PASSWORD = 'contraseña común de prueba';
+export const TAKEN_EMAIL = 'ocupado@example.com';
+
+const policyViolation = (route: Route, field: string) =>
+  route.fulfill({
+    status: 400,
+    contentType: 'application/problem+json',
+    headers: cors,
+    body: JSON.stringify({
+      type: '/problems/password-policy-violation',
+      title: 'password-policy-violation',
+      status: 400,
+      errors: [{ field, code: 'commonPassword', message: 'Texto de la API' }],
+    }),
+  });
+
+/**
+ * Registro, verificación y recuperación de API_SPEC §9.2–9.4 y §9.8–9.9: `TAKEN_EMAIL` ya existe,
+ * `COMMON_PASSWORD` viola la política y solo `VALID_LINK_TOKEN` es un enlace vigente.
+ */
+export async function mockAccountApi(page: Page) {
+  const bodies: Record<string, unknown>[] = [];
+  const calls: string[] = [];
+  await page.route(
+    (url) =>
+      url.pathname === '/v1/auth/register' ||
+      url.pathname.startsWith('/v1/auth/email-verification/') ||
+      url.pathname.startsWith('/v1/auth/password-reset/'),
+    async (route) => {
+      const request = route.request();
+      if (request.method() === 'OPTIONS') return preflight(route);
+      const path = new URL(request.url()).pathname;
+      const body = request.postDataJSON() as Record<string, string>;
+      calls.push(path);
+      bodies.push(body);
+      switch (path) {
+        case '/v1/auth/register':
+          if (body.email === TAKEN_EMAIL)
+            return route.fulfill({
+              status: 409,
+              contentType: 'application/problem+json',
+              headers: cors,
+              body: JSON.stringify({
+                type: '/problems/duplicate-value',
+                title: 'duplicate-value',
+                status: 409,
+                field: 'email',
+              }),
+            });
+          if (body.password === COMMON_PASSWORD)
+            return policyViolation(route, 'password');
+          return json(route, 201, {
+            ...customerAccount,
+            email: body.email,
+            firstNames: body.firstNames,
+            lastNames: body.lastNames,
+            emailVerified: false,
+          });
+        case '/v1/auth/email-verification/confirm':
+          return body.token === VALID_LINK_TOKEN
+            ? json(route, 200, { emailVerified: true })
+            : problem(route, 400, 'invalid-or-expired-token');
+        case '/v1/auth/password-reset/confirm':
+          if (body.token !== VALID_LINK_TOKEN)
+            return problem(route, 400, 'invalid-or-expired-token');
+          if (body.newPassword === COMMON_PASSWORD)
+            return policyViolation(route, 'newPassword');
+          return route.fulfill({ status: 204, headers: cors });
+        default:
+          // Reenvío y solicitud de recuperación: 202 exista o no el email.
+          return route.fulfill({ status: 202, headers: cors });
+      }
+    },
+  );
+  return { calls, bodies };
+}

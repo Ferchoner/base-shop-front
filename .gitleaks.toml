@@ -7,3 +7,7 @@ useDefault = true
 [[allowlists]]
 description = "Example Idempotency-Key value (a random UUID) in the API spec; base-shop ignores it too"
 regexes = ['''5b1e9c2a-7d7f-4f55-9c6e-2f0e8a1d3b44''']
+
+[[allowlists]]
+description = "Fake email-link token of the end-to-end tests (tests/e2e/mock-api.ts), the same one the backoffice tests use"
+regexes = ['''q8Xz3Lr0VbN7kT2mWc9YhD4sFj6Ae1Pu5Gi8Ko0RnSv''']

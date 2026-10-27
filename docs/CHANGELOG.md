@@ -4,6 +4,15 @@
 
 ## Unreleased
 
+- TF-011: registro, verificación de email y recuperación de contraseña (`REQUIREMENTS.md` §5.7 y §5.9).
+  - `/register`: nombres, apellidos, email, contraseña con la política explicada antes de escribirla y botón para mostrarla, y casilla del aviso de privacidad con la versión de `NUXT_PUBLIC_PRIVACY_NOTICE_VERSION`. Sin esa variable, el registro no está disponible. Al registrarse: "Revisa tu correo", reenvío y enlace al login.
+  - Mensajes propios para cada regla de la contraseña (`passwordLength`, `passwordCharacters`, `commonPassword`) y, ante un email ya registrado, enlaces para iniciar sesión o recuperar la contraseña.
+  - `/verify-email` y `/reset-password` leen el token, lo quitan de la URL y no envían `Referer`. Un enlace vencido ofrece pedir otro; con un error de la política, el mismo enlace sigue sirviendo.
+  - `/forgot-password` y el reenvío responden lo mismo exista o no la cuenta, con el aviso de que el correo puede tardar.
+  - Al restablecer la contraseña se cierra la sesión de la pestaña y `/login` avisa que se cerraron todas.
+  - `/login` enlaza a la recuperación y al registro.
+  - La CI construye con `NUXT_PUBLIC_PRIVACY_NOTICE_VERSION=e2e-2026-10` para probar el registro.
+
 - TF-010: sesión del cliente (`REQUIREMENTS.md` §4.5, §5.4 y §5.8; ADR-F006).
   - `/login`: un solo mensaje ante credenciales inválidas, sin decir si el email existe, y regreso a la ruta de origen solo si es interna. Una cuenta de staff ve "Las cuentas de personal no compran en la tienda en línea" y se le cierra la sesión.
   - Token de acceso en memoria y refresh token en `localStorage` (`base-shop-front.refreshToken`). Renovación de una en una, también entre pestañas con un Web Lock, antes de vencer y ante un 401. La sesión se recupera al abrir la tienda sin hacer esperar a las páginas públicas.

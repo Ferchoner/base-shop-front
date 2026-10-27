@@ -117,6 +117,17 @@ Cómo se comporta la sesión:
 - **Fusión:** solo se fusiona un carrito de invitado activo con líneas (se lee antes con `GET /v1/carts/{cartId}`); uno vacío, ya fusionado o usado en una orden solo se olvida. `/login` la espera antes de regresar a la ruta de origen, y si falla por red, el `cartId` se conserva y la fusión se reintenta al leer el carrito del cliente. Una sola fusión a la vez dentro de la pestaña; la API es idempotente (base-shop ADR-0059).
 - **Cierre:** "Cerrar sesión" olvida también el `cartId` de invitado (§4.5). Una sesión que vence por sí sola no lo toca. Las rutas con `meta.auth` llevan al login cuando la sesión termina, en esta pestaña o en otra; las demás se quedan donde están.
 
+Creado en TF-011:
+
+| Ruta | Contenido | Origen |
+|---|---|---|
+| `app/shared/auth/password-policy.ts` | Política de contraseña validable en el navegador (15 a 64) y mensajes propios por `errors[].code` | Del backoffice, con los mensajes por regla |
+| `app/features/account/api.ts` | Registro, verificación, reenvío y recuperación; `useLinkToken` lee el token del enlace y lo quita de la URL; aviso para `/login` | Propio; las dos mutaciones de recuperación copiadas del backoffice |
+| `app/features/account/components/ResendVerification.vue`, `app/components/PasswordInput.vue` | Reenvío del enlace de verificación y contraseña con botón para mostrar lo escrito | Propios |
+| `app/pages/register.vue`, `verify-email.vue`, `forgot-password.vue`, `reset-password.vue` | Registro, verificación y recuperación | `forgot-password` y `reset-password` adaptados del backoffice; los demás propios |
+
+Los formularios que ponen errores de la API en sus campos validan al escribir sin demora (`validate-on-input-delay` en 0): con la demora de 300 ms de Nuxt UI, una validación pendiente borraba el error que acababa de llegar.
+
 Los componentes que usan varias features viven en `app/components/` (autoimportados por Nuxt); los de una sola feature, en su carpeta.
 
 Los archivos copiados dicen en su primer comentario de qué archivo y commit del backoffice vienen (`bbcd5af`).
