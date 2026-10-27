@@ -4,6 +4,13 @@
 
 ## Unreleased
 
+- TF-014: pedidos de invitado (`REQUIREMENTS.md` §5.13).
+  - `/order-lookup`: consulta con email y código, que acepta minúsculas y sin guion. Un solo mensaje si no se encuentra, sin decir qué dato falló. "¿Perdiste tu código?" pide un enlace por correo.
+  - `/order-access`: lee y quita el token del enlace, lista los pedidos del email y abre el detalle de cada uno sin poner el email ni el código en la URL. Un enlace vencido o usado ofrece pedir otro.
+  - Detalle de la orden con su estado explicado, fechas, pago, envío con paquetería y guía, dirección y productos. En una orden pendiente, el código, el total y el vencimiento; las instrucciones de pago solo si se colocó en esta pestaña (G-11).
+  - "Volver a comprar" en órdenes canceladas o reembolsadas, al carrito actual o a uno nuevo, con aviso de cuántos productos ya no se venden (G-13, nueva brecha de la API).
+  - Enlace "Consultar un pedido" en el pie.
+
 - TF-012: checkout de invitado y de cliente, e inicio del pago (`REQUIREMENTS.md` §4.4, §5.5 y §5.6; ADR-F014).
   - `/checkout`: sin sesión, iniciar sesión o seguir como invitado (email y aviso de privacidad). El cliente elige una dirección guardada o escribe otra y puede guardarla. Estado y municipio salen del catálogo del INEGI.
   - Resumen con las líneas, el cupón, el descuento y su promoción, el envío o "Gratis", cuánto falta para el envío gratis, el IVA incluido, el total y la entrega estimada, todo de la cotización de la API.

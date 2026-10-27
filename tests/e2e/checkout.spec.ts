@@ -4,8 +4,10 @@ import {
   customerAccount,
   detail,
   expectAccessible,
+  guestOrder,
   mockCartApi,
   mockCheckoutApi,
+  mockGuestOrdersApi,
   mockSessionApi,
   ORDER_CODE,
   PRIVACY_NOTICE_VERSION,
@@ -136,6 +138,36 @@ test.describe('checkout de invitado (REQUIREMENTS §5.5, §5.6)', () => {
     // Al recargar ya no hay datos en memoria: el invitado consulta su orden con su email.
     await page.reload();
     await expect(page).toHaveURL('/order-lookup');
+  });
+
+  test('la consulta de la orden recién colocada lleva a sus instrucciones de pago', async ({
+    page,
+  }) => {
+    const carts = await guestCart(page);
+    const api = await mockCheckoutApi(page, carts);
+    await mockGuestOrdersApi(page, carts, [guestOrder('PENDING_PAYMENT')]);
+    await page.goto('/checkout');
+    await fillGuest(page);
+    await expect(
+      page.getByText('Total $748.00', { exact: true }),
+    ).toBeAttached();
+    await placeButton(page).click();
+    await expect(
+      page.getByText('Presenta este código en la tienda para pagar.'),
+    ).toBeVisible();
+
+    // En la misma pestaña la tienda aún tiene el carrito de origen (ADR-F014, G-11).
+    await page.getByRole('link', { name: 'Consultar un pedido' }).click();
+    await page.getByLabel('Email', { exact: true }).fill('ana@example.com');
+    await page.getByLabel('Código del pedido').fill(ORDER_CODE);
+    await page.getByRole('button', { name: 'Consultar' }).click();
+    await page
+      .getByRole('button', { name: 'Ver instrucciones de pago' })
+      .click();
+    await expect(
+      page.getByText('Presenta este código en la tienda para pagar.'),
+    ).toBeVisible();
+    expect(api.payments).toHaveLength(1);
   });
 
   test('avisa si el total cambió y coloca con el nuevo total', async ({

@@ -158,6 +158,23 @@ Cómo se comporta el checkout:
 - **Llaves:** una por cuerpo de la orden. Un reenvío idéntico (error de red, `idempotency-request-in-progress`) usa la misma; un total o un dato distinto, otra.
 - **Al colocar:** el carrito de invitado se olvida y el contador se vuelve a pedir. La dirección nueva que el cliente pide guardar se crea antes, y se usa por su id; con la libreta llena se usa sin guardar.
 
+Creado en TF-014 (pedidos de invitado):
+
+| Ruta | Contenido | Origen |
+|---|---|---|
+| `app/shared/orders/status.ts` | Ahora también el pago, el envío, la explicación de cada estado, la promoción y cuándo se puede volver a comprar | Adaptado de los estados de venta del backoffice |
+| `app/components/OrderDetail.vue`, `OrderLines.vue`, `PostalAddress.vue` | Detalle de una orden para el comprador, con un slot para las acciones de cada pantalla. En `components` porque los usarán también los pedidos del cliente (TF-013) | `OrderLines` y `PostalAddress` adaptados del backoffice; `OrderDetail` propio |
+| `app/features/orders/api.ts`, `reorder.ts` | Consulta, enlace de acceso, órdenes del enlace y recompra de invitado, como mutaciones; aviso del carrito tras la recompra | Propios |
+| `app/features/orders/components/GuestOrder.vue`, `AccessLinkForm.vue` | Orden de invitado con "Ver instrucciones de pago" y "Volver a comprar"; "¿Perdiste tu código?" | Propios |
+| `app/pages/order-lookup.vue`, `order-access.vue` | Consulta con email y código; pedidos desde el enlace del correo | Propias |
+
+Cómo se comportan los pedidos de invitado:
+
+- **Sin datos en el navegador:** email y código van solo en el cuerpo y viven en la página. Las consultas son mutaciones, no lecturas cacheadas: no quedan en la caché y no se repiten solas, porque cada una gasta el límite de 10 por IP en 15 minutos.
+- **Instrucciones de pago:** solo la orden colocada en esta pestaña conserva su `cartId` de origen (ADR-F014). Las demás remiten al correo de la orden (G-11).
+- **Volver a comprar:** va al carrito de invitado actual, o a uno nuevo si no hay o ya no sirve. Con sesión va a uno nuevo, que el carrito del cliente fusiona al leerse. El aviso cuenta las variantes que no se copiaron, sin nombrarlas (G-13).
+- Un enlace "Consultar un pedido" en el pie lleva a `/order-lookup`.
+
 Los componentes que usan varias features viven en `app/components/` (autoimportados por Nuxt); los de una sola feature, en su carpeta.
 
 Los archivos copiados dicen en su primer comentario de qué archivo y commit del backoffice vienen (`bbcd5af`).

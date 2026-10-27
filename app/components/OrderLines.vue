@@ -1,0 +1,103 @@
+<!-- Adaptado de base-ecomm-admin app/features/orders/components/OrderLines.vue (commit bbcd5af, ADR-F009): para la orden que ve el comprador, en `components` porque la usan los pedidos de invitado y los del cliente. -->
+<script setup lang="ts">
+import type { Schemas } from '~/shared/api/types';
+import { promotionLabel } from '~/shared/orders/status';
+import { formatMoney } from '~/shared/utils/money';
+
+/**
+ * Líneas y totales de la orden (API_SPEC §8.7, §8.8). Montos con IVA incluido. El descuento de la
+ * promoción va por línea en `discountAmount` (§26.7).
+ */
+const props = defineProps<{ order: Schemas['OrderDto'] }>();
+const hasDiscount = computed(() =>
+  props.order.lines.some((l) => l.discountAmount.amount > 0),
+);
+
+function options(o: Record<string, unknown>) {
+  return Object.entries(o)
+    .map(([k, v]) => `${k}: ${String(v)}`)
+    .join(' · ');
+}
+
+const totals = computed(() => [
+  { label: 'Subtotal', value: formatMoney(props.order.subtotal) },
+  ...(props.order.discountTotal.amount
+    ? [
+        {
+          label: props.order.promotion
+            ? `Descuento (${promotionLabel(props.order.promotion)})`
+            : 'Descuento',
+          value: `−${formatMoney(props.order.discountTotal)}`,
+        },
+      ]
+    : []),
+  {
+    label: 'Envío',
+    value:
+      props.order.shippingCost.amount === 0
+        ? 'Gratis'
+        : formatMoney(props.order.shippingCost),
+  },
+  { label: 'IVA incluido', value: formatMoney(props.order.taxTotal) },
+]);
+</script>
+
+<template>
+  <div class="space-y-3">
+    <div class="overflow-x-auto rounded-md border border-default">
+      <table class="w-full text-sm">
+        <caption class="sr-only">
+          Productos de la orden
+        </caption>
+        <thead class="bg-elevated/50 text-left text-muted">
+          <tr>
+            <th scope="col" class="p-2 font-medium">Producto</th>
+            <th scope="col" class="p-2 text-right font-medium">Precio</th>
+            <th scope="col" class="p-2 text-right font-medium">Cantidad</th>
+            <th
+              v-if="hasDiscount"
+              scope="col"
+              class="p-2 text-right font-medium"
+            >
+              Descuento
+            </th>
+            <th scope="col" class="p-2 text-right font-medium">Importe</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-default">
+          <tr v-for="line in order.lines" :key="line.lineNumber">
+            <td class="p-2">
+              <div class="font-medium">{{ line.productName }}</div>
+              <div
+                v-if="Object.keys(line.variantOptions).length"
+                class="text-xs text-muted"
+              >
+                {{ options(line.variantOptions) }}
+              </div>
+            </td>
+            <td class="p-2 text-right">{{ formatMoney(line.unitPrice) }}</td>
+            <td class="p-2 text-right">{{ line.quantity }}</td>
+            <td v-if="hasDiscount" class="p-2 text-right">
+              {{
+                line.discountAmount.amount
+                  ? `−${formatMoney(line.discountAmount)}`
+                  : '—'
+              }}
+            </td>
+            <td class="p-2 text-right">{{ formatMoney(line.lineTotal) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <dl class="ml-auto grid w-full max-w-xs grid-cols-2 gap-1 text-sm">
+      <template v-for="t in totals" :key="t.label">
+        <dt class="text-muted">{{ t.label }}</dt>
+        <dd class="text-right">{{ t.value }}</dd>
+      </template>
+      <dt class="font-semibold">Total</dt>
+      <dd class="text-right font-semibold">
+        {{ formatMoney(order.grandTotal) }}
+      </dd>
+    </dl>
+  </div>
+</template>
