@@ -4,6 +4,13 @@
 
 ## Unreleased
 
+- TF-008: detalle de producto en `/products/{slug}` (`REQUIREMENTS.md` §5.3).
+  - Galería con miniaturas y `altText`; al elegir una variante con imágenes propias, van primero.
+  - Selector de opciones en cascada: cada opción ofrece los valores que existen con las anteriores, así que una combinación inexistente no se puede elegir y nunca hay que deshacer para llegar a otra. Lo agotado se marca y se puede ver.
+  - Precio y disponibilidad de la variante elegida, sin existencias; antes de elegir, "Desde" con el precio más bajo.
+  - Descripción como texto, marca y categorías que llevan al catálogo filtrado, y "Producto no disponible" para un 404.
+  - La cantidad y "Agregar al carrito" llegan con el carrito (TF-009).
+
 - TF-007: inicio y catálogo.
   - Inicio con las categorías de primer nivel y los 12 productos más recientes; sin productos, "Pronto tendremos productos" (`REQUIREMENTS.md` §5.1).
   - Catálogo en `/products` con búsqueda, categoría, marcas, rango de precio en pesos (se envía en centavos), solo disponibles, orden y paginación de 24, todo en la URL; "atrás" deshace el último cambio (§5.2).

@@ -10,7 +10,7 @@ Sprint 1 (pantallas): un visitante navega el catálogo, ve un producto y arma un
 |---|---|
 | TF-006 Base de la app | DONE |
 | TF-007 Inicio y catálogo | DONE |
-| TF-008 Detalle de producto | TODO |
+| TF-008 Detalle de producto | DONE |
 | TF-009 Carrito de invitado | TODO |
 
 ## Próximos sprints

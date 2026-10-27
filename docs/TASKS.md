@@ -31,8 +31,8 @@ Detalle de cada pantalla en `REQUIREMENTS.md` (§ de la columna "Criterios"). To
 |---|---|---|---|---|
 | TF-006 | Base de la aplicación: encabezado, pie, página 404, cliente de la API con tipos generados del OpenAPI y manejo de errores por `type` | DONE | TF-004 | `REQUIREMENTS.md` §4.1, §4.2, §4.6 y §5.15. El contador del carrito, la cuenta y el enlace al aviso de privacidad del encabezado y el pie se agregan con TF-009, TF-010 y TF-016 |
 | TF-007 | Inicio y catálogo con búsqueda, filtros, orden y paginación | DONE | TF-006 | `REQUIREMENTS.md` §5.1 y §5.2 |
-| TF-008 | Detalle de producto con selector de variantes | TODO | TF-006 | `REQUIREMENTS.md` §5.3 |
-| TF-009 | Carrito de invitado | TODO | TF-008 | `REQUIREMENTS.md` §4.5 y §5.4 (rutas de invitado), y el contador del carrito en el encabezado (§5.15) |
+| TF-008 | Detalle de producto con selector de variantes | DONE | TF-006 | `REQUIREMENTS.md` §5.3, salvo la cantidad y el botón de agregar, que van con el carrito en TF-009 |
+| TF-009 | Carrito de invitado | TODO | TF-008 | `REQUIREMENTS.md` §4.5 y §5.4 (rutas de invitado), el contador del carrito en el encabezado (§5.15), y la cantidad, "Agregar al carrito" y sus errores en el detalle de producto (§5.3) |
 | TF-010 | Sesión: inicio y cierre, renovación entre pestañas, carrito del cliente y fusión | TODO | TF-009 | `REQUIREMENTS.md` §4.5, §5.4 (rutas de cliente) y §5.8; ADR-F006. Con el acceso a la cuenta en el encabezado (§5.15) |
 | TF-011 | Registro, verificación de email y recuperación de contraseña | TODO | TF-010 | `REQUIREMENTS.md` §5.7 y §5.9. Con la API 1.8.0 o posterior, que envía estos enlaces a la tienda (G-08 resuelta) |
 | TF-012 | Checkout de invitado y de cliente, e inicio del pago | TODO | TF-010 | `REQUIREMENTS.md` §4.3, §4.4, §5.5 y §5.6. Versión del aviso de privacidad por variable mientras G-01 siga abierta; sin pago manual habilitado, el mensaje de §5.6 (G-03) |

@@ -5,6 +5,7 @@ import { useApi } from '~/shared/api/use-api';
 import type {
   BrandList,
   CategoryTree,
+  ProductDetail,
   ProductListParams,
   ProductPage,
 } from './types';
@@ -21,6 +22,8 @@ export const catalogKeys = {
   products: () => [...catalogKeys.all, 'products'] as const,
   productList: (params: ProductListParams) =>
     [...catalogKeys.products(), 'list', params] as const,
+  product: (slug: string) =>
+    [...catalogKeys.products(), 'detail', slug] as const,
 };
 
 export function useCategories() {
@@ -54,6 +57,19 @@ export function useProducts(params: MaybeRefOrGetter<ProductListParams>) {
         signal,
       }),
     placeholderData: keepPreviousData,
+    staleTime: STALE_TIME,
+  });
+}
+
+export function useProduct(slug: MaybeRefOrGetter<string>) {
+  const api = useApi();
+  return useQuery<ProductDetail, ApiProblem>({
+    queryKey: computed(() => catalogKeys.product(toValue(slug))),
+    queryFn: ({ signal }) =>
+      api<ProductDetail>(
+        `${BASE}/products/${encodeURIComponent(toValue(slug))}`,
+        { auth: false, signal },
+      ),
     staleTime: STALE_TIME,
   });
 }
