@@ -50,6 +50,9 @@ const ORDER_STATUS: Record<OrderStatus, StatusText> = {
   },
 };
 
+/** Los estados en el orden del ciclo de la orden, para filtrar (REQUIREMENTS §5.12). */
+export const ORDER_STATUSES = Object.keys(ORDER_STATUS) as OrderStatus[];
+
 export function orderStatusLabel(status: string): string {
   return ORDER_STATUS[status as OrderStatus]?.label ?? status;
 }

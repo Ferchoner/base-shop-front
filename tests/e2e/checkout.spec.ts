@@ -8,6 +8,7 @@ import {
   mockCartApi,
   mockCheckoutApi,
   mockGuestOrdersApi,
+  mockMyOrdersApi,
   mockSessionApi,
   ORDER_CODE,
   PRIVACY_NOTICE_VERSION,
@@ -292,7 +293,7 @@ test.describe('checkout del cliente (REQUIREMENTS §5.5, §5.6)', () => {
     await expect(
       page.getByRole('heading', { level: 1, name: 'Checkout' }),
     ).toBeVisible();
-    return api;
+    return Object.assign(api, { carts });
   }
 
   test('coloca con una dirección guardada e inicia el pago', async ({
@@ -318,6 +319,24 @@ test.describe('checkout del cliente (REQUIREMENTS §5.5, §5.6)', () => {
     });
     expect(api.payments[0]!.path).toBe(`/v1/me/orders/${ORDER_CODE}/payments`);
     expect(api.payments[0]!.body).toEqual({ provider: 'MANUAL' });
+  });
+
+  test('al recargar las instrucciones, el cliente llega a sus pedidos (ADR-F014)', async ({
+    page,
+  }) => {
+    const api = await customerCheckout(page);
+    await placeButton(page).click();
+    await expect(
+      page.getByRole('heading', { name: '¡Gracias! Tu orden está apartada' }),
+    ).toBeVisible();
+    await mockMyOrdersApi(page, api.carts, [
+      guestOrder('PENDING_PAYMENT', ORDER_CODE, customerAccount.email),
+    ]);
+    await page.reload();
+    await expect(page).toHaveURL('/account/orders');
+    await expect(
+      page.getByRole('link', { name: new RegExp(`Orden ${ORDER_CODE}`) }),
+    ).toBeVisible();
   });
 
   test('guarda una dirección nueva y la usa', async ({ page }) => {

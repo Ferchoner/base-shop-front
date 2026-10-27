@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import {
-  useCheckoutResult,
-  useFindOrder,
-  useStartPayment,
-} from '~/features/checkout/api';
+import { useCheckoutResult, useFindOrder } from '~/features/checkout/api';
 import { retryWhileInProgress } from '~/shared/api/idempotency';
 import { ApiProblem } from '~/shared/api/problem';
 import { useSessionStore } from '~/shared/auth/session.store';
+import { isProviderDisabled, useStartPayment } from '~/shared/orders/payment';
 import { orderStatusLabel } from '~/shared/orders/status';
 import { formatDateTime } from '~/shared/utils/dates';
 import { formatMoney } from '~/shared/utils/money';
@@ -22,15 +19,18 @@ const result = useCheckoutResult();
 const start = useStartPayment();
 const find = useFindOrder();
 
-// Sin la orden en memoria (se recargó la página): el invitado la consulta con su email (TF-014) y
-// el cliente la ve en su cuenta (sus pedidos llegan con TF-013).
+// Sin la orden en memoria (se recargó la página): el invitado la consulta con su email y el cliente
+// la encuentra en sus pedidos.
 watch(
   () => !result.value && session.isSettled,
   (lost) => {
     if (lost)
-      void navigateTo(session.isAuthenticated ? '/account' : '/order-lookup', {
-        replace: true,
-      });
+      void navigateTo(
+        session.isAuthenticated ? '/account/orders' : '/order-lookup',
+        {
+          replace: true,
+        },
+      );
   },
   { immediate: true },
 );
@@ -40,15 +40,6 @@ const status = ref<Status>(result.value?.payment ? 'ready' : 'starting');
 const problem = ref<ApiProblem | null>(null);
 /** Estado de la orden cuando ya no admite pago (por ejemplo, venció). */
 const orderStatus = ref<string | null>(null);
-
-function isProviderDisabled(p: ApiProblem) {
-  return (
-    p.type === 'validation-error' &&
-    p.errors.some(
-      (e) => e.field === 'provider' && e.code === 'isEnabledProvider',
-    )
-  );
-}
 
 async function showOrderStatus() {
   const c = result.value;
@@ -133,22 +124,10 @@ const action = computed(() => result.value?.payment?.action);
         Preparando tu forma de pago…
       </p>
 
-      <template v-else-if="status === 'ready' && action">
-        <template v-if="action.type === 'PAY_IN_STORE'">
-          <p>{{ action.instructions }}</p>
-          <dl class="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
-            <dt class="text-muted">Código</dt>
-            <dd class="font-mono text-lg font-semibold">
-              {{ action.orderCode }}
-            </dd>
-            <dt class="text-muted">Monto</dt>
-            <dd class="font-semibold">{{ formatMoney(action.amount) }}</dd>
-          </dl>
-        </template>
-        <p v-else>
-          Tu orden está apartada. Te enviaremos por correo cómo pagarla.
-        </p>
-      </template>
+      <PaymentAction
+        v-else-if="status === 'ready' && action"
+        :action="action"
+      />
 
       <UAlert
         v-else-if="status === 'unavailable'"

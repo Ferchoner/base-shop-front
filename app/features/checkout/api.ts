@@ -2,10 +2,10 @@ import { keepPreviousData, useMutation, useQuery } from '@tanstack/vue-query';
 import type { MaybeRefOrGetter } from 'vue';
 import type { ApiProblem } from '~/shared/api/problem';
 import { useApi } from '~/shared/api/use-api';
+import type { PaymentStart } from '~/shared/orders/payment';
 import type {
   CheckoutQuote,
   Order,
-  PaymentStart,
   PlaceCustomerOrderInput,
   PlaceGuestOrderInput,
   QuoteInput,
@@ -67,35 +67,6 @@ export function usePlaceOrder() {
         auth: customer,
         idempotencyKey,
       }),
-  });
-}
-
-/**
- * Inicia el pago manual (UC-PAY-01, API_SPEC §16.2), también con `Idempotency-Key`. El invitado
- * prueba que es quien compró con el `cartId` de origen.
- */
-export function useStartPayment() {
-  const api = useApi();
-  return useMutation<
-    PaymentStart,
-    ApiProblem,
-    { publicCode: string; cartId: string | null; idempotencyKey: string }
-  >({
-    mutationFn: ({ publicCode, cartId, idempotencyKey }) => {
-      const code = encodeURIComponent(publicCode);
-      return cartId
-        ? api<PaymentStart>(`/v1/orders/${code}/payments`, {
-            method: 'POST',
-            body: { cartId, provider: 'MANUAL' },
-            auth: false,
-            idempotencyKey,
-          })
-        : api<PaymentStart>(`/v1/me/orders/${code}/payments`, {
-            method: 'POST',
-            body: { provider: 'MANUAL' },
-            idempotencyKey,
-          });
-    },
   });
 }
 
