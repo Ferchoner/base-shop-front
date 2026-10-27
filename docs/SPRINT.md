@@ -4,7 +4,7 @@
 
 ## Sprint actual
 
-Sprint 3 (pantallas): invitado y cliente colocan una orden y reciben las instrucciones de pago; el invitado consulta su pedido (TF-017, TF-012, TF-014). Empieza cuando el usuario lo indique, con TF-017 primero.
+Sprint 3 (pantallas): invitado y cliente colocan una orden y reciben las instrucciones de pago; el invitado consulta su pedido (TF-017, TF-012, TF-014). Empezó el 2026-10-27; TF-017 está hecha y sigue el checkout (TF-012).
 
 ## Próximos sprints
 

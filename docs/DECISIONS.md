@@ -34,6 +34,7 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
 | ADR-F010 | Entorno local: puerto y variables | Aceptada |
 | ADR-F011 | Auditoría de dependencias con excepciones revisadas | Aceptada |
 | ADR-F012 | LCP de 2.5 s como meta de producción y topes locales contra regresiones | Aceptada |
+| ADR-F013 | Las páginas piden sus datos en cuanto el router las resuelve | Aceptada |
 
 ---
 
@@ -251,4 +252,23 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - Con TF-010 y TF-011 el LCP subió: inicio 2.68 s, catálogo 4.08 s (pasó su tope), producto 3.79 s. La causa es el reparto del código: las pantallas nuevas comparten componentes con el catálogo y Vite los separa en más chunks pequeños, que se descargan en más tandas, y el encabezado suma la sesión. El cambio de una pantalla a otra no mueve la CPU de arranque.
   - Se probaron tres arreglos. Descargar las páginas enlazadas al interactuar (pasar el cursor, enfocar o tocar) y no al aparecer el enlace en pantalla: catálogo 3.97 s y producto 3.48 s. Agrupar los chunks del catálogo con `codeSplitting` de Rolldown: catálogo 3.56 s, pero el JavaScript inicial sube a 204 KB y pasa el presupuesto de 200 KB. Cargar el encabezado con la entrada: empeora.
   - El usuario eligió (2026-10-27) aplicar la descarga al interactuar, mantener los topes y ajustar el reparto de chunks antes del checkout (TF-017), porque el checkout volverá a acercar el catálogo a su tope.
+- **Seguimiento con TF-017 (2026-10-27):** la causa principal no era el reparto de chunks. Con la CPU 4 veces más lenta, la petición de productos salía unos 240 ms después de que el router resolvía la página, porque antes se montaban el layout y todo el encabezado. Con ADR-F013 esa petición sale al resolver la ruta. Medido igual que arriba, con 5 corridas por pantalla y contra `main` en la misma máquina: catálogo de 3.92 a 3.60 s y producto de 3.53 a 3.43 s, los dos por debajo de lo medido al cerrar el sprint 1. El inicio queda igual (2.66 s) y el JavaScript inicial también (171 KB). Agrupar chunks ya no hace falta.
 - **Estado:** Aceptada (elegida por el usuario el 2026-10-27).
+
+---
+
+## ADR-F013 — Las páginas piden sus datos en cuanto el router las resuelve
+
+- **Fecha:** 2026-10-27
+- **Contexto:** en una SPA, una página pide sus datos al ejecutar su `setup`. En la tienda eso pasa después de montar el layout y el encabezado (búsqueda, cuenta y carrito), unos 240 ms con la CPU 4 veces más lenta, mientras el LCP del catálogo y del producto espera la respuesta de la API (TF-017, ADR-F012). En el sprint 1 se probó pedir los datos en un middleware y se descartó: ese código va en la entrada y el FCP subió unos 150 ms. Cuando el router llega a `beforeResolve`, el chunk de la página ya está descargado y evaluado.
+- **Decisión:**
+  - Una página puede declarar `prefetch(route)` con `defineOptions`. `app/plugins/04.page-prefetch.ts` lo llama en `beforeResolve`, en la primera carga y en cada navegación, dentro del contexto de Nuxt.
+  - `prefetch` llama a funciones `prefetch*` de su feature, que piden con `prefetchQuery` las mismas lecturas que los `use*` de la página, con las mismas opciones (clave, función y `staleTime`). La página no repite la petición: TanStack Query reutiliza la que está en curso.
+  - Solo la declaran las páginas cuyo LCP depende de un dato: catálogo y producto. En el inicio el LCP es el título, y adelantar sus lecturas lo empeoró (2.66 a 2.78 s) porque compiten con el código que pinta ese título.
+  - Un error de `prefetch` no se muestra: lo muestra la página al pedir la misma lectura.
+- **Alternativas consideradas:** el middleware del sprint 1, con el código en la entrada; agrupar chunks con `codeSplitting` de Rolldown (catálogo 3.56 s, pero 204 KB de JavaScript inicial, sobre el presupuesto); montar el encabezado después de la página (cambia el orden del DOM, que importa al teclado y al lector de pantalla).
+- **Consecuencias:**
+  - El código de `prefetch` vive en el chunk de la página, no en la entrada.
+  - Una lectura nueva de una página con `prefetch` debe pedirse también ahí, o sale tarde. Los tests end-to-end comprueban que el catálogo y el producto piden cada dato una sola vez: si la clave de `prefetch` y la de la página no coinciden, hay dos peticiones y fallan.
+  - Al pasar al modo híbrido (ADR-F005), el servidor podrá dar estos datos con el HTML, y `prefetch` no estorba: la caché ya los tiene.
+- **Estado:** Aceptada.
