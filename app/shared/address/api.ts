@@ -37,3 +37,36 @@ export function useCreateAddress() {
     onSuccess: () => qc.invalidateQueries({ queryKey: addressKeys.all }),
   });
 }
+
+export type UpdateAddressInput = Schemas['UpdateAddressDto'];
+
+/** Cambia una dirección; marcar `isDefault` desmarca la anterior (§9.14). */
+export function useUpdateAddress() {
+  const api = useApi();
+  const qc = useQueryClient();
+  return useMutation<
+    SavedAddress,
+    ApiProblem,
+    { id: string; input: UpdateAddressInput }
+  >({
+    mutationFn: ({ id, input }) =>
+      api<SavedAddress>(`${BASE}/${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        body: { ...input },
+      }),
+    onSettled: () => qc.invalidateQueries({ queryKey: addressKeys.all }),
+  });
+}
+
+/** 204; si era la predeterminada, ninguna queda como predeterminada (§9.14). */
+export function useDeleteAddress() {
+  const api = useApi();
+  const qc = useQueryClient();
+  return useMutation<undefined, ApiProblem, string>({
+    mutationFn: (id) =>
+      api<undefined>(`${BASE}/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+      }),
+    onSettled: () => qc.invalidateQueries({ queryKey: addressKeys.all }),
+  });
+}

@@ -110,7 +110,7 @@ test.describe('sesión del cliente (REQUIREMENTS §4.5, §5.8)', () => {
     await expect(
       page.getByRole('heading', { level: 1, name: 'Mi cuenta' }),
     ).toBeVisible();
-    await expect(page.getByText('María López Hernández')).toBeVisible();
+    await expect(page.getByLabel('Apellidos')).toHaveValue('López Hernández');
     await expectAccessible(page);
 
     await page.reload();

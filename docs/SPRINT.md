@@ -4,7 +4,7 @@
 
 ## Sprint actual
 
-Sprint 4 (pantallas): mi cuenta y mis pedidos; presupuesto de rendimiento en la CI (TF-013, TF-015, y TF-016 si G-01 se resolvió). Por empezar.
+Sprint 4 (pantallas): mi cuenta y mis pedidos; presupuesto de rendimiento en la CI (TF-013, TF-015, y TF-016 si G-01 se resolvió). En curso: TF-013 hecha.
 
 ## Próximos sprints
 

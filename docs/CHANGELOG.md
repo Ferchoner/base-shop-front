@@ -4,6 +4,16 @@
 
 ## Unreleased
 
+- TF-013: Mi cuenta, direcciones y mis pedidos (`REQUIREMENTS.md` §5.10 a §5.12).
+  - `/account`: nombre y apellidos; email con su verificación y reenvío del enlace; cambio de email con la contraseña actual (avisa que hay que verificar el nuevo antes de comprar) y cambio de contraseña (esta sesión sigue y se cierran las demás). Errores propios en su campo: contraseña incorrecta, email ocupado o igual al actual, y la regla de la política que no se cumple.
+  - `/account/addresses`: la libreta con la predeterminada primero; agregar y editar con los campos del checkout, cambiar la predeterminada y borrar con confirmación. Con 10 direcciones ya no ofrece agregar. Los errores de ubicación del catálogo del INEGI van en su campo.
+  - `/account/orders`: pedidos del más reciente al más antiguo, 20 por página, con filtro por estado; página y estado en la URL.
+  - `/account/orders/{código}`: el detalle de TF-014, "Ver instrucciones de pago" en una orden pendiente y "Volver a comprar" en una cancelada o reembolsada. Un código que no es del cliente dice "Pedido no encontrado".
+  - Al recargar `/checkout/done`, el cliente llega a sus pedidos (ADR-F014).
+  - Navegación propia entre Mis datos, Mis pedidos y Mis direcciones.
+  - Del backoffice (commit `bbcd5af`): el cambio de contraseña de la sesión y el diálogo de confirmación.
+  - Rendimiento: el catálogo sube de 3.72 s a 3.94 s de LCP, dentro de su tope de 4.0 s (ADR-F012). Mis pedidos comparte con él la paginación, el filtro en la URL y la lista de opciones, y el empaquetador los separa en archivos pequeños que el catálogo descarga aparte.
+
 - Sprint 3 cerrado con el presupuesto de rendimiento medido: inicio 2.79 s, catálogo 3.72 s y producto 3.56 s de LCP, dentro de sus topes, con 172 KB de JavaScript inicial. El checkout y los pedidos suman unos 150 ms por un chunk más en la tanda de cada página (seguimiento de ADR-F012).
 
 - TF-014: pedidos de invitado (`REQUIREMENTS.md` §5.13).

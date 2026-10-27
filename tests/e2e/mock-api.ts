@@ -346,8 +346,9 @@ export const customerAccount = {
 };
 
 /**
- * Autenticación de API_SPEC §9.5–9.10 en memoria: la contraseña correcta es `correcta`, cada login o
- * renovación entrega un par nuevo y un refresh token ya usado responde `invalid-refresh-token`. Con
+ * Autenticación y Mi cuenta de API_SPEC §9.5–9.13 en memoria: la contraseña correcta es `correcta`,
+ * cada login o renovación entrega un par nuevo y un refresh token ya usado responde
+ * `invalid-refresh-token`. `TAKEN_EMAIL` ya tiene cuenta y `COMMON_PASSWORD` viola la política. Con
  * el contexto del navegador en vez de la página, todas las pestañas comparten la misma API.
  */
 export async function mockSessionApi(
@@ -370,8 +371,14 @@ export async function mockSessionApi(
       mustChangePassword: false,
     };
   };
+  let me = { ...account };
+  const bodies: Record<string, unknown>[] = [];
   await page.route(
-    (url) => url.pathname.startsWith('/v1/auth/') || url.pathname === '/v1/me',
+    (url) =>
+      url.pathname.startsWith('/v1/auth/') ||
+      url.pathname === '/v1/me' ||
+      url.pathname === '/v1/me/password' ||
+      url.pathname === '/v1/me/email',
     async (route) => {
       const request = route.request();
       if (request.method() === 'OPTIONS') return preflight(route);
@@ -390,16 +397,41 @@ export async function mockSessionApi(
         case '/v1/auth/logout':
           current = null;
           return route.fulfill({ status: 204, headers: cors });
+      }
+      if (path.startsWith('/v1/auth/')) return problem(route, 404, 'not-found');
+      if (!request.headers()['authorization'])
+        return problem(route, 401, 'unauthenticated');
+      if (body) bodies.push(body);
+      switch (path) {
         case '/v1/me':
-          return request.headers()['authorization']
-            ? json(route, 200, account)
-            : problem(route, 401, 'unauthenticated');
+          if (request.method() === 'PATCH') me = { ...me, ...body };
+          return json(route, 200, me);
+        case '/v1/me/password':
+          if (body?.currentPassword !== 'correcta')
+            return problem(route, 401, 'invalid-credentials');
+          if (body.newPassword === COMMON_PASSWORD)
+            return policyViolation(route, 'newPassword');
+          return route.fulfill({ status: 204, headers: cors });
         default:
-          return problem(route, 404, 'not-found');
+          // POST /v1/me/email
+          if (body?.currentPassword !== 'correcta')
+            return problem(route, 401, 'invalid-credentials');
+          if (body.newEmail === TAKEN_EMAIL)
+            return problemWith(route, 409, 'duplicate-value', {
+              field: 'email',
+            });
+          if (body.newEmail === me.email)
+            return problemWith(route, 400, 'validation-error', {
+              errors: [
+                { field: 'newEmail', code: 'sameEmail', message: 'Texto' },
+              ],
+            });
+          me = { ...me, email: body.newEmail, emailVerified: false };
+          return json(route, 200, me);
       }
     },
   );
-  return { calls };
+  return { calls, bodies };
 }
 
 /** Debe coincidir con NUXT_PUBLIC_PRIVACY_NOTICE_VERSION del build de las pruebas (ci.yml). */
@@ -541,6 +573,8 @@ interface CheckoutOptions {
   /** La orden ya no está pendiente al iniciar el pago. */
   orderExpired?: boolean;
   addresses?: (typeof savedAddress)[];
+  /** Municipio retirado del catálogo: guardarlo responde `isActiveMunicipality`. */
+  retiredMunicipality?: string;
 }
 
 /**
@@ -561,7 +595,7 @@ export async function mockCheckoutApi(
     key: string;
     body: Record<string, unknown>;
   }[] = [];
-  const addresses = [...(options.addresses ?? [])];
+  const addresses = (options.addresses ?? []).map((a) => ({ ...a }));
   let shippingExtra = 0;
   const prices = new Map(detail.variants.map((v) => [v.id, v]));
 
@@ -663,6 +697,73 @@ export async function mockCheckoutApi(
     };
   };
   let placedFrom: string | null = null;
+  let created = 0;
+
+  /** Libreta de API_SPEC §9.14: hasta 10, la predeterminada primero y después la más reciente. */
+  const addressBook = (
+    route: Route,
+    method: string,
+    path: string,
+    body: Record<string, unknown>,
+  ) => {
+    const named = (code: unknown) =>
+      code === '039'
+        ? { stateName: 'Jalisco', municipalityName: 'Guadalajara' }
+        : code === '014'
+          ? { stateName: 'Ciudad de México', municipalityName: 'Benito Juárez' }
+          : {};
+    const takeDefault = (a: { isDefault: boolean }) => {
+      if (a.isDefault) for (const other of addresses) other.isDefault = false;
+    };
+    const retired =
+      options.retiredMunicipality &&
+      body.municipalityCode === options.retiredMunicipality;
+    const locationError = () =>
+      problemWith(route, 400, 'validation-error', {
+        errors: [
+          {
+            field: 'municipalityCode',
+            code: 'isActiveMunicipality',
+            message: 'Texto de la API',
+          },
+        ],
+      });
+    if (path === '/v1/me/addresses') {
+      if (method === 'GET')
+        return json(route, 200, {
+          data: [
+            ...addresses.filter((a) => a.isDefault),
+            ...addresses.filter((a) => !a.isDefault).reverse(),
+          ],
+        });
+      if (addresses.length >= 10)
+        return problemWith(route, 409, 'address-limit-reached', { limit: 10 });
+      if (retired) return locationError();
+      created += 1;
+      const address = {
+        ...savedAddress,
+        ...body,
+        ...named(body.municipalityCode),
+        id: `00000000-0000-4000-8000-0000000ad${String(addresses.length + created + 1).padStart(3, '0')}`,
+        isDefault: addresses.length === 0 || body.isDefault === true,
+      } as typeof savedAddress;
+      takeDefault(address);
+      addresses.push(address);
+      return json(route, 201, address);
+    }
+    const index = addresses.findIndex((a) => path.endsWith(`/${a.id}`));
+    if (index < 0) return problem(route, 404, 'not-found');
+    if (method === 'DELETE') {
+      addresses.splice(index, 1);
+      return route.fulfill({ status: 204, headers: cors });
+    }
+    if (retired) return locationError();
+    const changes = { ...body, ...named(body.municipalityCode) };
+    if (changes.isDefault === true) takeDefault({ isDefault: true });
+    const address = { ...addresses[index]!, ...changes } as typeof savedAddress;
+    addresses[index] = address;
+    return json(route, 200, address);
+  };
 
   await page.route(
     (url) =>
@@ -701,17 +802,8 @@ export async function mockCheckoutApi(
               ]
             : [{ code: '039', name: 'Guadalajara' }],
         });
-      if (path === '/v1/me/addresses') {
-        if (method === 'GET') return json(route, 200, { data: addresses });
-        const created = {
-          ...savedAddress,
-          ...body,
-          id: `00000000-0000-4000-8000-0000000ad${String(addresses.length + 2).padStart(3, '0')}`,
-          isDefault: addresses.length === 0,
-        };
-        addresses.push(created);
-        return json(route, 201, created);
-      }
+      if (path.startsWith('/v1/me/addresses'))
+        return addressBook(route, method, path, body);
       if (path.endsWith('/checkout/quote')) {
         quotes.push(body);
         return (
@@ -952,6 +1044,100 @@ export async function mockGuestOrdersApi(
           });
         }
       }
+    },
+  );
+  return { calls };
+}
+
+/**
+ * Pedidos del cliente de API_SPEC §15.4, §16.2 y §14.3: listado con `status` y páginas, detalle por
+ * código, inicio del pago de una orden pendiente y recompra al carrito de la cuenta de `mockCartApi`.
+ * Con `expiresOnPayment`, la orden venció justo antes de pedir el pago.
+ */
+export async function mockMyOrdersApi(
+  page: Page,
+  cartApi: Awaited<ReturnType<typeof mockCartApi>>,
+  orders: ReturnType<typeof guestOrder>[],
+  { expiresOnPayment = false, skipped = 0 } = {},
+) {
+  const calls: { method: string; path: string; key: string; query: string }[] =
+    [];
+  await page.route(
+    (url) => url.pathname.startsWith('/v1/me/orders'),
+    async (route) => {
+      const request = route.request();
+      const method = request.method();
+      if (method === 'OPTIONS') return preflight(route);
+      if (!request.headers()['authorization'])
+        return problem(route, 401, 'unauthenticated');
+      const url = new URL(request.url());
+      const path = url.pathname;
+      calls.push({
+        method,
+        path,
+        key: request.headers()['idempotency-key'] ?? '',
+        query: url.search,
+      });
+      if (path === '/v1/me/orders') {
+        const status = url.searchParams.get('status');
+        const pageNumber = Number(url.searchParams.get('page') ?? 1);
+        const pageSize = Number(url.searchParams.get('pageSize') ?? 20);
+        const matching = orders.filter((o) => !status || o.status === status);
+        return json(route, 200, {
+          data: matching
+            .slice((pageNumber - 1) * pageSize, pageNumber * pageSize)
+            .map(({ lines: _l, shippingAddress: _a, ...summary }) => summary),
+          meta: {
+            page: pageNumber,
+            pageSize,
+            totalItems: matching.length,
+            totalPages: Math.max(1, Math.ceil(matching.length / pageSize)),
+          },
+        });
+      }
+      const [, code, action] =
+        /^\/v1\/me\/orders\/([^/]+)(?:\/(\w+))?$/.exec(path) ?? [];
+      const order = orders.find(
+        (o) => o.publicCode === decodeURIComponent(code ?? '').toUpperCase(),
+      );
+      if (!order) return problem(route, 404, 'not-found');
+      if (!action) return json(route, 200, order);
+      if (action === 'payments') {
+        if (expiresOnPayment) {
+          order.status = 'EXPIRED';
+          order.paymentDueAt = null;
+          return problem(route, 409, 'invalid-state-transition');
+        }
+        if (order.status !== 'PENDING_PAYMENT')
+          return problem(route, 409, 'invalid-state-transition');
+        return json(route, 201, {
+          paymentId: '00000000-0000-4000-8000-00000000fa02',
+          provider: 'MANUAL',
+          status: 'PENDING',
+          amount: order.grandTotal,
+          action: {
+            type: 'PAY_IN_STORE',
+            orderCode: order.publicCode,
+            amount: order.grandTotal,
+            instructions: 'Presenta este código en la tienda para pagar.',
+          },
+        });
+      }
+      if (order.status !== 'CANCELLED' && order.status !== 'REFUNDED')
+        return problem(route, 409, 'invalid-state-transition');
+      const cart = cartApi.carts.get(cartApi.CUSTOMER_CART) ?? {
+        status: 'ACTIVE',
+        lines: [],
+      };
+      cartApi.carts.set(cartApi.CUSTOMER_CART, cart);
+      cart.lines.push({ variantId: detail.variants[1]!.id, quantity: 1 });
+      return json(route, 200, {
+        cartId: cartApi.CUSTOMER_CART,
+        skippedVariantIds: Array.from(
+          { length: skipped },
+          (_, i) => `00000000-0000-4000-8000-0000000005k${i}`,
+        ),
+      });
     },
   );
   return { calls };

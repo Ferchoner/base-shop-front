@@ -1,6 +1,6 @@
 // Adaptado de base-ecomm-admin app/shared/auth/session.store.ts (commit bbcd5af, ADR-F009): la tienda
-// pide una cuenta de cliente en vez de staff (REQUIREMENTS §1) y no tiene permisos ni contraseña
-// temporal.
+// pide una cuenta de cliente en vez de staff (REQUIREMENTS §1), no tiene permisos ni contraseña
+// temporal y recibe la cuenta que devuelven los cambios de Mi cuenta (`replaceAccount`).
 import { defineStore } from 'pinia';
 import { computed, ref, shallowRef } from 'vue';
 import { ApiProblem } from '~/shared/api/problem';
@@ -200,6 +200,24 @@ export const useSessionStore = defineStore('session', () => {
     }
   }
 
+  // Copiado de base-ecomm-admin app/shared/auth/session.store.ts (commit bbcd5af).
+  async function changePassword(passwords: {
+    currentPassword: string;
+    newPassword: string;
+  }) {
+    const { gateway } = requireDeps();
+    if (!accessToken.value) throw new Error('Sin token de acceso.');
+    await gateway.changePassword(accessToken.value, passwords);
+    // La sesión actual sigue con el mismo token (API_SPEC §9.12); la API cerró las demás.
+    await loadAccount();
+  }
+
+  /** La cuenta que responde `PATCH /v1/me` o `POST /v1/me/email` (API_SPEC §9.11, §9.13). */
+  function replaceAccount(next: Account) {
+    if (status.value === 'authenticated' && next.type === 'CUSTOMER')
+      account.value = next;
+  }
+
   return {
     accessToken,
     account,
@@ -212,6 +230,8 @@ export const useSessionStore = defineStore('session', () => {
     login,
     logout,
     loadAccount,
+    changePassword,
+    replaceAccount,
     clearLocal,
     expireFromOtherTab,
   };

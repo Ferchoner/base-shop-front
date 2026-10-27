@@ -1,6 +1,9 @@
-// Copiado de base-ecomm-admin app/shared/address/address-form.ts (commit bbcd5af, ADR-F009).
+// Adaptado de base-ecomm-admin app/shared/address/address-form.ts (commit bbcd5af, ADR-F009): suma
+// `addressProblemErrors`, propio de la libreta del cliente (TF-013).
 import { z } from 'zod';
+import type { ApiProblem } from '~/shared/api/problem';
 import type { Schemas } from '~/shared/api/types';
+import type { FormFieldError } from '~/shared/utils/form-errors';
 
 /** Dirección en el formato `AddressInput` (API_SPEC §8.2): checkout y libreta del cliente. */
 export type AddressInput = Schemas['AddressInputDto'];
@@ -87,4 +90,32 @@ export function toAddressInput(a: AddressFields): AddressInput {
     city: a.city || null,
     references: a.references || null,
   };
+}
+
+/** Mensaje propio de los errores de ubicación del catálogo del INEGI (API_SPEC §9.14). */
+const LOCATION_MESSAGES: Record<string, string> = {
+  isState: 'Elige un estado de la lista.',
+  isMunicipalityOfState: 'Elige un municipio de este estado.',
+  isActiveMunicipality: 'Ese municipio ya no está en el catálogo. Elige otro.',
+};
+
+/**
+ * Errores de un 400 de dirección en sus campos (`prefix.campo`); los de ubicación con mensaje propio y
+ * los que no son de un campo de la dirección, aparte.
+ */
+export function addressProblemErrors(
+  problem: ApiProblem,
+  prefix: string,
+): { fieldErrors: FormFieldError[]; otherMessages: string[] } {
+  const fieldErrors: FormFieldError[] = [];
+  const otherMessages: string[] = [];
+  for (const e of problem.errors) {
+    if ((ADDRESS_FIELDS as string[]).includes(e.field))
+      fieldErrors.push({
+        name: `${prefix}.${e.field}`,
+        message: LOCATION_MESSAGES[e.code] ?? e.message,
+      });
+    else otherMessages.push(e.message);
+  }
+  return { fieldErrors, otherMessages };
 }

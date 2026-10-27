@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/vue-query';
 import type { ApiProblem } from '~/shared/api/problem';
 import type { Account } from '~/shared/api/types';
 import { useApi } from '~/shared/api/use-api';
+import { useSessionStore } from '~/shared/auth/session.store';
 
 /**
  * Registro, verificación de email y recuperación de contraseña (API_SPEC §9.2–9.4, §9.8–9.9). Son
@@ -87,4 +88,52 @@ export function useLinkToken(): string {
     router.replace({ query: rest, hash: route.hash });
   }
   return token;
+}
+
+// Mi cuenta (REQUIREMENTS §5.10): con el token del cliente. La cuenta que responden pasa a la sesión.
+
+export interface ProfileInput {
+  firstNames: string;
+  lastNames: string;
+}
+
+/** 200 `Account`; si nada cambia, la API no guarda nada (§9.11). */
+export function useUpdateProfile() {
+  const api = useApi();
+  const session = useSessionStore();
+  return useMutation<Account, ApiProblem, ProfileInput>({
+    mutationFn: (body) =>
+      api<Account>('/v1/me', { method: 'PATCH', body: { ...body } }),
+    onSuccess: (account) => session.replaceAccount(account),
+  });
+}
+
+/** 200 `Account` con `emailVerified: false`: hay que verificar el nuevo antes de comprar (§9.13). */
+export function useChangeEmail() {
+  const api = useApi();
+  const session = useSessionStore();
+  return useMutation<
+    Account,
+    ApiProblem,
+    { newEmail: string; currentPassword: string }
+  >({
+    mutationFn: (body) =>
+      api<Account>('/v1/me/email', { method: 'POST', body: { ...body } }),
+    onSuccess: (account) => session.replaceAccount(account),
+  });
+}
+
+/** 204; conserva la sesión actual y cierra las demás (§9.12). */
+export function useChangePassword() {
+  const session = useSessionStore();
+  return useMutation<
+    undefined,
+    ApiProblem,
+    { currentPassword: string; newPassword: string }
+  >({
+    mutationFn: async (passwords) => {
+      await session.changePassword(passwords);
+      return undefined;
+    },
+  });
 }

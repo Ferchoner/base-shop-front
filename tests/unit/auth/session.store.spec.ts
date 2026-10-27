@@ -59,6 +59,7 @@ function fakeGateway(overrides: Partial<AuthGateway> = {}): AuthGateway {
     refresh: vi.fn(async () => authResult()),
     logout: vi.fn(async () => undefined),
     me: vi.fn(async () => customer),
+    changePassword: vi.fn(async () => undefined),
     ...overrides,
   };
 }
@@ -272,5 +273,30 @@ describe('sesión (ADR-F006, REQUIREMENTS §5.8)', () => {
     await session.logout();
     expect(session.isAuthenticated).toBe(false);
     expect(storage.value).toBeNull();
+  });
+
+  it('cambia la contraseña con el token actual y conserva la sesión (§5.10)', async () => {
+    const gateway = fakeGateway();
+    const { session, storage } = setup(gateway);
+    await session.login({ email: 'maria@example.com', password: 'x' });
+    const passwords = {
+      currentPassword: 'x',
+      newPassword: 'una frase larga y nueva',
+    };
+    await session.changePassword(passwords);
+    expect(gateway.changePassword).toHaveBeenCalledWith('at-1', passwords);
+    expect(session.isAuthenticated).toBe(true);
+    expect(storage.value).toBe('rt-1');
+  });
+
+  it('toma la cuenta que devuelve un cambio de Mi cuenta, solo con sesión de cliente', async () => {
+    const { session } = setup(fakeGateway());
+    session.replaceAccount({ ...customer, firstNames: 'Otra' });
+    expect(session.account).toBeNull();
+    await session.login({ email: 'maria@example.com', password: 'x' });
+    session.replaceAccount({ ...customer, emailVerified: false });
+    expect(session.account?.emailVerified).toBe(false);
+    session.replaceAccount({ ...customer, type: 'STAFF' } as Account);
+    expect(session.account?.type).toBe('CUSTOMER');
   });
 });
