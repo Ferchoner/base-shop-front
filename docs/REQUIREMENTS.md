@@ -55,7 +55,7 @@ La API responde Problem Details (§6). La tienda decide por `type`, nunca por el
 | `type` | Comportamiento |
 |---|---|
 | `validation-error`, `password-policy-violation` | Cada entrada de `errors` se muestra junto a su campo; un campo que la pantalla no tiene se muestra arriba del formulario. Los formularios validan antes con las mismas reglas del contrato (Zod, ADR-F007), solo para ayudar: la que cuenta es la de la API |
-| `unauthenticated`, `invalid-refresh-token` | Se intenta renovar la sesión una vez (ADR-F006). Si no se puede, se borra la sesión y se lleva a `/login` con la ruta de regreso |
+| `unauthenticated`, `invalid-refresh-token` | Se intenta renovar la sesión una vez (ADR-F006). Si no se puede, se borra la sesión; una pantalla que pide sesión (Mi cuenta, mis pedidos) lleva a `/login` con la ruta de regreso, y una pública sigue sin sesión (TF-010) |
 | `staff-cannot-purchase` | Aviso de que las cuentas de staff no compran en la tienda en línea; se cierra la sesión |
 | `not-found` | Página o mensaje "no encontrado" propio de cada pantalla |
 | `rate-limit-exceeded` | Mensaje con la espera de `Retry-After`; el botón que lo provocó queda deshabilitado hasta entonces, sin reintentos automáticos |
