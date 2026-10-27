@@ -70,8 +70,11 @@ jobs:
       - name: 6. Dependency audit
         run: npm run audit
 
+      # The end-to-end tests need a privacy notice version to show registration (API_GAPS G-01).
       - name: 7. Build
         run: npm run build
+        env:
+          NUXT_PUBLIC_PRIVACY_NOTICE_VERSION: e2e-2026-10
 
       - name: 8. End-to-end tests with accessibility checks
         run: |

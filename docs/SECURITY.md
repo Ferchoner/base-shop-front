@@ -22,7 +22,7 @@ Propios del frontend:
 - **Todo lo que llega al navegador es público.** Ninguna clave, token de servicio ni secreto en el bundle ni en variables de entorno públicas del framework.
 - **La autorización la hace la API.** Ocultar un botón no protege nada; el frontend nunca da por permitido algo que la API no confirmó.
 - **XSS:** nunca se inserta HTML que venga de la API o del usuario sin escapar (descripciones de producto, nombres, direcciones). Política de seguridad de contenido (CSP) para el frontend: `PENDIENTE DE DECISIÓN` con el stack y el hosting (PF-01, ADR-F004).
-- **Tokens de enlaces** (`/verify-email`, `/reset-password`, `/order-access`): se leen de la URL, se envían a la API en el cuerpo y se quitan de la URL visible. Las páginas con token no cargan recursos de terceros, para que el token no salga en el `Referer`.
+- **Tokens de enlaces** (`/verify-email`, `/reset-password`, `/order-access`): se leen de la URL, se envían a la API en el cuerpo y se quitan de la URL visible. Las páginas con token no cargan recursos de terceros, para que el token no salga en el `Referer`, y además declaran `referrer: no-referrer` (TF-011).
 - **Datos personales en el navegador:** email, dirección y código público de la orden de invitado viajan en el cuerpo, nunca en la URL (base-shop ADR-0071). No se guardan en almacenamiento del navegador más allá de lo necesario para la sesión.
 - **Sin analítica ni scripts de terceros** hasta que se decida con el aviso de privacidad.
 

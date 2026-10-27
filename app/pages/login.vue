@@ -3,6 +3,7 @@ fusión del carrito de invitado y un solo mensaje ante credenciales inválidas (
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui';
 import { z } from 'zod';
+import { useLoginNotice } from '~/features/account/api';
 import { useMergeGuestCart } from '~/features/cart/api';
 import { toApiProblem } from '~/shared/api/problem';
 import type { ApiProblem } from '~/shared/api/problem';
@@ -38,6 +39,10 @@ const cooldown = useRetryCooldown();
 const session = useSessionStore();
 const mergeGuestCart = useMergeGuestCart();
 const route = useRoute();
+// Aviso de la pantalla anterior (por ejemplo, contraseña restablecida); se muestra una vez.
+const notice = useLoginNotice();
+const shownNotice = notice.value;
+notice.value = null;
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   problem.value = null;
@@ -73,6 +78,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 <template>
   <div class="mx-auto max-w-sm space-y-6">
     <h1 class="text-2xl font-semibold">Iniciar sesión</h1>
+
+    <UAlert
+      v-if="shownNotice"
+      color="success"
+      variant="subtle"
+      icon="i-lucide-circle-check"
+      role="status"
+      :title="shownNotice"
+    />
 
     <UForm
       ref="form"
@@ -120,6 +134,14 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         :disabled="cooldown.waiting.value"
         >Iniciar sesión</UButton
       >
+      <UButton to="/forgot-password" color="neutral" variant="link" block
+        >¿Olvidaste tu contraseña?</UButton
+      >
     </UForm>
+
+    <p class="text-center text-sm">
+      ¿No tienes cuenta?
+      <NuxtLink to="/register" class="font-medium underline">Crea una</NuxtLink>
+    </p>
   </div>
 </template>
