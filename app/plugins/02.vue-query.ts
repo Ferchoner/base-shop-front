@@ -1,12 +1,15 @@
 // Adaptado de base-ecomm-admin app/plugins/02.vue-query.ts (commit bbcd5af, ADR-F009): sin las
-// reacciones a errores del staff. Las de la sesión llegan con TF-010.
+// reacciones a errores del staff; conserva el vaciado de la caché al cerrar sesión (ADR-F006).
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query';
 import { ApiProblem, isRetryableRead } from '~/shared/api/problem';
+import { useSessionStore } from '~/shared/auth/session.store';
 
 export default defineNuxtPlugin({
   name: 'vue-query',
   dependsOn: ['api'],
   setup(nuxtApp) {
+    const session = useSessionStore();
+
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {
@@ -24,5 +27,15 @@ export default defineNuxtPlugin({
     });
 
     nuxtApp.vueApp.use(VueQueryPlugin, { queryClient });
+    // Al cerrar sesión no deben quedar datos de otro cliente en caché.
+    session.$onAction(({ name, after }) => {
+      if (
+        name === 'logout' ||
+        name === 'clearLocal' ||
+        name === 'expireFromOtherTab'
+      ) {
+        after(() => queryClient.clear());
+      }
+    });
   },
 });

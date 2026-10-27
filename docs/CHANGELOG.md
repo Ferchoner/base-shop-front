@@ -4,6 +4,14 @@
 
 ## Unreleased
 
+- TF-010: sesión del cliente (`REQUIREMENTS.md` §4.5, §5.4 y §5.8; ADR-F006).
+  - `/login`: un solo mensaje ante credenciales inválidas, sin decir si el email existe, y regreso a la ruta de origen solo si es interna. Una cuenta de staff ve "Las cuentas de personal no compran en la tienda en línea" y se le cierra la sesión.
+  - Token de acceso en memoria y refresh token en `localStorage` (`base-shop-front.refreshToken`). Renovación de una en una, también entre pestañas con un Web Lock, antes de vencer y ante un 401. La sesión se recupera al abrir la tienda sin hacer esperar a las páginas públicas.
+  - "Cerrar sesión" llama a la API, borra el refresh token, vacía la caché y olvida el carrito de invitado; las demás pestañas se enteran y dejan las páginas que piden sesión.
+  - Con sesión, el carrito es el de la cuenta (`/v1/me/cart`). Al iniciar sesión, un carrito de invitado con productos se fusiona y la tienda avisa "Combinamos los productos de tu carrito con los de tu cuenta".
+  - Encabezado con "Mi cuenta" y "Cerrar sesión", o "Iniciar sesión". `/account` muestra por ahora nombre, email y si está verificado; lo demás llega con TF-013.
+  - Del backoffice (commit `bbcd5af`): `token-storage`, `exclusive`, `redirect`, `auth-gateway`, `session.store`, los plugins, el middleware, el login y sus tests.
+
 - Sprint 1 cerrado con el presupuesto de rendimiento medido. ADR-F012 (aceptada): LCP de 2.5 s como meta de producción con el modo híbrido, y topes locales contra regresiones de 3.0 s en el inicio y 4.0 s en el catálogo y el producto, que TF-015 pondrá en la CI.
 
 - TF-009: carrito de invitado (`REQUIREMENTS.md` §4.5 y §5.4).

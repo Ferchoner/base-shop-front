@@ -1,4 +1,4 @@
-<!-- Encabezado y pie de la tienda (REQUIREMENTS §5.15). La cuenta se agrega con TF-010 y el aviso de privacidad, con TF-016. -->
+<!-- Encabezado y pie de la tienda (REQUIREMENTS §5.15). El aviso de privacidad se agrega con TF-016. -->
 <script setup lang="ts">
 import CartLink from '~/features/cart/components/CartLink.vue';
 </script>
@@ -36,7 +36,10 @@ import CartLink from '~/features/cart/components/CartLink.vue';
         <div class="min-w-0 flex-1 basis-full sm:basis-auto">
           <SiteSearch />
         </div>
-        <div class="order-first ml-auto sm:order-none sm:ml-0">
+        <div
+          class="order-first ml-auto flex items-center gap-1 sm:order-none sm:ml-0"
+        >
+          <AccountLinks />
           <CartLink />
         </div>
       </div>

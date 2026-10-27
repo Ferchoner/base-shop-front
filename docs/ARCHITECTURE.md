@@ -100,6 +100,23 @@ Creado en TF-009, todo propio:
 | `app/features/cart/components/` | `AddToCart`, `CartLineItem`, `CartLink` (encabezado) y `QuantitySelect` |
 | `app/pages/cart.vue` | Carrito |
 
+Creado en TF-010 (sesión, ADR-F006):
+
+| Ruta | Contenido | Origen |
+|---|---|---|
+| `app/shared/auth/token-storage.ts`, `exclusive.ts`, `redirect.ts`, `auth-gateway.ts` | Refresh token en `localStorage` (`base-shop-front.refreshToken`), Web Lock `base-shop-front.session-refresh`, redirección solo a rutas internas y llamadas de autenticación con el token explícito | Copiados del backoffice; cambian la llave, el nombre del candado y lo que es solo del staff |
+| `app/shared/auth/session.store.ts` | Sesión en Pinia: token de acceso en memoria, cuenta, renovación de una en una (proactiva y ante un 401), recuperación al abrir y cierre | Adaptado del backoffice: exige una cuenta `CUSTOMER`; una de staff nunca cuenta como sesión, recibe el aviso de §1 y se le cierra |
+| `app/plugins/01.api.ts`, `02.vue-query.ts`, `app/middleware/auth.global.ts`, `app/types/page-meta.d.ts` | Conexión de la sesión, cierre en las demás pestañas con el evento `storage`, caché vacía al cerrar sesión y rutas con `meta.auth` (piden sesión) o `meta.guestOnly` (`/login`) | Adaptados del backoffice |
+| `app/features/cart/api.ts` | `useCart` usa `/v1/me/cart` con sesión y `/v1/carts/{cartId}` sin ella; fusión del carrito de invitado con aviso | Propio |
+| `app/pages/login.vue` | Inicio de sesión con la fusión del carrito y regreso a la ruta de origen | Adaptado del backoffice |
+| `app/pages/account/index.vue`, `app/components/AccountLinks.vue` | Mi cuenta con los datos de la sesión (se completa en TF-013) y la cuenta del encabezado | Propios |
+
+Cómo se comporta la sesión:
+
+- **Primera pantalla sin esperar:** la sesión se recupera en segundo plano al abrir la tienda. Solo esperan las rutas con `meta.auth` o `meta.guestOnly`; el contador del carrito y la cuenta del encabezado aparecen cuando ya se sabe si hay sesión (`isSettled`), para no pedir el carrito de invitado y luego el del cliente.
+- **Fusión:** solo se fusiona un carrito de invitado activo con líneas (se lee antes con `GET /v1/carts/{cartId}`); uno vacío, ya fusionado o usado en una orden solo se olvida. `/login` la espera antes de regresar a la ruta de origen, y si falla por red, el `cartId` se conserva y la fusión se reintenta al leer el carrito del cliente. Una sola fusión a la vez dentro de la pestaña; la API es idempotente (base-shop ADR-0059).
+- **Cierre:** "Cerrar sesión" olvida también el `cartId` de invitado (§4.5). Una sesión que vence por sí sola no lo toca. Las rutas con `meta.auth` llevan al login cuando la sesión termina, en esta pestaña o en otra; las demás se quedan donde están.
+
 Los componentes que usan varias features viven en `app/components/` (autoimportados por Nuxt); los de una sola feature, en su carpeta.
 
 Los archivos copiados dicen en su primer comentario de qué archivo y commit del backoffice vienen (`bbcd5af`).
