@@ -4,7 +4,7 @@
 
 ## Current Phase
 
-Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública aprobados (TF-003), con cuatro sprints de pantallas planeados. Esqueleto del proyecto y CI completa (TF-004) y `main` protegida (TF-005). Sprint 0 cerrado. Sprint 1 de pantallas cerrado: base de la app (TF-006), inicio y catálogo (TF-007), detalle de producto (TF-008) y carrito de invitado (TF-009), con el presupuesto de rendimiento medido y los topes de LCP de ADR-F012. Sprint 2 cerrado: sesión del cliente y carrito del cliente con fusión (TF-010), y registro, verificación de email y recuperación de contraseña (TF-011), con el catálogo dentro de su tope de LCP tras descargar las páginas al interactuar. Sprint 3 cerrado: las páginas piden sus datos al resolver la ruta (TF-017, ADR-F013), invitado y cliente colocan una orden y reciben las instrucciones de pago (TF-012, ADR-F014) y el invitado consulta sus pedidos y vuelve a comprar (TF-014), con el presupuesto medido y dentro de los topes de ADR-F012. Sprint 4 en curso: Mi cuenta, la libreta de direcciones y mis pedidos (TF-013), y el presupuesto de rendimiento en la CI, con el margen del catálogo recuperado (TF-015, ADR-F015). Solo entorno local (ADR-F004).
+Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública aprobados (TF-003), con cuatro sprints de pantallas planeados. Esqueleto del proyecto y CI completa (TF-004) y `main` protegida (TF-005). Sprint 0 cerrado. Sprint 1 de pantallas cerrado: base de la app (TF-006), inicio y catálogo (TF-007), detalle de producto (TF-008) y carrito de invitado (TF-009), con el presupuesto de rendimiento medido y los topes de LCP de ADR-F012. Sprint 2 cerrado: sesión del cliente y carrito del cliente con fusión (TF-010), y registro, verificación de email y recuperación de contraseña (TF-011), con el catálogo dentro de su tope de LCP tras descargar las páginas al interactuar. Sprint 3 cerrado: las páginas piden sus datos al resolver la ruta (TF-017, ADR-F013), invitado y cliente colocan una orden y reciben las instrucciones de pago (TF-012, ADR-F014) y el invitado consulta sus pedidos y vuelve a comprar (TF-014), con el presupuesto medido y dentro de los topes de ADR-F012. Sprint 4 cerrado: Mi cuenta, la libreta de direcciones y mis pedidos (TF-013), y el presupuesto de rendimiento en la CI, con el margen del catálogo recuperado (TF-015, ADR-F015). TF-016 sigue bloqueada por G-01. Solo entorno local (ADR-F004).
 
 ## Completed
 
@@ -29,6 +29,7 @@ Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack deci
 - [x] Sprint 3 cerrado (2026-10-27)
 - [x] TF-013 Mi cuenta, direcciones y mis pedidos (2026-10-27)
 - [x] TF-015 Presupuesto de rendimiento en la CI y margen del catálogo recuperado (2026-10-27)
+- [x] Sprint 4 cerrado (2026-10-27)
 
 ## In Progress
 
@@ -36,7 +37,7 @@ Ninguna.
 
 ## Next
 
-- Sprint 4: el cierre del sprint con el presupuesto medido (TF-016 sigue bloqueada por G-01)
+- TF-016 cuando se resuelva G-01 (y PF-07)
 
 ## Blocked
 

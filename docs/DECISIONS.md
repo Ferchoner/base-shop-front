@@ -265,6 +265,9 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - Se recuperó copiando los chunks comunes pequeños en las páginas (ADR-F015). Medido igual, contra `main` en la misma máquina: inicio de 2.87 a 2.55 s, catálogo de 3.93 a 3.62 s y producto de 3.60 a 3.51 s. JavaScript inicial de 172.7 a 179.2 KB.
   - TF-015 pone los topes en la CI: `npm run perf:budget` (`scripts/perf-budget.ts`) mide como arriba, con la mediana de 3 corridas, y falla si un tope de LCP, el CLS, el JavaScript inicial o el de una página se pasa. Corre en el job `Pipeline` después de los e2e y deja la tabla en el resumen del job.
   - Lighthouse queda fijo en 13.5.0: la 13.6.0 dio un LCP de 0.9 s en el inicio sobre el mismo build, que no corresponde a lo que pinta la página. Subir de versión pide volver a medir contra la anterior y, si cambia la escala, revisar los topes.
+- **Seguimiento al cerrar el sprint 4 (2026-10-27):**
+  - La primera corrida de la CI, en el runner de GitHub: inicio 2.77 s, catálogo 3.76 s y producto 3.69 s. El runner va unos 150 ms más lento que la máquina de desarrollo; cada pantalla queda unos 250 ms bajo su tope.
+  - En `main`, con la mediana de 5 corridas: inicio 2.56 s, catálogo 3.66 s y producto 3.45 s. JavaScript inicial: 179 KB. Los tres quedan por debajo de lo medido al cerrar el sprint 3.
 - **Estado:** Aceptada (elegida por el usuario el 2026-10-27).
 
 ---
