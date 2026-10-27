@@ -52,8 +52,14 @@ import CartLink from '~/features/cart/components/CartLink.vue';
       <slot />
     </main>
     <footer class="border-t border-default">
-      <div class="mx-auto max-w-6xl px-4 py-6 text-sm text-muted">
+      <div
+        class="mx-auto flex max-w-6xl flex-wrap justify-between gap-3 px-4 py-6 text-sm text-muted"
+      >
         <p>Precios en pesos mexicanos con IVA incluido.</p>
+        <!-- Los pedidos de invitado no tienen otra entrada (REQUIREMENTS §5.13). -->
+        <NuxtLink to="/order-lookup" class="underline hover:text-default"
+          >Consultar un pedido</NuxtLink
+        >
       </div>
     </footer>
   </div>

@@ -796,3 +796,163 @@ export async function mockCheckoutApi(
   );
   return { quotes, orders, payments, addresses };
 }
+
+/** Orden de invitado con una camisa azul M de $649.00 (OrderDto, API_SPEC §8.8). */
+export function guestOrder(
+  status: string,
+  publicCode = ORDER_CODE,
+  contactEmail = 'ana@example.com',
+) {
+  const v = detail.variants[1]!;
+  const pending = status === 'PENDING_PAYMENT';
+  return {
+    publicCode,
+    status,
+    contactEmail,
+    itemCount: 1,
+    subtotal: v.price,
+    discountTotal: money(0),
+    promotion: null,
+    shippingCost: money(SHIPPING),
+    shippingTaxAmount: money(1366),
+    taxTotal: money(10317),
+    grandTotal: money(v.price.amount + SHIPPING),
+    fulfillment: 'SHIPPING',
+    estimatedDelivery: { minBusinessDays: 2, maxBusinessDays: 5 },
+    placedAt: '2026-10-20T18:00:00Z',
+    paymentDueAt: pending ? '2026-10-29T18:00:00Z' : null,
+    paidAt: null,
+    shippedAt: status === 'SHIPPED' ? '2026-10-22T18:00:00Z' : null,
+    deliveredAt: null,
+    cancelledAt: status === 'CANCELLED' ? '2026-10-21T18:00:00Z' : null,
+    expiredAt: null,
+    refundedAt: null,
+    payment: pending ? null : { provider: 'MANUAL', status: 'CAPTURED' },
+    shipment:
+      status === 'SHIPPED'
+        ? {
+            status: 'DISPATCHED',
+            carrierName: 'Estafeta',
+            trackingNumber: '123456789',
+            ownDelivery: false,
+            dispatchedAt: '2026-10-22T18:00:00Z',
+            deliveredAt: null,
+          }
+        : null,
+    lines: [
+      {
+        lineNumber: 1,
+        productName: detail.title,
+        sku: v.sku,
+        variantOptions: v.options,
+        quantity: 1,
+        unitPrice: v.price,
+        lineTotal: v.price,
+        discountAmount: money(0),
+        taxRateBp: 1600,
+        taxAmount: money(8952),
+      },
+    ],
+    shippingAddress: { ...savedAddress, recipientName: 'Ana Ruiz' },
+  };
+}
+
+/**
+ * Pedidos de invitado de API_SPEC §15.5, §15.6 y §14.3: consulta por email y código (sin distinguir
+ * mayúsculas), enlace de acceso con `VALID_LINK_TOKEN` y recompra a los carritos de `mockCartApi`.
+ */
+export async function mockGuestOrdersApi(
+  page: Page,
+  cartApi: Awaited<ReturnType<typeof mockCartApi>>,
+  orders: ReturnType<typeof guestOrder>[],
+  { rateLimited = false, skipped = 0 } = {},
+) {
+  const calls: { path: string; body: Record<string, unknown> }[] = [];
+  const find = (body: Record<string, unknown>) => {
+    const email = String(body.contactEmail ?? '')
+      .trim()
+      .toLowerCase();
+    const code = String(body.publicCode ?? '')
+      .trim()
+      .toUpperCase()
+      .replace(/^(\w{4})-?(\w{4})$/, '$1-$2');
+    return orders.find(
+      (o) => o.contactEmail === email && o.publicCode === code,
+    );
+  };
+  const paths = [
+    '/v1/orders/lookup',
+    '/v1/orders/access-links',
+    '/v1/orders/access',
+    '/v1/orders/reorder',
+  ];
+  await page.route(
+    (url) => paths.includes(url.pathname),
+    async (route) => {
+      const request = route.request();
+      if (request.method() === 'OPTIONS') return preflight(route);
+      const path = new URL(request.url()).pathname;
+      const body = (request.postDataJSON() ?? {}) as Record<string, unknown>;
+      calls.push({ path, body });
+      if (rateLimited)
+        return problemWith(
+          route,
+          429,
+          'rate-limit-exceeded',
+          {},
+          {
+            'Retry-After': '30',
+            'Access-Control-Expose-Headers': 'Retry-After',
+          },
+        );
+      switch (path) {
+        case '/v1/orders/access-links':
+          return route.fulfill({ status: 202, headers: cors });
+        case '/v1/orders/access':
+          return body.token === VALID_LINK_TOKEN
+            ? json(route, 200, {
+                contactEmail: 'ana@example.com',
+                orders: orders.map(
+                  ({ lines: _l, shippingAddress: _a, ...summary }) => summary,
+                ),
+              })
+            : problem(route, 400, 'invalid-or-expired-token');
+        case '/v1/orders/lookup': {
+          const order = find(body);
+          return order
+            ? json(route, 200, order)
+            : problem(route, 404, 'not-found');
+        }
+        default: {
+          const order = find(body);
+          if (!order) return problem(route, 404, 'not-found');
+          if (order.status !== 'CANCELLED' && order.status !== 'REFUNDED')
+            return problem(route, 409, 'invalid-state-transition');
+          let cartId = body.cartId as string | undefined;
+          if (cartId) {
+            const cart = cartApi.carts.get(cartId);
+            if (!cart) return problem(route, 404, 'not-found');
+            if (cart.status !== 'ACTIVE')
+              return problem(route, 409, 'cart-not-active');
+          } else {
+            cartId = `00000000-0000-4000-8000-${String(cartApi.carts.size + 1).padStart(12, '0')}`;
+            cartApi.carts.set(cartId, { status: 'ACTIVE', lines: [] });
+          }
+          const cart = cartApi.carts.get(cartId)!;
+          const variantId = detail.variants[1]!.id;
+          const line = cart.lines.find((l) => l.variantId === variantId);
+          if (line) line.quantity = Math.min(30, line.quantity + 1);
+          else cart.lines.push({ variantId, quantity: 1 });
+          return json(route, 200, {
+            cartId,
+            skippedVariantIds: Array.from(
+              { length: skipped },
+              (_, i) => `00000000-0000-4000-8000-0000000005k${i}`,
+            ),
+          });
+        }
+      }
+    },
+  );
+  return { calls };
+}
