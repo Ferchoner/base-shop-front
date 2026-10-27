@@ -175,6 +175,26 @@ Cómo se comportan los pedidos de invitado:
 - **Volver a comprar:** va al carrito de invitado actual, o a uno nuevo si no hay o ya no sirve. Con sesión va a uno nuevo, que el carrito del cliente fusiona al leerse. El aviso cuenta las variantes que no se copiaron, sin nombrarlas (G-13).
 - Un enlace "Consultar un pedido" en el pie lleva a `/order-lookup`.
 
-Los componentes que usan varias features viven en `app/components/` (autoimportados por Nuxt); los de una sola feature, en su carpeta.
+Creado en TF-013 (Mi cuenta, direcciones y mis pedidos):
+
+| Ruta | Contenido | Origen |
+|---|---|---|
+| `app/components/AccountNav.vue` | Navegación entre Mis datos, Mis pedidos y Mis direcciones, encima de cada pantalla. Es un componente y no una página padre con rutas anidadas, que partía el JavaScript inicial en más archivos | Propio |
+| `app/pages/account/index.vue`, `app/features/account/components/ProfileForm.vue`, `EmailChangeForm.vue`, `PasswordChangeForm.vue` | Mis datos: nombre, email con su verificación, cambio de email y de contraseña | `PasswordChangeForm` adaptado del cambio de contraseña del backoffice; los demás propios |
+| `app/shared/auth/auth-gateway.ts`, `session.store.ts` | Ahora también `changePassword` (con el token de esta sesión, que sigue abierta) y `replaceAccount` (la cuenta que responden los cambios) | `changePassword` copiado del backoffice |
+| `app/pages/account/addresses.vue`, `app/features/account/components/AddressForm.vue` | Libreta: alta y edición con `AddressFields`, predeterminada y borrado confirmado | Propios |
+| `app/shared/address/api.ts`, `address-form.ts` | Ahora también editar y borrar direcciones, y los errores de ubicación con mensaje propio | Propio; `address-form` adaptado del backoffice |
+| `app/components/ConfirmDialog.vue`, `app/shared/ui/use-confirm.ts` | Confirmación en un modal | Adaptado y copiado del backoffice |
+| `app/shared/orders/payment.ts`, `app/components/PaymentAction.vue` | Iniciar el pago y mostrar cómo pagar. Pasaron del checkout a la capa compartida porque los usan también los pedidos del cliente | Propios (antes en `features/checkout` y `done.vue`) |
+| `app/features/orders/api.ts`, `my-orders.ts`, `components/CustomerOrder.vue` | Pedidos del cliente como lecturas cacheadas por sesión, recompra al carrito de la cuenta y filtro por estado; orden con "Ver instrucciones de pago" y "Volver a comprar" | Propios |
+| `app/pages/account/orders/index.vue`, `[code].vue` | Mis pedidos y su detalle | Propias |
+
+Cómo se comporta Mi cuenta:
+
+- **Sesión:** cada pantalla declara `auth`. Los cambios de datos y de email ponen en la sesión la cuenta que responde la API, así el encabezado y el checkout ven el email sin verificar al instante.
+- **Pedidos del cliente:** a diferencia de los de invitado, son lecturas normales de TanStack Query, porque van con el token y no gastan un límite por IP; la caché se vacía al cerrar la sesión. El código va en la URL del detalle, que es la ruta de `REQUIREMENTS.md` §5.12 y exige la sesión de su dueño.
+- **Pago de una orden pendiente:** una llave por orden mientras la pantalla vive. Si la orden venció o se pagó mientras tanto, se vuelve a pedir y se muestra su estado nuevo.
+
+ (autoimportados por Nuxt); los de una sola feature, en su carpeta.
 
 Los archivos copiados dicen en su primer comentario de qué archivo y commit del backoffice vienen (`bbcd5af`).
