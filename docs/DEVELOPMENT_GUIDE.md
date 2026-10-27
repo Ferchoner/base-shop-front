@@ -60,7 +60,7 @@ Resumen de `docs/api/API_SPEC.md` §1 a §8 para quien escribe pantallas. Ante u
 ### Accesibilidad y rendimiento
 
 - Objetivo WCAG 2.2 nivel AA: navegación con teclado, foco visible, textos alternativos (`Image.altText`), contraste, formularios con etiquetas y errores asociados al campo.
-- Presupuesto de rendimiento: `REQUIREMENTS.md` §6.2. Las imágenes del catálogo llegan en su tamaño original y la SPA no las redimensiona: carga diferida y tamaños de visualización fijos (ver `API_GAPS.md`, G-02).
+- Presupuesto de rendimiento: `REQUIREMENTS.md` §6.2. Se mide con `npm run build && npm run perf:budget`, que necesita los puertos 3000 (API simulada) y 4174 libres y usa el Chromium de Playwright o el de `CHROME_PATH`; la CI lo corre en cada pull request (TF-015). Una pantalla nueva que comparte código con el catálogo puede subir su LCP: los chunks comunes pequeños se copian en las páginas (ADR-F015). Las imágenes del catálogo llegan en su tamaño original y la SPA no las redimensiona: carga diferida y tamaños de visualización fijos (ver `API_GAPS.md`, G-02).
 - axe revisa cada pantalla en los e2e (ADR-F008).
 
 ## Configuración local
@@ -105,7 +105,7 @@ Igual que base-shop (ADR-0030, ADR-0105, ADR-0106):
 
 - GitHub Flow: `main` siempre está en estado desplegable; cada tarea se trabaja en una rama corta y se integra mediante pull request.
 - CI en `.github/workflows/ci.yml`, en cada pull request hacia `main` y en cada push a `main`, con dos jobs:
-  - `Pipeline`: instalación, lint y formato, tipos del contrato al día, typecheck, tests unitarios y de componentes, auditoría de dependencias (ADR-F011), build, e2e con axe en Chromium (escritorio y móvil) y escaneo de secretos del historial. Lo mismo se corre en local con los scripts de `README.md` antes de abrir un pull request.
+  - `Pipeline`: instalación, lint y formato, tipos del contrato al día, typecheck, tests unitarios y de componentes, auditoría de dependencias (ADR-F011), build, e2e con axe en Chromium (escritorio y móvil), presupuesto de rendimiento (TF-015) y escaneo de secretos del historial. Lo mismo se corre en local con los scripts de `README.md` antes de abrir un pull request.
   - `Commit messages`: revisa el título del pull request y los commits.
 - Ruleset de `main` como código en `.github/rulesets/main.json`, igual al de la API: exige pull request y los checks `Pipeline` y `Commit messages` en verde, con la rama al día; 0 aprobaciones y ninguna excepción. Se aplica con `gh api --method POST repos/Ferchoner/base-shop-front/rulesets --input .github/rulesets/main.json` (la primera vez) o `--method PUT …/rulesets/<id>` después; requiere administrador del repositorio. Un cambio hecho en la interfaz de GitHub se copia al archivo.
 - Los nombres de los jobs son los checks obligatorios de `main`: cambiarlos exige actualizar el ruleset.

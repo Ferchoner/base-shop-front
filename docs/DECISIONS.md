@@ -36,6 +36,7 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
 | ADR-F012 | LCP de 2.5 s como meta de producción y topes locales contra regresiones | Aceptada |
 | ADR-F013 | Las páginas piden sus datos en cuanto el router las resuelve | Aceptada |
 | ADR-F014 | La orden recién colocada vive solo en memoria | Aceptada |
+| ADR-F015 | Los chunks comunes pequeños se copian en las páginas que los usan | Aceptada |
 
 ---
 
@@ -259,6 +260,11 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - La causa es un chunk más en la tanda de la página: `shared/utils/money.ts`, que antes viajaba con `QueryState`, ahora lo importan páginas que no usan `QueryState` (los pedidos de invitado) y Rolldown lo separa en un chunk de 500 bytes. La tanda pasa de 6 a 7 peticiones, y Lighthouse simula HTTP/1.1 con 6 conexiones: la séptima espera otra vuelta. Con HTTP/2 no pasaría.
   - Se probó un grupo de `codeSplitting` con `money.ts` y `QueryState`: Rolldown incluye sus dependencias y el chunk compartido crece a 340 KB sin comprimir (JavaScript inicial 174 KB). Se descartó.
   - Se acepta mientras los tres estén dentro de su tope. TF-015 pondrá los topes en la CI, y el reparto de chunks se revisa si una pantalla nueva los pasa.
+- **Seguimiento con TF-013 y TF-015 (2026-10-27):**
+  - Con TF-013 el catálogo subió de 3.72 a 3.94 s, a 60 ms de su tope. Mis pedidos comparte con él la paginación, los filtros en la URL y la lista de opciones, y Rolldown separa cada pieza en un chunk pequeño: la tanda de la página pasó de 13 a 15 archivos. El usuario eligió fusionar TF-013 y recuperar el margen al empezar TF-015.
+  - Se recuperó copiando los chunks comunes pequeños en las páginas (ADR-F015). Medido igual, contra `main` en la misma máquina: inicio de 2.87 a 2.55 s, catálogo de 3.93 a 3.62 s y producto de 3.60 a 3.51 s. JavaScript inicial de 172.7 a 179.2 KB.
+  - TF-015 pone los topes en la CI: `npm run perf:budget` (`scripts/perf-budget.ts`) mide como arriba, con la mediana de 3 corridas, y falla si un tope de LCP, el CLS, el JavaScript inicial o el de una página se pasa. Corre en el job `Pipeline` después de los e2e y deja la tabla en el resumen del job.
+  - Lighthouse queda fijo en 13.5.0: la 13.6.0 dio un LCP de 0.9 s en el inicio sobre el mismo build, que no corresponde a lo que pinta la página. Subir de versión pide volver a medir contra la anterior y, si cambia la escala, revisar los topes.
 - **Estado:** Aceptada (elegida por el usuario el 2026-10-27).
 
 ---
@@ -286,9 +292,34 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
 - **Decisión:**
   - El checkout deja la orden, el `cartId` de origen, el email de contacto del invitado y una llave para el pago en un `useState` (`useCheckoutResult`), sin código en la URL y sin almacenamiento del navegador.
   - `/checkout/done` inicia el pago una vez al montarse con esa llave, y la reutiliza en cada reintento (red, `idempotency-request-in-progress`).
-  - Al recargar, sin la orden en memoria, el invitado va a `/order-lookup` (TF-014) y el cliente a `/account`, hasta que TF-013 le dé sus pedidos.
+  - Al recargar, sin la orden en memoria, el invitado va a `/order-lookup` (TF-014) y el cliente a sus pedidos, `/account/orders` (TF-013).
 - **Alternativas consideradas:** el código en la URL para recuperar la orden al recargar (expone el código del invitado en el historial y en `Referer`); `sessionStorage` (deja el `cartId` de origen en el navegador después de usarlo).
 - **Consecuencias:**
   - Recargar `/checkout/done` antes de que el pago se inicie deja la orden sin pago iniciado: se inicia desde la consulta del invitado (TF-014) o desde el detalle del pedido del cliente (TF-013), que usan la misma ruta de la API.
   - Si el cliente llega a `/checkout/done` en otra pestaña, no ve la orden: la ve en su cuenta.
+- **Estado:** Aceptada.
+
+---
+
+## ADR-F015 — Los chunks comunes pequeños se copian en las páginas que los usan
+
+- **Fecha:** 2026-10-27
+- **Contexto:** Rolldown pone el código que comparten varias páginas en chunks aparte, uno por cada combinación de páginas que lo usan. Cada pantalla nueva que comparte algo con el catálogo le suma archivos pequeños, y Lighthouse simula HTTP/1.1 con 6 conexiones: más archivos en la tanda de la página son más vueltas antes del LCP (ADR-F012). Con TF-013 el catálogo llegó a 3.94 s con un tope de 4.0 s. Se probaron:
+  - una página padre `account.vue` con rutas anidadas: partía también el JavaScript inicial; se cambió por el componente `AccountNav`;
+  - grupos de `codeSplitting`: arrastran sus dependencias (sprint 3) o parten aún más (16 archivos en la tanda);
+  - quitar el código compartido de Mis pedidos: cada pieza quitada dejaba otra separada, y duplicar código a mano va contra ADR-F009.
+- **Decisión:**
+  - El build del navegador activa `codeSplitting.experimentalInlineCommonChunks` de Rolldown con `maxSize` de 32 KB (`nuxt.config.ts`, `vite.$client`). Un chunk común de menos de 32 KB sin minificar se copia como función en cada chunk que lo usa, y un registro del runtime garantiza que se ejecuta una sola vez y con un solo estado. Los chunks con estilos se excluyen, como hace Vite.
+  - La opción enciende `strictExecutionOrder` y pide `preserveEntrySignatures: false`, que en una SPA no cambia nada porque la entrada no exporta.
+  - Solo en el build del navegador: en el del servidor rompía el prerender del HTML vacío.
+- **Resultados** (medidos como en ADR-F012, contra `main` en la misma máquina):
+  - LCP: inicio de 2.87 a 2.55 s, catálogo de 3.93 a 3.62 s, producto de 3.60 a 3.51 s. La tanda del catálogo pasa de 15 archivos a 4.
+  - JavaScript inicial: de 172.7 a 179.2 KB (de 17 archivos a 9), dentro de los 200 KB.
+  - Todo el JavaScript del build, sumado: de 333 a 511 KB comprimido, por las copias. Cada página descarga lo mismo que antes (el catálogo, 57 KB), pero al navegar se puede volver a bajar una copia de algo que ya se ejecutó.
+  - Se probaron 4 KB (peor que sin la opción), 16 KB, 64 KB (igual que 32 KB, con más copias) y sin límite (3.2 MB de build).
+- **Alternativas consideradas:** las de arriba; aceptar el margen de 60 ms (la CI de TF-015 fallaría por ruido).
+- **Consecuencias:**
+  - La opción es experimental: una versión nueva de Rolldown o de Vite puede cambiarla o quitarla. Los e2e y el presupuesto de la CI lo detectan. Para volver atrás basta con quitar el bloque de `nuxt.config.ts`.
+  - Un archivo que se cargue por su URL, fuera del grafo del build, podría saltarse el registro. La tienda no lo hace.
+  - En producción con HTTP/2 (PF-09) el número de archivos importa menos: al decidir el hosting se vuelve a medir con y sin la opción.
 - **Estado:** Aceptada.

@@ -4,6 +4,11 @@
 
 ## Unreleased
 
+- TF-015: presupuesto de rendimiento en la CI (`REQUIREMENTS.md` §6.2, ADR-F012).
+  - `npm run perf:budget` sirve el build con gzip, simula la API del catálogo y corre Lighthouse 3 veces en el inicio, el catálogo y el producto. Falla si la mediana pasa un tope de LCP, si el CLS pasa de 0.1 o si el JavaScript inicial o el de una página pasan de 200 KB y 80 KB. Corre en el job `Pipeline` y deja la tabla en el resumen.
+  - Lighthouse fijo en 13.5.0, la versión con la que se midieron los topes.
+  - Antes, el margen del catálogo que se perdió con TF-013: los chunks comunes pequeños se copian en las páginas que los usan (ADR-F015). Inicio de 2.87 a 2.55 s, catálogo de 3.93 a 3.62 s y producto de 3.60 a 3.51 s; JavaScript inicial de 172.7 a 179.2 KB.
+
 - TF-013: Mi cuenta, direcciones y mis pedidos (`REQUIREMENTS.md` §5.10 a §5.12).
   - `/account`: nombre y apellidos; email con su verificación y reenvío del enlace; cambio de email con la contraseña actual (avisa que hay que verificar el nuevo antes de comprar) y cambio de contraseña (esta sesión sigue y se cierran las demás). Errores propios en su campo: contraseña incorrecta, email ocupado o igual al actual, y la regla de la política que no se cumple.
   - `/account/addresses`: la libreta con la predeterminada primero; agregar y editar con los campos del checkout, cambiar la predeterminada y borrar con confirmación. Con 10 direcciones ya no ofrece agregar. Los errores de ubicación del catálogo del INEGI van en su campo.

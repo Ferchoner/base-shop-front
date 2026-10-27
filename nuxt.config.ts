@@ -22,6 +22,28 @@ export default defineNuxtConfig({
       nuxtLink: { prefetchOn: { visibility: false, interaction: true } },
     },
   },
+  // Los chunks comunes pequeños se copian en las páginas que los usan, en vez de ir en archivos
+  // aparte: cada pantalla nueva que compartía código con el catálogo sumaba archivos a su descarga y
+  // subía su LCP (ADR-F015). Solo en el navegador (`$client`): el servidor solo prerenderiza el HTML.
+  vite: {
+    $client: {
+      build: {
+        rolldownOptions: {
+          preserveEntrySignatures: false,
+          output: {
+            codeSplitting: {
+              experimentalInlineCommonChunks: {
+                maxSize: 32 * 1024,
+                // Como Vite: un chunk con estilos sigue siendo un archivo.
+                exclude:
+                  /\.(css|scss|sass|less|styl|stylus|pcss|postcss|sss)(\?|$)/,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   app: {
     head: {
       htmlAttrs: { lang: 'es-MX' },
