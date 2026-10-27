@@ -62,7 +62,7 @@ Creado en TF-004:
 | `app/shared/api/generated/openapi.d.ts` | Tipos generados con `npm run api:types` desde `docs/api/openapi/v1.json`; la CI falla si no están al día | Generado |
 | `app/shared/utils/money.ts`, `dates.ts` | Dinero en MXN desde centavos y fechas en la zona del navegador | Copiados del backoffice |
 | `app/plugins/01.api.ts`, `02.vue-query.ts` | Cliente de la API y TanStack Query; la sesión se conecta en TF-010 | Adaptados del backoffice |
-| `app/layouts/default.vue`, `app/pages/index.vue`, `app/error.vue` | Encabezado y pie provisionales, inicio que comprueba la conexión con la API y página de error | Reemplazados en TF-006; el inicio, en TF-007 |
+| `app/layouts/default.vue`, `app/pages/index.vue`, `app/error.vue` | Encabezado y pie provisionales, inicio que comprueba la conexión con la API y página de error | Reemplazados en TF-006 y TF-007 |
 | `tests/unit/`, `tests/e2e/` | Vitest (con MSW en el cliente HTTP) y Playwright con axe sobre el build estático | Parte copiados del backoffice |
 
 Creado en TF-006:
@@ -76,6 +76,17 @@ Creado en TF-006:
 | `app/components/PriceTag.vue`, `SiteSearch.vue` | Precio con comparación e IVA, y buscador del encabezado | Propios |
 | `app/layouts/default.vue`, `app/error.vue` | Encabezado, pie, enlace para saltar al contenido y páginas 404 y de error | `error.vue` adaptado del backoffice |
 | `app/plugins/03.route-focus.ts` | Foco al título al cambiar de pantalla (§4.6) | Propio |
+
+Creado en TF-007:
+
+| Ruta | Contenido | Origen |
+|---|---|---|
+| `app/features/catalog/api.ts`, `types.ts` | Queries de categorías, marcas y productos, con `staleTime` de 60 s (la API cachea 120 s) | Propios, con la forma del backoffice |
+| `app/features/catalog/filters.ts` | Filtros de la URL → parámetros de la API: precios en centavos, `pageSize` 24 y descarte de lo que la API rechazaría | Propio |
+| `app/features/catalog/tree.ts` | Árbol de categorías aplanado para el selector | `flattenTree` copiado del backoffice |
+| `app/features/catalog/components/` | `ProductCard`, `ProductGrid`, `CategoryLinks` y `CatalogFilters` | Propios |
+| `app/shared/api/use-list-params.ts`, `app/components/ListPagination.vue` | Página y filtros en la URL, y paginación | Del backoffice; `push` en lugar de `replace` para que "atrás" funcione, y paginación con nombre accesible |
+| `app/pages/index.vue`, `app/pages/products/index.vue` | Inicio y catálogo | Propios |
 
 Los componentes que usan varias features viven en `app/components/` (autoimportados por Nuxt); los de una sola feature, en su carpeta.
 

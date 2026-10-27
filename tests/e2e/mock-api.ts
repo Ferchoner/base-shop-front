@@ -57,3 +57,60 @@ export async function expectAccessible(page: Page) {
   );
   expect(serious).toEqual([]);
 }
+
+export const product = (n: number, extra: Record<string, unknown> = {}) => ({
+  id: `00000000-0000-0000-0000-${String(n).padStart(12, '0')}`,
+  slug: `producto-${n}`,
+  title: `Producto ${n}`,
+  brand: { id: 'b1', name: 'Marca Uno', slug: 'marca-uno' },
+  fromPrice: { amount: 10000 * n, currency: 'MXN' },
+  compareAtPrice: null,
+  image: null,
+  available: true,
+  publishedAt: '2026-10-01T00:00:00Z',
+  ...extra,
+});
+
+export const productPage = (count: number, page = 1, totalItems = count) => ({
+  data: Array.from({ length: count }, (_, i) => product(i + 1)),
+  meta: {
+    page,
+    pageSize: 24,
+    totalItems,
+    totalPages: Math.ceil(totalItems / 24),
+  },
+});
+
+/**
+ * Simula `GET /v1/catalog/products` y guarda cada consulta recibida. `respond` decide la respuesta
+ * según los parámetros.
+ */
+export async function mockProducts(
+  page: Page,
+  respond: (params: URLSearchParams, route: Route) => Promise<void> | void = (
+    _p,
+    route,
+  ) => json(route, 200, productPage(3)),
+) {
+  const requests: URLSearchParams[] = [];
+  await page.route(
+    (url) => url.pathname === '/v1/catalog/products',
+    (route) => {
+      const params = new URL(route.request().url()).searchParams;
+      requests.push(params);
+      return respond(params, route);
+    },
+  );
+  return requests;
+}
+
+export async function mockBrands(page: Page) {
+  await page.route(`${API}/v1/catalog/brands`, (route) =>
+    json(route, 200, {
+      data: [
+        { id: 'b1', name: 'Marca Uno', slug: 'marca-uno' },
+        { id: 'b2', name: 'Marca Dos', slug: 'marca-dos' },
+      ],
+    }),
+  );
+}
