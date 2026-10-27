@@ -128,6 +128,16 @@ Creado en TF-011:
 
 Los formularios que ponen errores de la API en sus campos validan al escribir sin demora (`validate-on-input-delay` en 0): con la demora de 300 ms de Nuxt UI, una validación pendiente borraba el error que acababa de llegar.
 
+Creado en TF-017 (ADR-F013):
+
+| Ruta | Contenido | Origen |
+|---|---|---|
+| `app/plugins/04.page-prefetch.ts`, `app/types/page-prefetch.d.ts` | Llama al `prefetch` de la página en `beforeResolve` para que sus lecturas salgan antes de montar el layout | Propios |
+| `app/features/catalog/api.ts` | Opciones de cada lectura compartidas por los `use*` y los `prefetch*` (`prefetchCatalog`, `prefetchProduct`) | Propio |
+| `app/shared/api/use-list-params.ts` | `readPage` y `readFilters` leen la página y los filtros de una ruta, también fuera de un componente | Separado de lo copiado del backoffice |
+
+Una página cuyo LCP depende de datos declara con `defineOptions({ prefetch })` las lecturas que necesita, con las mismas opciones que sus `use*`. Hoy lo hacen el catálogo y el producto.
+
 Los componentes que usan varias features viven en `app/components/` (autoimportados por Nuxt); los de una sola feature, en su carpeta.
 
 Los archivos copiados dicen en su primer comentario de qué archivo y commit del backoffice vienen (`bbcd5af`).

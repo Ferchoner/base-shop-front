@@ -18,6 +18,19 @@ async function mockProduct(page: Page, body: unknown, status = 200) {
 }
 
 test.describe('detalle de producto (REQUIREMENTS §5.3)', () => {
+  test('pide el producto una sola vez (TF-017)', async ({ page }) => {
+    let reads = 0;
+    await page.route(`${API}/v1/catalog/products/camisa-lino`, (route) => {
+      reads++;
+      return json(route, 200, detail);
+    });
+    await page.goto('/products/camisa-lino');
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Camisa de lino' }),
+    ).toBeVisible();
+    expect(reads).toBe(1);
+  });
+
   test('elige variante, ve su precio y su disponibilidad', async ({ page }) => {
     await mockProduct(page, detail);
     await page.goto('/products/camisa-lino');

@@ -4,7 +4,7 @@
 
 ## Current Phase
 
-Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública aprobados (TF-003), con cuatro sprints de pantallas planeados. Esqueleto del proyecto y CI completa (TF-004) y `main` protegida (TF-005). Sprint 0 cerrado. Sprint 1 de pantallas cerrado: base de la app (TF-006), inicio y catálogo (TF-007), detalle de producto (TF-008) y carrito de invitado (TF-009), con el presupuesto de rendimiento medido y los topes de LCP de ADR-F012. Sprint 2 cerrado: sesión del cliente y carrito del cliente con fusión (TF-010), y registro, verificación de email y recuperación de contraseña (TF-011), con el catálogo dentro de su tope de LCP tras descargar las páginas al interactuar. Sigue el sprint 3, empezando por el ajuste de chunks (TF-017). Solo entorno local (ADR-F004).
+Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública aprobados (TF-003), con cuatro sprints de pantallas planeados. Esqueleto del proyecto y CI completa (TF-004) y `main` protegida (TF-005). Sprint 0 cerrado. Sprint 1 de pantallas cerrado: base de la app (TF-006), inicio y catálogo (TF-007), detalle de producto (TF-008) y carrito de invitado (TF-009), con el presupuesto de rendimiento medido y los topes de LCP de ADR-F012. Sprint 2 cerrado: sesión del cliente y carrito del cliente con fusión (TF-010), y registro, verificación de email y recuperación de contraseña (TF-011), con el catálogo dentro de su tope de LCP tras descargar las páginas al interactuar. Sprint 3 en curso: el catálogo y el producto piden sus datos al resolver la ruta y vuelven bajo su LCP del sprint 1 (TF-017, ADR-F013); siguen el checkout (TF-012) y los pedidos de invitado (TF-014). Solo entorno local (ADR-F004).
 
 ## Completed
 
@@ -23,6 +23,7 @@ Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack deci
 - [x] TF-010 Sesión del cliente, carrito del cliente y fusión del carrito de invitado (2026-10-27)
 - [x] TF-011 Registro, verificación de email y recuperación de contraseña (2026-10-27)
 - [x] Sprint 2 cerrado (2026-10-27)
+- [x] TF-017 Peticiones de la página al resolver la ruta: catálogo y producto bajo su LCP del sprint 1 (2026-10-27)
 
 ## In Progress
 

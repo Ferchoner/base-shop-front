@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { useBrands, useCategories, useProducts } from '~/features/catalog/api';
+import {
+  prefetchCatalog,
+  useBrands,
+  useCategories,
+  useProducts,
+} from '~/features/catalog/api';
 import CatalogFilters from '~/features/catalog/components/CatalogFilters.vue';
 import ProductGrid from '~/features/catalog/components/ProductGrid.vue';
 import {
@@ -12,9 +17,22 @@ import {
   type CatalogFilter,
 } from '~/features/catalog/filters';
 import type { ProductSort } from '~/features/catalog/types';
-import { useListParams } from '~/shared/api/use-list-params';
+import {
+  readFilters,
+  readPage,
+  useListParams,
+} from '~/shared/api/use-list-params';
 
 /** Catálogo con búsqueda, filtros, orden y paginación en la URL (REQUIREMENTS §5.2). */
+defineOptions({
+  prefetch: (route) =>
+    prefetchCatalog(
+      toProductParams(
+        readFilters(route.query, CATALOG_FILTERS),
+        readPage(route.query),
+      ),
+    ),
+});
 const { page, filters, setFilter, setFilters, setPage } = useListParams({
   filters: CATALOG_FILTERS,
 });
