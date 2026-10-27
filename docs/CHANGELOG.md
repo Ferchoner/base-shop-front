@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- Corregido: el contador del carrito podía volver a 0 justo después de agregar un producto. Una lectura del carrito que respondía después de la escritura ponía el carrito de antes; ahora agregar o cambiar una línea cancela la lectura en curso (`REQUIREMENTS.md` §5.4).
+
 - Sprint 2 cerrado con el presupuesto de rendimiento medido. Los enlaces descargan su página al interactuar con ellos y no al aparecer en pantalla: el LCP del catálogo baja de 4.08 s a 3.97 s, dentro de su tope de 4.0 s, y el del producto de 3.79 s a 3.48 s. Nueva TF-017 para ajustar el reparto de chunks antes del checkout (seguimiento de ADR-F012).
 
 - TF-011: registro, verificación de email y recuperación de contraseña (`REQUIREMENTS.md` §5.7 y §5.9).
