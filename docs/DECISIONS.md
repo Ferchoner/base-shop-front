@@ -247,4 +247,8 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - El sprint 1 cierra con el presupuesto local cumplido y la meta de producción pendiente del modo híbrido.
   - Una pantalla nueva que pase su tope local es una regresión que se corrige antes de fusionar, cuando TF-015 esté en la CI.
   - Al activar el modo híbrido se vuelve a medir contra 2.5 s.
+- **Seguimiento al cerrar el sprint 2 (2026-10-27):**
+  - Con TF-010 y TF-011 el LCP subió: inicio 2.68 s, catálogo 4.08 s (pasó su tope), producto 3.79 s. La causa es el reparto del código: las pantallas nuevas comparten componentes con el catálogo y Vite los separa en más chunks pequeños, que se descargan en más tandas, y el encabezado suma la sesión. El cambio de una pantalla a otra no mueve la CPU de arranque.
+  - Se probaron tres arreglos. Descargar las páginas enlazadas al interactuar (pasar el cursor, enfocar o tocar) y no al aparecer el enlace en pantalla: catálogo 3.97 s y producto 3.48 s. Agrupar los chunks del catálogo con `codeSplitting` de Rolldown: catálogo 3.56 s, pero el JavaScript inicial sube a 204 KB y pasa el presupuesto de 200 KB. Cargar el encabezado con la entrada: empeora.
+  - El usuario eligió (2026-10-27) aplicar la descarga al interactuar, mantener los topes y ajustar el reparto de chunks antes del checkout (TF-017), porque el checkout volverá a acercar el catálogo a su tope.
 - **Estado:** Aceptada (elegida por el usuario el 2026-10-27).

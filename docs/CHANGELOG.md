@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- Sprint 2 cerrado con el presupuesto de rendimiento medido. Los enlaces descargan su página al interactuar con ellos y no al aparecer en pantalla: el LCP del catálogo baja de 4.08 s a 3.97 s, dentro de su tope de 4.0 s, y el del producto de 3.79 s a 3.48 s. Nueva TF-017 para ajustar el reparto de chunks antes del checkout (seguimiento de ADR-F012).
+
 - TF-011: registro, verificación de email y recuperación de contraseña (`REQUIREMENTS.md` §5.7 y §5.9).
   - `/register`: nombres, apellidos, email, contraseña con la política explicada antes de escribirla y botón para mostrarla, y casilla del aviso de privacidad con la versión de `NUXT_PUBLIC_PRIVACY_NOTICE_VERSION`. Sin esa variable, el registro no está disponible. Al registrarse: "Revisa tu correo", reenvío y enlace al login.
   - Mensajes propios para cada regla de la contraseña (`passwordLength`, `passwordCharacters`, `commonPassword`) y, ante un email ya registrado, enlaces para iniciar sesión o recuperar la contraseña.
