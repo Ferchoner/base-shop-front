@@ -4,6 +4,13 @@
 
 ## Unreleased
 
+- TF-009: carrito de invitado (`REQUIREMENTS.md` §4.5 y §5.4).
+  - El `cartId` se guarda en `localStorage` (`base-shop-front.cartId`), compartido por las pestañas, y el carrito se crea al agregar el primer producto. Un carrito que ya no existe o ya no está activo se olvida, y el siguiente agregado crea otro.
+  - Detalle de producto: cantidad de 1 a 30 y "Agregar al carrito", con aviso accesible y enlace al carrito. Errores propios: variante que dejó de venderse (recarga el producto), tope de 30 unidades y de 100 productos distintos.
+  - `/cart`: líneas con imagen, opciones, precio unitario, cantidad y total de la API; "Ya no está disponible" sin precio y "No hay suficientes para la cantidad pedida" sin revelar existencias. El subtotal aclara que no incluye envío ni descuentos, y los cambios se anuncian.
+  - Contador del carrito en el encabezado con `itemCount`.
+  - "Continuar al checkout" lleva a `/checkout`, que llega con TF-012.
+
 - TF-008: detalle de producto en `/products/{slug}` (`REQUIREMENTS.md` §5.3).
   - Galería con miniaturas y `altText`; al elegir una variante con imágenes propias, van primero.
   - Selector de opciones en cascada: cada opción ofrece los valores que existen con las anteriores, así que una combinación inexistente no se puede elegir y nunca hay que deshacer para llegar a otra. Lo agotado se marca y se puede ver.
