@@ -4,7 +4,7 @@
 
 ## Sprint actual
 
-Sprint 3 (pantallas): invitado y cliente colocan una orden y reciben las instrucciones de pago; el invitado consulta su pedido (TF-017, TF-012, TF-014). Empezó el 2026-10-27; TF-017, TF-012 y TF-014 están hechas y falta medir el presupuesto de rendimiento para cerrarlo.
+Sprint 4 (pantallas): mi cuenta y mis pedidos; presupuesto de rendimiento en la CI (TF-013, TF-015, y TF-016 si G-01 se resolvió). Por empezar.
 
 ## Próximos sprints
 
@@ -20,6 +20,19 @@ Cada sprint termina en algo que se puede probar de punta a punta contra la API l
 Criterio de cierre de cada sprint: sus tareas en DONE y el presupuesto de rendimiento medido (`REQUIREMENTS.md` §6.2).
 
 ## Historial
+
+### Sprint 3 (pantallas), 2026-10-27
+
+- **Objetivo:** invitado y cliente colocan una orden y reciben las instrucciones de pago; el invitado consulta su pedido.
+- **Resultado:** cumplido.
+  - TF-017: las páginas piden sus datos al resolver la ruta (ADR-F013, PR #18).
+  - TF-012: checkout de invitado y de cliente, e inicio del pago (ADR-F014, PR #19).
+  - TF-014: pedidos de invitado con consulta, enlace de acceso y recompra (PR #20).
+- **Presupuesto de rendimiento:** medido (`REQUIREMENTS.md` §6.2), dentro de los topes de ADR-F012.
+  - LCP: inicio 2.79 s, catálogo 3.72 s, producto 3.56 s; `/order-lookup` 3.08 s, como referencia.
+  - JavaScript inicial: 172 KB comprimido. CLS de 0 a 0.03.
+  - El checkout y los pedidos suman unos 150 ms a cada pantalla por un chunk más en la tanda de la página (seguimiento de ADR-F012). Se acepta dentro de los topes; TF-015 los pondrá en la CI.
+- **Brechas nuevas de la API:** G-13 (las líneas de la orden no dicen su variante).
 
 ### Sprint 2 (pantallas), 2026-10-27
 

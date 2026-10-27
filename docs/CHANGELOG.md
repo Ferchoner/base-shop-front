@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- Sprint 3 cerrado con el presupuesto de rendimiento medido: inicio 2.79 s, catálogo 3.72 s y producto 3.56 s de LCP, dentro de sus topes, con 172 KB de JavaScript inicial. El checkout y los pedidos suman unos 150 ms por un chunk más en la tanda de cada página (seguimiento de ADR-F012).
+
 - TF-014: pedidos de invitado (`REQUIREMENTS.md` §5.13).
   - `/order-lookup`: consulta con email y código, que acepta minúsculas y sin guion. Un solo mensaje si no se encuentra, sin decir qué dato falló. "¿Perdiste tu código?" pide un enlace por correo.
   - `/order-access`: lee y quita el token del enlace, lista los pedidos del email y abre el detalle de cada uno sin poner el email ni el código en la URL. Un enlace vencido o usado ofrece pedir otro.
