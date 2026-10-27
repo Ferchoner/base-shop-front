@@ -22,6 +22,35 @@ test.describe('catálogo (REQUIREMENTS §5.2)', () => {
     await mockBrands(page);
   });
 
+  test('pide cada dato una sola vez al abrir con filtros (TF-017)', async ({
+    page,
+  }) => {
+    const reads: string[] = [];
+    page.on('request', (request) => {
+      const url = new URL(request.url());
+      if (request.method() === 'GET' && url.pathname.startsWith('/v1/'))
+        reads.push(url.pathname);
+    });
+    const requests = await mockProducts(page, (_p, route) =>
+      json(route, 200, productPage(3, 2, 30)),
+    );
+    await page.goto('/products?category=camisas&sort=price&page=2');
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Catálogo' }),
+    ).toBeVisible();
+    await expect(page.getByText('Producto 1', { exact: true })).toBeVisible();
+
+    expect(requests).toHaveLength(1);
+    expect(Object.fromEntries(requests[0]!)).toMatchObject({
+      category: 'camisas',
+      sort: 'price',
+      page: '2',
+    });
+    const count = (path: string) => reads.filter((p) => p === path).length;
+    expect(count('/v1/catalog/categories')).toBe(1);
+    expect(count('/v1/catalog/brands')).toBe(1);
+  });
+
   test('los filtros viven en la URL y "atrás" los deshace', async ({
     page,
   }) => {

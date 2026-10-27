@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AddToCart from '~/features/cart/components/AddToCart.vue';
-import { useProduct } from '~/features/catalog/api';
+import { prefetchProduct, useProduct } from '~/features/catalog/api';
 import ProductGallery from '~/features/catalog/components/ProductGallery.vue';
 import VariantSelector from '~/features/catalog/components/VariantSelector.vue';
 import {
@@ -10,6 +10,9 @@ import {
 } from '~/features/catalog/variants';
 
 /** Detalle de producto con selector de variantes (REQUIREMENTS §5.3). */
+defineOptions({
+  prefetch: (route) => prefetchProduct(String(route.params.slug)),
+});
 const route = useRoute();
 const slug = computed(() => String(route.params.slug));
 const product = useProduct(slug);
