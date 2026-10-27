@@ -1,42 +1,13 @@
 import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
-import { API, expectAccessible, json, problem } from './mock-api';
-
-const money = (amount: number) => ({ amount, currency: 'MXN' });
-const variant = (
-  id: string,
-  options: Record<string, string>,
-  amount: number,
-  available = true,
-) => ({
-  id: `00000000-0000-0000-0001-${id.padStart(12, '0')}`,
-  sku: `SKU-${id}`,
-  options,
-  price: money(amount),
-  compareAtPrice: null,
-  available,
-});
-
-const detail = {
-  id: '00000000-0000-0000-0000-000000000001',
-  slug: 'camisa-lino',
-  title: 'Camisa de lino',
-  brand: { id: 'b1', name: 'Marca Uno', slug: 'marca-uno' },
-  fromPrice: money(59900),
-  compareAtPrice: null,
-  image: null,
-  available: true,
-  publishedAt: '2026-10-01T00:00:00Z',
-  description: 'Fresca para el verano.\n<script>alert(1)</script>',
-  categories: [{ id: 'c1', name: 'Camisas', slug: 'camisas' }],
-  images: [],
-  optionNames: ['color', 'talla'],
-  variants: [
-    variant('1', { color: 'Azul', talla: 'S' }, 59900),
-    variant('2', { color: 'Azul', talla: 'M' }, 64900),
-    variant('3', { color: 'Rojo', talla: 'M' }, 59900, false),
-  ],
-};
+import {
+  API,
+  detail,
+  expectAccessible,
+  json,
+  problem,
+  variant,
+} from './mock-api';
 
 async function mockProduct(page: Page, body: unknown, status = 200) {
   await page.route(`${API}/v1/catalog/products/camisa-lino`, (route) =>

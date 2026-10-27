@@ -90,6 +90,16 @@ Creado en TF-007:
 
 Creado en TF-008: `app/features/catalog/variants.ts` (opciones en cascada, variante elegida y orden de la galería), `ProductGallery` y `VariantSelector` en `app/features/catalog/components/`, y la página `app/pages/products/[slug].vue`. Todos propios.
 
+Creado en TF-009, todo propio:
+
+| Ruta | Contenido |
+|---|---|
+| `app/shared/stores/cart-id.ts` | `cartId` del invitado en Pinia y `localStorage`, con el evento `storage` para las demás pestañas. Está en `shared` porque la sesión lo fusiona en TF-010 |
+| `app/features/cart/api.ts` | Carrito de invitado: lectura que olvida el carrito que ya no sirve, agregado que crea el carrito una sola vez aunque se pulse dos veces, y cambio o baja de línea con la respuesta de la API |
+| `app/features/cart/errors.ts` | Mensajes de los errores propios del carrito |
+| `app/features/cart/components/` | `AddToCart`, `CartLineItem`, `CartLink` (encabezado) y `QuantitySelect` |
+| `app/pages/cart.vue` | Carrito |
+
 Los componentes que usan varias features viven en `app/components/` (autoimportados por Nuxt); los de una sola feature, en su carpeta.
 
 Los archivos copiados dicen en su primer comentario de qué archivo y commit del backoffice vienen (`bbcd5af`).

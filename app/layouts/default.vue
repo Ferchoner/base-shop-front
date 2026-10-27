@@ -1,4 +1,8 @@
-<!-- Encabezado y pie de la tienda (REQUIREMENTS §5.15). El carrito y la cuenta se agregan con TF-009 y TF-010; el aviso de privacidad, con TF-016. -->
+<!-- Encabezado y pie de la tienda (REQUIREMENTS §5.15). La cuenta se agrega con TF-010 y el aviso de privacidad, con TF-016. -->
+<script setup lang="ts">
+import CartLink from '~/features/cart/components/CartLink.vue';
+</script>
+
 <template>
   <div class="flex min-h-screen flex-col">
     <a
@@ -12,7 +16,7 @@
       >
         <NuxtLink
           to="/"
-          class="flex shrink-0 items-center gap-2 text-lg font-semibold"
+          class="order-first flex shrink-0 items-center gap-2 text-lg font-semibold sm:order-none"
         >
           <UIcon
             name="i-lucide-store"
@@ -31,6 +35,9 @@
         </nav>
         <div class="min-w-0 flex-1 basis-full sm:basis-auto">
           <SiteSearch />
+        </div>
+        <div class="order-first ml-auto sm:order-none sm:ml-0">
+          <CartLink />
         </div>
       </div>
     </header>

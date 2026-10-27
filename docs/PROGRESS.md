@@ -4,7 +4,7 @@
 
 ## Current Phase
 
-Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública aprobados (TF-003), con cuatro sprints de pantallas planeados. Esqueleto del proyecto y CI completa (TF-004) y `main` protegida (TF-005). Sprint 0 cerrado. Sprint 1 de pantallas en curso: base de la app (TF-006), inicio y catálogo (TF-007) y detalle de producto (TF-008) hechos. Solo entorno local (ADR-F004).
+Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack decidido (TF-002): Nuxt 4 SPA y lo demás como el backoffice (ADR-F005 a ADR-F010). Requisitos de la tienda pública aprobados (TF-003), con cuatro sprints de pantallas planeados. Esqueleto del proyecto y CI completa (TF-004) y `main` protegida (TF-005). Sprint 0 cerrado. Sprint 1 de pantallas en curso: base de la app (TF-006), inicio y catálogo (TF-007), detalle de producto (TF-008) y carrito de invitado (TF-009) hechos; falta medir el presupuesto de rendimiento para cerrarlo. Solo entorno local (ADR-F004).
 
 ## Completed
 
@@ -18,14 +18,15 @@ Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack deci
 - [x] TF-006 Base de la app: encabezado, pie, errores por `type`, precios y foco al cambiar de pantalla (2026-10-26)
 - [x] TF-007 Inicio y catálogo con búsqueda, filtros, orden y paginación en la URL (2026-10-26)
 - [x] TF-008 Detalle de producto con galería y selector de variantes (2026-10-26)
+- [x] TF-009 Carrito de invitado con contador en el encabezado (2026-10-27)
 
 ## In Progress
 
-- Sprint 1: TF-009.
+- Sprint 1: medir el presupuesto de rendimiento y cerrarlo.
 
 ## Next
 
-- TF-009 Carrito de invitado
+- Sprint 2: TF-010 y TF-011
 
 ## Blocked
 

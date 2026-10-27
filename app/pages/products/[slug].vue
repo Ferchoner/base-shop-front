@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AddToCart from '~/features/cart/components/AddToCart.vue';
 import { useProduct } from '~/features/catalog/api';
 import ProductGallery from '~/features/catalog/components/ProductGallery.vue';
 import VariantSelector from '~/features/catalog/components/VariantSelector.vue';
@@ -107,6 +108,12 @@ useHead({
             v-if="data.variants.length > 1"
             v-model="selection"
             :product="data"
+          />
+
+          <AddToCart
+            :variant-id="variant?.id ?? null"
+            :product-title="data.title"
+            @unsellable="product.refetch()"
           />
 
           <section
