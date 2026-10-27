@@ -35,6 +35,7 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
 | ADR-F011 | Auditoría de dependencias con excepciones revisadas | Aceptada |
 | ADR-F012 | LCP de 2.5 s como meta de producción y topes locales contra regresiones | Aceptada |
 | ADR-F013 | Las páginas piden sus datos en cuanto el router las resuelve | Aceptada |
+| ADR-F014 | La orden recién colocada vive solo en memoria | Aceptada |
 
 ---
 
@@ -271,4 +272,18 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - El código de `prefetch` vive en el chunk de la página, no en la entrada.
   - Una lectura nueva de una página con `prefetch` debe pedirse también ahí, o sale tarde. Los tests end-to-end comprueban que el catálogo y el producto piden cada dato una sola vez: si la clave de `prefetch` y la de la página no coinciden, hay dos peticiones y fallan.
   - Al pasar al modo híbrido (ADR-F005), el servidor podrá dar estos datos con el HTML, y `prefetch` no estorba: la caché ya los tiene.
+- **Estado:** Aceptada.
+
+## ADR-F014 — La orden recién colocada vive solo en memoria
+
+- **Fecha:** 2026-10-27
+- **Contexto:** al colocar la orden, `/checkout/done` necesita el `publicCode`, el total y, para iniciar el pago del invitado, el `cartId` de origen, que prueba que quien paga es quien compró (base-shop ADR-0063). `REQUIREMENTS.md` §5.5 pide pasarlos en memoria, y el código público de un invitado nunca va en la URL (base-shop ADR-0071, `SECURITY.md`). Iniciar el pago lleva `Idempotency-Key` (§4.4).
+- **Decisión:**
+  - El checkout deja la orden, el `cartId` de origen, el email de contacto del invitado y una llave para el pago en un `useState` (`useCheckoutResult`), sin código en la URL y sin almacenamiento del navegador.
+  - `/checkout/done` inicia el pago una vez al montarse con esa llave, y la reutiliza en cada reintento (red, `idempotency-request-in-progress`).
+  - Al recargar, sin la orden en memoria, el invitado va a `/order-lookup` (TF-014) y el cliente a `/account`, hasta que TF-013 le dé sus pedidos.
+- **Alternativas consideradas:** el código en la URL para recuperar la orden al recargar (expone el código del invitado en el historial y en `Referer`); `sessionStorage` (deja el `cartId` de origen en el navegador después de usarlo).
+- **Consecuencias:**
+  - Recargar `/checkout/done` antes de que el pago se inicie deja la orden sin pago iniciado: se inicia desde la consulta del invitado (TF-014) o desde el detalle del pedido del cliente (TF-013), que usan la misma ruta de la API.
+  - Si el cliente llega a `/checkout/done` en otra pestaña, no ve la orden: la ve en su cuenta.
 - **Estado:** Aceptada.
