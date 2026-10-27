@@ -301,7 +301,7 @@ Medido con Lighthouse en perfil móvil (teléfono de gama media, 4G lenta simula
 
 - Imágenes del catálogo con `width` y `height` declarados y carga diferida fuera de la primera pantalla. Las imágenes llegan en tamaño original (G-02), así que el LCP de las páginas con imágenes depende de lo que suba el staff; se mide y se reporta, sin bloquear mientras G-02 siga abierta.
 - Fuentes e iconos locales (`SECURITY.md`), sin cargas de terceros.
-- Se mide con el build servido con gzip y una API simulada, con la mediana de 3 corridas (ADR-F012). El presupuesto se mide a mano al cerrar cada sprint de pantallas; automatizarlo en la CI es una tarea aparte (TF-015).
+- Se mide con el build servido con gzip y una API simulada, con la mediana de 3 corridas (ADR-F012). La CI lo mide en cada pull request con `npm run perf:budget` y falla si se pasa un tope de LCP, el CLS, el JavaScript inicial o el de una página (TF-015). INP no se mide en laboratorio: se reporta el Total Blocking Time como referencia.
 
 ### 6.3 Otros
 
