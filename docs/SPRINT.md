@@ -4,14 +4,7 @@
 
 ## Sprint actual
 
-Sprint 1 (pantallas): un visitante navega el catálogo, ve un producto y arma un carrito de invitado (TF-006 a TF-009). Empezó el 2026-10-26.
-
-| Tarea | Estado |
-|---|---|
-| TF-006 Base de la app | DONE |
-| TF-007 Inicio y catálogo | DONE |
-| TF-008 Detalle de producto | DONE |
-| TF-009 Carrito de invitado | DONE |
+Sprint 2 (pantallas): un cliente se registra, verifica su email, inicia sesión y conserva su carrito (TF-010, TF-011). Empieza cuando el usuario lo indique.
 
 ## Próximos sprints
 
@@ -27,6 +20,19 @@ Cada sprint termina en algo que se puede probar de punta a punta contra la API l
 Criterio de cierre de cada sprint: sus tareas en DONE y el presupuesto de rendimiento medido (`REQUIREMENTS.md` §6.2).
 
 ## Historial
+
+### Sprint 1 (pantallas), 2026-10-26 a 2026-10-27
+
+- **Objetivo:** un visitante navega el catálogo, ve un producto y arma un carrito de invitado.
+- **Resultado:** cumplido.
+  - TF-006: encabezado, pie, página 404, mensajes de error propios y precios (PR #9).
+  - TF-007: inicio y catálogo con filtros, orden y paginación en la URL (PR #10).
+  - TF-008: detalle de producto con galería y selector de variantes (PR #11).
+  - TF-009: carrito de invitado con contador en el encabezado (PR #12).
+- **Presupuesto de rendimiento:** medido (`REQUIREMENTS.md` §6.2). El JavaScript inicial ocupa 169 KB comprimido; CLS e interacción quedan dentro del presupuesto.
+  - LCP: inicio 2.59 s, catálogo 3.66 s, producto 3.48 s.
+  - El LCP pasa de 2.5 s por el arranque de la SPA. El usuario eligió dejar 2.5 s como meta de producción con el modo híbrido y poner topes locales contra regresiones (ADR-F012).
+- **Fuera del sprint:** `API_GAPS.md` G-12, una diferencia menor del OpenAPI en el filtro `brand`.
 
 ### Sprint 0 (inicialización), 2026-10-26
 

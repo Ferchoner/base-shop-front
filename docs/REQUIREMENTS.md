@@ -293,7 +293,7 @@ Medido con Lighthouse en perfil móvil (teléfono de gama media, 4G lenta simula
 
 | Métrica | Presupuesto |
 |---|---|
-| Largest Contentful Paint en `/`, `/products` y `/products/{slug}` | ≤ 2.5 s |
+| Largest Contentful Paint en `/`, `/products` y `/products/{slug}` | ≤ 2.5 s en producción, con el modo híbrido (ADR-F005). Mientras la tienda sea SPA, tope local contra regresiones de 3.0 s en `/` y 4.0 s en `/products` y `/products/{slug}` (ADR-F012) |
 | Interaction to Next Paint | ≤ 200 ms |
 | Cumulative Layout Shift | ≤ 0.1 |
 | JavaScript inicial (entrada más la página), comprimido | ≤ 200 KB |
@@ -301,7 +301,7 @@ Medido con Lighthouse en perfil móvil (teléfono de gama media, 4G lenta simula
 
 - Imágenes del catálogo con `width` y `height` declarados y carga diferida fuera de la primera pantalla. Las imágenes llegan en tamaño original (G-02), así que el LCP de las páginas con imágenes depende de lo que suba el staff; se mide y se reporta, sin bloquear mientras G-02 siga abierta.
 - Fuentes e iconos locales (`SECURITY.md`), sin cargas de terceros.
-- El presupuesto se mide a mano al cerrar cada sprint de pantallas; automatizarlo en la CI es una tarea aparte (TF-015).
+- Se mide con el build servido con gzip y una API simulada, con la mediana de 3 corridas (ADR-F012). El presupuesto se mide a mano al cerrar cada sprint de pantallas; automatizarlo en la CI es una tarea aparte (TF-015).
 
 ### 6.3 Otros
 
