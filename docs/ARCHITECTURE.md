@@ -138,6 +138,26 @@ Creado en TF-017 (ADR-F013):
 
 Una página cuyo LCP depende de datos declara con `defineOptions({ prefetch })` las lecturas que necesita, con las mismas opciones que sus `use*`. Hoy lo hacen el catálogo y el producto.
 
+Creado en TF-012 (checkout e inicio del pago, ADR-F014):
+
+| Ruta | Contenido | Origen |
+|---|---|---|
+| `app/shared/api/geo.ts` | Estados y municipios del INEGI, sin caducar | Copiado del backoffice |
+| `app/shared/address/address-form.ts`, `app/components/AddressFields.vue` | Esquema y campos de `AddressInput`, con `autocomplete` de envío | Adaptados del backoffice; en `shared` porque los usarán también la libreta y los pedidos (TF-013) |
+| `app/shared/address/api.ts` | Libreta del cliente: listar y crear (`/v1/me/addresses`) | Propio |
+| `app/shared/orders/status.ts` | Nombre de cada estado de la orden para el comprador | Adaptado de los estados de venta del backoffice |
+| `app/shared/api/idempotency.ts` | `createIdempotencyKeys` (una llave por intento, la misma mientras el cuerpo no cambia) y `retryWhileInProgress` (repite con la misma llave tras `Retry-After`) | Propio |
+| `app/features/checkout/api.ts` | Cotización sin caché, colocar la orden, iniciar el pago, consultar la orden y la orden recién colocada en memoria | Propio |
+| `app/features/checkout/schemas.ts`, `coupon.ts` | Formulario del checkout y cuerpos de la orden; mensajes de `coupon-not-applicable` por `reason` | Adaptados del pedido en tienda del backoffice |
+| `app/features/checkout/components/QuoteSummary.vue` | Líneas, cupón, totales, envío gratis y entrega estimada de la cotización | Propio |
+| `app/pages/checkout/index.vue`, `done.vue` | Checkout de invitado y de cliente; orden colocada e instrucciones de pago | Propios |
+
+Cómo se comporta el checkout:
+
+- **Totales:** todos salen de la cotización. Se pide al entrar, al aplicar o quitar un cupón y al elegir una dirección guardada, nunca al volver a la pestaña. "Colocar pedido" se habilita solo con una cotización al día y lista (`readyToPlace`), y envía su `grandTotal` como `expectedTotal`.
+- **Llaves:** una por cuerpo de la orden. Un reenvío idéntico (error de red, `idempotency-request-in-progress`) usa la misma; un total o un dato distinto, otra.
+- **Al colocar:** el carrito de invitado se olvida y el contador se vuelve a pedir. La dirección nueva que el cliente pide guardar se crea antes, y se usa por su id; con la libreta llena se usa sin guardar.
+
 Los componentes que usan varias features viven en `app/components/` (autoimportados por Nuxt); los de una sola feature, en su carpeta.
 
 Los archivos copiados dicen en su primer comentario de qué archivo y commit del backoffice vienen (`bbcd5af`).

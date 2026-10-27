@@ -327,7 +327,8 @@ const preflight = (route: Route) =>
     headers: {
       ...cors,
       'Access-Control-Allow-Methods': 'GET,POST,PATCH,DELETE',
-      'Access-Control-Allow-Headers': 'Content-Type,Accept,Authorization',
+      'Access-Control-Allow-Headers':
+        'Content-Type,Accept,Authorization,Idempotency-Key',
     },
   });
 
@@ -481,4 +482,317 @@ export async function mockAccountApi(page: Page) {
     },
   );
   return { calls, bodies };
+}
+
+const problemWith = (
+  route: Route,
+  status: number,
+  type: string,
+  extra: Record<string, unknown> = {},
+  headers: Record<string, string> = {},
+) =>
+  route.fulfill({
+    status,
+    contentType: 'application/problem+json',
+    headers: { ...cors, ...headers },
+    body: JSON.stringify({
+      type: `/problems/${type}`,
+      title: type,
+      status,
+      correlationId: 'e2e-correlation',
+      ...extra,
+    }),
+  });
+
+export const ORDER_CODE = 'K7M4-Q9XA';
+/** Cupón válido del simulador: 10 % sobre el subtotal. Cualquier otro no aplica. */
+export const VALID_COUPON = 'OTONO10';
+const SHIPPING = 9900;
+const FREE_SHIPPING_FROM = 99900;
+
+export const savedAddress = {
+  id: '00000000-0000-4000-8000-0000000ad001',
+  isDefault: true,
+  recipientName: 'María López',
+  phone: '5512345678',
+  street: 'Av. Juárez',
+  exteriorNumber: '10',
+  interiorNumber: null,
+  neighborhood: 'Centro',
+  postalCode: '06000',
+  city: null,
+  stateCode: '09',
+  stateName: 'Ciudad de México',
+  municipalityCode: '015',
+  municipalityName: 'Cuauhtémoc',
+  country: 'MX',
+  references: null,
+  createdAt: '2026-10-01T00:00:00Z',
+  updatedAt: '2026-10-01T00:00:00Z',
+};
+
+interface CheckoutOptions {
+  /** La primera orden responde 409 `total-mismatch` y el envío sube $10 desde entonces. */
+  totalChangesOnce?: boolean;
+  /** La primera orden responde 409 `idempotency-request-in-progress`. */
+  inProgressOnce?: boolean;
+  /** El pago manual está deshabilitado (G-03). */
+  paymentDisabled?: boolean;
+  /** La orden ya no está pendiente al iniciar el pago. */
+  orderExpired?: boolean;
+  addresses?: (typeof savedAddress)[];
+}
+
+/**
+ * Checkout y pago de API_SPEC §15.2–15.5 y §16.2 sobre los carritos de `mockCartApi`: cotiza con
+ * `VALID_COUPON`, coloca la orden si `expectedTotal` coincide (deja el carrito CHECKED_OUT) e inicia
+ * el pago manual. Con el catálogo del INEGI y la libreta del cliente que usa el formulario.
+ */
+export async function mockCheckoutApi(
+  page: Page,
+  cartApi: Awaited<ReturnType<typeof mockCartApi>>,
+  options: CheckoutOptions = {},
+) {
+  const quotes: Record<string, unknown>[] = [];
+  const orders: { path: string; key: string; body: Record<string, unknown> }[] =
+    [];
+  const payments: {
+    path: string;
+    key: string;
+    body: Record<string, unknown>;
+  }[] = [];
+  const addresses = [...(options.addresses ?? [])];
+  let shippingExtra = 0;
+  const prices = new Map(detail.variants.map((v) => [v.id, v]));
+
+  const quoteOf = (cartId: string, couponCode?: string | null) => {
+    const cart = cartApi.carts.get(cartId);
+    const lines = (cart?.lines ?? []).map((l) => {
+      const v = prices.get(l.variantId)!;
+      const sellable = l.sellable ?? true;
+      const lineTotal = v.price.amount * l.quantity;
+      const discount = couponCode ? Math.round(lineTotal / 10) : 0;
+      return {
+        variantId: l.variantId,
+        options: v.options,
+        sku: v.sku,
+        productTitle: detail.title,
+        quantity: l.quantity,
+        sellable,
+        canFulfill: l.canFulfill ?? true,
+        unitPrice: sellable ? v.price : null,
+        lineTotal: sellable ? money(lineTotal) : null,
+        discountAmount: sellable ? money(discount) : null,
+        taxRateBp: 1600,
+        taxAmount: sellable ? money(Math.round((lineTotal * 16) / 116)) : null,
+      };
+    });
+    const subtotal = lines.reduce((n, l) => n + (l.lineTotal?.amount ?? 0), 0);
+    const discount = lines.reduce(
+      (n, l) => n + (l.discountAmount?.amount ?? 0),
+      0,
+    );
+    const shipping =
+      subtotal - discount >= FREE_SHIPPING_FROM ? 0 : SHIPPING + shippingExtra;
+    const grand = subtotal - discount + shipping;
+    return {
+      lines,
+      subtotal: money(subtotal),
+      discountTotal: money(discount),
+      promotion: couponCode
+        ? { id: 'promo-1', code: VALID_COUPON, name: 'Otoño 10 %' }
+        : null,
+      shippingCost: money(shipping),
+      shippingTaxAmount: money(Math.round((shipping * 16) / 116)),
+      taxTotal: money(Math.round((grand * 16) / 116)),
+      grandTotal: money(grand),
+      freeShippingThreshold: money(FREE_SHIPPING_FROM),
+      estimatedDelivery: { minBusinessDays: 2, maxBusinessDays: 5 },
+      readyToPlace: lines.every((l) => l.sellable && l.canFulfill),
+    };
+  };
+
+  /** Errores de cotizar o colocar sobre un carrito, como la API. */
+  const cartProblem = (route: Route, cartId: string | null) => {
+    const cart = cartId ? cartApi.carts.get(cartId) : undefined;
+    if (!cart) return problem(route, 404, 'not-found');
+    if (cart.status !== 'ACTIVE') return problem(route, 409, 'cart-not-active');
+    if (cart.lines.length === 0) return problem(route, 409, 'empty-cart');
+    return null;
+  };
+  const couponProblem = (route: Route, code?: string | null) =>
+    code && code.toUpperCase() !== VALID_COUPON
+      ? problemWith(route, 409, 'coupon-not-applicable', {
+          reason: 'unavailable',
+        })
+      : null;
+
+  const order = (
+    cartId: string,
+    body: Record<string, unknown>,
+    status = 'PENDING_PAYMENT',
+  ) => {
+    const q = quoteOf(cartId, body.couponCode as string | undefined);
+    return {
+      publicCode: ORDER_CODE,
+      status,
+      contactEmail: (body.contactEmail as string) ?? customerAccount.email,
+      itemCount: q.lines.reduce((n, l) => n + l.quantity, 0),
+      subtotal: q.subtotal,
+      discountTotal: q.discountTotal,
+      promotion: q.promotion,
+      shippingCost: q.shippingCost,
+      shippingTaxAmount: q.shippingTaxAmount,
+      taxTotal: q.taxTotal,
+      grandTotal: q.grandTotal,
+      fulfillment: 'SHIPPING',
+      estimatedDelivery: q.estimatedDelivery,
+      placedAt: '2026-10-27T18:00:00Z',
+      paymentDueAt:
+        status === 'PENDING_PAYMENT' ? '2026-10-29T18:00:00Z' : null,
+      paidAt: null,
+      shippedAt: null,
+      deliveredAt: null,
+      cancelledAt: null,
+      expiredAt: status === 'EXPIRED' ? '2026-10-29T18:00:00Z' : null,
+      refundedAt: null,
+      payment: null,
+      shipment: null,
+      lines: [],
+      shippingAddress: savedAddress,
+    };
+  };
+  let placedFrom: string | null = null;
+
+  await page.route(
+    (url) =>
+      url.pathname.startsWith('/v1/geo/') ||
+      url.pathname.startsWith('/v1/me/addresses') ||
+      url.pathname.endsWith('/checkout/quote') ||
+      url.pathname.startsWith('/v1/orders') ||
+      url.pathname.startsWith('/v1/me/orders'),
+    async (route) => {
+      const request = route.request();
+      const method = request.method();
+      if (method === 'OPTIONS') return preflight(route);
+      const path = new URL(request.url()).pathname;
+      const body = (request.postDataJSON() ?? {}) as Record<string, unknown>;
+      const key = request.headers()['idempotency-key'] ?? '';
+      const isCustomer = path.startsWith('/v1/me/');
+      if (isCustomer && !request.headers()['authorization'])
+        return problem(route, 401, 'unauthenticated');
+      const cartId = isCustomer
+        ? cartApi.CUSTOMER_CART
+        : ((body.cartId as string | undefined) ?? null);
+
+      if (path === '/v1/geo/states')
+        return json(route, 200, {
+          data: [
+            { code: '09', name: 'Ciudad de México' },
+            { code: '14', name: 'Jalisco' },
+          ],
+        });
+      if (path.startsWith('/v1/geo/states/'))
+        return json(route, 200, {
+          data: path.includes('/09/')
+            ? [
+                { code: '015', name: 'Cuauhtémoc' },
+                { code: '014', name: 'Benito Juárez' },
+              ]
+            : [{ code: '039', name: 'Guadalajara' }],
+        });
+      if (path === '/v1/me/addresses') {
+        if (method === 'GET') return json(route, 200, { data: addresses });
+        const created = {
+          ...savedAddress,
+          ...body,
+          id: `00000000-0000-4000-8000-0000000ad${String(addresses.length + 2).padStart(3, '0')}`,
+          isDefault: addresses.length === 0,
+        };
+        addresses.push(created);
+        return json(route, 201, created);
+      }
+      if (path.endsWith('/checkout/quote')) {
+        quotes.push(body);
+        return (
+          cartProblem(route, cartId) ??
+          couponProblem(route, body.couponCode as string | undefined) ??
+          json(
+            route,
+            200,
+            quoteOf(cartId!, body.couponCode as string | undefined),
+          )
+        );
+      }
+      if (path === '/v1/orders' || path === '/v1/me/orders') {
+        orders.push({ path, key, body });
+        if (!key) return problem(route, 400, 'idempotency-key-missing');
+        if (options.inProgressOnce && orders.length === 1)
+          return problemWith(
+            route,
+            409,
+            'idempotency-request-in-progress',
+            {},
+            {
+              'Retry-After': '0',
+              'Access-Control-Expose-Headers': 'Retry-After',
+            },
+          );
+        const failure =
+          cartProblem(route, cartId) ??
+          couponProblem(route, body.couponCode as string | undefined);
+        if (failure) return failure;
+        const current = quoteOf(cartId!, body.couponCode as string | undefined);
+        if (options.totalChangesOnce && shippingExtra === 0) {
+          shippingExtra = 1000;
+          return problemWith(route, 409, 'total-mismatch', {
+            currentTotal: money(current.grandTotal.amount + 1000),
+          });
+        }
+        if (body.expectedTotal !== current.grandTotal.amount)
+          return problemWith(route, 409, 'total-mismatch', {
+            currentTotal: current.grandTotal,
+          });
+        const placed = order(cartId!, body);
+        cartApi.carts.get(cartId!)!.status = 'CHECKED_OUT';
+        if (isCustomer) cartApi.carts.delete(cartApi.CUSTOMER_CART);
+        placedFrom = cartId;
+        return json(route, 201, placed);
+      }
+      if (path.endsWith('/payments')) {
+        payments.push({ path, key, body });
+        if (options.paymentDisabled)
+          return problemWith(route, 400, 'validation-error', {
+            errors: [
+              { field: 'provider', code: 'isEnabledProvider', message: '' },
+            ],
+          });
+        if (!isCustomer && body.cartId !== placedFrom)
+          return problem(route, 404, 'not-found');
+        if (options.orderExpired)
+          return problem(route, 409, 'invalid-state-transition');
+        const amount = order(placedFrom!, {}).grandTotal;
+        return json(route, payments.length === 1 ? 201 : 200, {
+          paymentId: '00000000-0000-4000-8000-00000000fa01',
+          provider: 'MANUAL',
+          status: 'PENDING',
+          amount,
+          action: {
+            type: 'PAY_IN_STORE',
+            orderCode: ORDER_CODE,
+            amount,
+            instructions: 'Presenta este código en la tienda para pagar.',
+          },
+        });
+      }
+      if (path === '/v1/orders/lookup' || path.startsWith('/v1/me/orders/'))
+        return json(
+          route,
+          200,
+          order(placedFrom ?? cartApi.CUSTOMER_CART, body, 'EXPIRED'),
+        );
+      return problem(route, 404, 'not-found');
+    },
+  );
+  return { quotes, orders, payments, addresses };
 }

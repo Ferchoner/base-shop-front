@@ -4,6 +4,14 @@
 
 ## Unreleased
 
+- TF-012: checkout de invitado y de cliente, e inicio del pago (`REQUIREMENTS.md` §4.4, §5.5 y §5.6; ADR-F014).
+  - `/checkout`: sin sesión, iniciar sesión o seguir como invitado (email y aviso de privacidad). El cliente elige una dirección guardada o escribe otra y puede guardarla. Estado y municipio salen del catálogo del INEGI.
+  - Resumen con las líneas, el cupón, el descuento y su promoción, el envío o "Gratis", cuánto falta para el envío gratis, el IVA incluido, el total y la entrega estimada, todo de la cotización de la API.
+  - Errores propios: cupón que no aplica (por motivo), total que cambió (con el nuevo), productos sin stock o que ya no se venden, email sin confirmar (con reenvío), carrito vacío o ya usado (vuelve al carrito) y demasiados intentos.
+  - Colocar la orden e iniciar el pago llevan `Idempotency-Key`: la misma en un reenvío idéntico, otra si cambia el total o un dato.
+  - `/checkout/done`: código, total, hasta cuándo se apartan los productos y cómo pagar en la tienda. Sin pago manual habilitado (G-03), la orden queda apartada con su código y se pide comunicarse con la tienda. Si la orden ya no admite pago, muestra su estado.
+  - Del backoffice (commit `bbcd5af`): catálogo geográfico, campos y esquema de dirección, estados de la orden y mensajes de cupón.
+
 - TF-017: el catálogo y el producto piden sus datos en cuanto el router resuelve la página, sin esperar a que se monte el encabezado (ADR-F013). El LCP del catálogo baja de 3.92 s a 3.60 s y el del producto de 3.53 s a 3.43 s, con el mismo JavaScript inicial (171 KB). Cada dato se sigue pidiendo una sola vez.
 
 - Corregido: el contador del carrito podía volver a 0 justo después de agregar un producto. Una lectura del carrito que respondía después de la escritura ponía el carrito de antes; ahora agregar o cambiar una línea cancela la lectura en curso (`REQUIREMENTS.md` §5.4).

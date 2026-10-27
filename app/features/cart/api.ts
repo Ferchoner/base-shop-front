@@ -38,7 +38,8 @@ export function useCartNotice() {
   return useState<string | null>('cart-notice', () => null);
 }
 
-const USED_IN_ORDER = 'Tu carrito ya se usó en una orden. Empezamos uno nuevo.';
+export const USED_IN_ORDER =
+  'Tu carrito ya se usó en una orden. Empezamos uno nuevo.';
 export const MERGED_NOTICE =
   'Combinamos los productos de tu carrito con los de tu cuenta.';
 
