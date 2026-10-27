@@ -395,6 +395,7 @@ export async function mockSessionApi(
 /** Debe coincidir con NUXT_PUBLIC_PRIVACY_NOTICE_VERSION del build de las pruebas (ci.yml). */
 export const PRIVACY_NOTICE_VERSION =
   process.env.NUXT_PUBLIC_PRIVACY_NOTICE_VERSION ?? 'e2e-2026-10';
+// Token inventado; .gitleaks.toml lo permite por valor.
 export const VALID_LINK_TOKEN = 'q8Xz3Lr0VbN7kT2mWc9YhD4sFj6Ae1Pu5Gi8Ko0RnSv';
 export const COMMON_PASSWORD = 'contraseña común de prueba';
 export const TAKEN_EMAIL = 'ocupado@example.com';
