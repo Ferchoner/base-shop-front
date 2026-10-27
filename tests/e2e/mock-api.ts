@@ -174,8 +174,11 @@ export async function mockCartApi(
   page: Page | BrowserContext,
   initial: Record<string, { status?: string; lines: FakeLine[] }> = {},
   customer: FakeLine[] | null = null,
+  { slowReadMs = 0 }: { slowReadMs?: number } = {},
 ) {
   const CUSTOMER_CART = '00000000-0000-4000-8000-00000000c0de';
+  // Lecturas lentas ya respondidas: su carrito es el de antes de las escrituras que llegaron mientras.
+  const slowReads = { served: 0 };
   const merges: string[] = [];
   const carts = new Map(
     Object.entries(initial).map(([id, c]) => [
@@ -273,7 +276,13 @@ export async function mockCartApi(
       }
       const cart = id ? carts.get(id) : undefined;
       if (!cart) return problem(route, 404, 'not-found');
-      if (method === 'GET') return json(route, 200, toCart(id!));
+      if (method === 'GET') {
+        const snapshot = toCart(id!);
+        if (!slowReadMs) return json(route, 200, snapshot);
+        await new Promise((resolve) => setTimeout(resolve, slowReadMs));
+        slowReads.served++;
+        return json(route, 200, snapshot).catch(() => undefined);
+      }
       if (cart.status !== 'ACTIVE')
         return problem(route, 409, 'cart-not-active');
       const body = request.postDataJSON() as {
@@ -309,7 +318,7 @@ export async function mockCartApi(
       return json(route, 200, toCart(id!));
     },
   );
-  return { carts, created, merges, CUSTOMER_CART };
+  return { carts, created, merges, slowReads, CUSTOMER_CART };
 }
 
 const preflight = (route: Route) =>

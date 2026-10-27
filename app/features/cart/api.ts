@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type QueryClient,
+} from '@tanstack/vue-query';
 import { ApiProblem } from '~/shared/api/problem';
 import type { ApiClient } from '~/shared/api/client';
 import { useApi } from '~/shared/api/use-api';
@@ -14,6 +19,19 @@ export const cartKeys = {
   guest: (cartId: string | null) => [...cartKeys.all, 'guest', cartId] as const,
   customer: () => [...cartKeys.all, 'customer'] as const,
 };
+
+/**
+ * Guarda el carrito que devolvió una escritura. Una lectura que sigue en curso se cancela antes: trae
+ * el carrito de antes de la escritura y, si respondiera después, lo pisaría (el contador volvería a 0).
+ */
+async function saveCart(
+  qc: QueryClient,
+  queryKey: readonly unknown[],
+  cart: Cart,
+): Promise<void> {
+  await qc.cancelQueries({ queryKey, exact: true });
+  qc.setQueryData(queryKey, cart);
+}
 
 /** Aviso que la pantalla del carrito muestra cuando el carrito se olvidó (REQUIREMENTS §5.4). */
 export function useCartNotice() {
@@ -199,7 +217,8 @@ export function useAddToCart() {
         }
       },
       onSuccess: (cart) =>
-        qc.setQueryData(
+        saveCart(
+          qc,
           session.isAuthenticated
             ? cartKeys.customer()
             : cartKeys.guest(cart.id),
@@ -231,7 +250,8 @@ export function useChangeLine() {
       });
     },
     onSuccess: (cart) =>
-      qc.setQueryData(
+      saveCart(
+        qc,
         session.isAuthenticated ? cartKeys.customer() : cartKeys.guest(cart.id),
         cart,
       ),

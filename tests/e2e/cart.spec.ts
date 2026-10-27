@@ -66,6 +66,24 @@ test.describe('carrito de invitado (REQUIREMENTS §4.5, §5.3, §5.4)', () => {
     ).toBeVisible();
   });
 
+  test('una lectura lenta del carrito no borra lo que se agregó', async ({
+    page,
+  }) => {
+    await mockProductDetail(page);
+    const api = await mockCartApi(page, {}, null, { slowReadMs: 500 });
+    await page.goto('/products/camisa-lino');
+    await page.getByRole('radio', { name: 'Azul' }).click();
+    await page.getByRole('radio', { name: 'M' }).click();
+    await page.getByRole('button', { name: 'Agregar al carrito' }).click();
+    const link = page.getByRole('link', { name: 'Carrito, 1 artículo' });
+    await expect(link).toBeVisible();
+
+    // La lectura que empezó al crear el carrito responde después, con el carrito vacío.
+    await expect.poll(() => api.slowReads.served).toBeGreaterThan(0);
+    await page.waitForTimeout(100);
+    await expect(link).toBeVisible();
+  });
+
   test('avisa del tope de 30 unidades por producto', async ({ page }) => {
     await mockProductDetail(page);
     await mockCartApi(page, {
