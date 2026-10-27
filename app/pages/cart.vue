@@ -1,17 +1,13 @@
 <script setup lang="ts">
-import {
-  useChangeLine,
-  useCartNotice,
-  useGuestCart,
-} from '~/features/cart/api';
+import { useChangeLine, useCartNotice, useCart } from '~/features/cart/api';
 import CartLineItem from '~/features/cart/components/CartLineItem.vue';
 import { cartErrorMessage } from '~/features/cart/errors';
 import { formatMoney } from '~/shared/utils/money';
 
-/** Carrito de invitado (REQUIREMENTS §5.4). Todo sale de la respuesta de la API, sin recalcular. */
+/** Carrito del invitado o del cliente (REQUIREMENTS §5.4). Todo sale de la respuesta de la API, sin recalcular. */
 useHead({ title: 'Carrito' });
 
-const cart = useGuestCart();
+const cart = useCart();
 const change = useChangeLine();
 const notice = useCartNotice();
 onBeforeUnmount(() => {
