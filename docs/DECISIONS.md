@@ -33,6 +33,7 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
 | ADR-F009 | Organización por features y código copiado del backoffice | Aceptada |
 | ADR-F010 | Entorno local: puerto y variables | Aceptada |
 | ADR-F011 | Auditoría de dependencias con excepciones revisadas | Aceptada |
+| ADR-F012 | LCP de 2.5 s como meta de producción y topes locales contra regresiones | Aceptada |
 
 ---
 
@@ -222,3 +223,28 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
 - **Alternativas consideradas:** `npm audit --audit-level=critical` (dejaría pasar cualquier alta nueva); `--omit=dev` (no sirve: `nuxt` es dependencia de producción aunque `node-forge` solo se use en desarrollo); `overrides` hacia otra versión (no hay ninguna corregida); quitar la auditoría de la CI hasta que haya arreglo (ADR-F008 la exige).
 - **Consecuencias:** la CI sigue fallando con cualquier vulnerabilidad alta o crítica nueva. Cuando salga una versión corregida de `node-forge` o Nuxt deje de usarla, el script avisa que la excepción sobra.
 - **Estado:** Aceptada (aprobada por el usuario el 2026-10-26).
+
+---
+
+## ADR-F012 — LCP de 2.5 s como meta de producción y topes locales contra regresiones
+
+- **Fecha:** 2026-10-27
+- **Contexto:** al cerrar el sprint 1 se midió el presupuesto de `REQUIREMENTS.md` §6.2. Se usó Lighthouse 13 en perfil móvil (CPU 4 veces más lenta y 4G lenta simulada) sobre el build de producción, servido con gzip y con una API simulada; se tomó la mediana de 3 corridas por pantalla.
+  - Inicio: LCP 2.59 s, FCP 2.15 s.
+  - Catálogo: LCP 3.66 s, FCP 2.35 s.
+  - Producto: LCP 3.48 s, FCP 2.38 s.
+  - CLS de 0 a 0.03. Total Blocking Time de 170 a 470 ms. JavaScript inicial de 169 KB comprimido.
+  - El cuello de botella es la CPU al arrancar Vue, Nuxt UI y TanStack Query: el FCP pasa de 2.1 s antes de pedir nada a la API. Se probaron dos optimizaciones y se descartaron:
+    - pedir los datos de la pantalla en un middleware, en paralelo con su código: el LCP no bajó y el FCP subió unos 150 ms por el código extra en la entrada;
+    - cargar los filtros del catálogo en diferido: el LCP bajó unos 100 ms.
+  - Bajar de 2.5 s pide renderizar o prerenderizar en servidor, que es el modo híbrido guardado en ADR-F005 y depende del hosting (PF-09) y del límite por IP de la API (G-10).
+- **Decisión** (elegida por el usuario el 2026-10-27):
+  - El LCP de 2.5 s queda como **meta de producción**, a cumplir con el modo híbrido al decidir el hosting.
+  - En local, el LCP tiene **topes contra regresiones**: 3.0 s en `/` y 4.0 s en `/products` y `/products/{slug}`, medidos como arriba. TF-015 los pone en la CI.
+  - Los demás valores de §6.2 no cambian: INP, CLS y tamaño del JavaScript.
+- **Alternativas consideradas:** cerrar el sprint sin decidir y dejarlo a TF-015 (el presupuesto quedaría roto sin regla durante tres sprints); cambiar el presupuesto a un LCP de 3.5 s para todo (renuncia a la meta de producción); investigar recortes mayores, como quitar componentes de Nuxt UI o prerenderizar el inicio (más tiempo, contra el stack ya elegido en ADR-F007).
+- **Consecuencias:**
+  - El sprint 1 cierra con el presupuesto local cumplido y la meta de producción pendiente del modo híbrido.
+  - Una pantalla nueva que pase su tope local es una regresión que se corrige antes de fusionar, cuando TF-015 esté en la CI.
+  - Al activar el modo híbrido se vuelve a medir contra 2.5 s.
+- **Estado:** Aceptada (elegida por el usuario el 2026-10-27).

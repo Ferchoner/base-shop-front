@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- Sprint 1 cerrado con el presupuesto de rendimiento medido. ADR-F012 (aceptada): LCP de 2.5 s como meta de producción con el modo híbrido, y topes locales contra regresiones de 3.0 s en el inicio y 4.0 s en el catálogo y el producto, que TF-015 pondrá en la CI.
+
 - TF-009: carrito de invitado (`REQUIREMENTS.md` §4.5 y §5.4).
   - El `cartId` se guarda en `localStorage` (`base-shop-front.cartId`), compartido por las pestañas, y el carrito se crea al agregar el primer producto. Un carrito que ya no existe o ya no está activo se olvida, y el siguiente agregado crea otro.
   - Detalle de producto: cantidad de 1 a 30 y "Agregar al carrito", con aviso accesible y enlace al carrito. Errores propios: variante que dejó de venderse (recarga el producto), tope de 30 unidades y de 100 productos distintos.
