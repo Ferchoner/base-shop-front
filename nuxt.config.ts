@@ -14,6 +14,14 @@ export default defineNuxtConfig({
   ],
   css: ['~/assets/css/main.css'],
   devServer: { port: 3002 },
+  // Los enlaces descargan su página al pasar el cursor, enfocarlos o tocarlos, no al aparecer en
+  // pantalla: con la descarga y la evaluación al aparecer, el catálogo competía con su propia
+  // primera pintura (cierre del sprint 2, REQUIREMENTS §6.2).
+  experimental: {
+    defaults: {
+      nuxtLink: { prefetchOn: { visibility: false, interaction: true } },
+    },
+  },
   app: {
     head: {
       htmlAttrs: { lang: 'es-MX' },
