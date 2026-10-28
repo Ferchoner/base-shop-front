@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- Sprint 4 cerrado con el presupuesto de rendimiento medido: inicio 2.56 s, catálogo 3.66 s y producto 3.45 s de LCP, dentro de sus topes, con 179 KB de JavaScript inicial. En el runner de la CI: 2.77 s, 3.76 s y 3.69 s (seguimiento de ADR-F012). TF-016 sigue bloqueada por G-01.
+
 - TF-015: presupuesto de rendimiento en la CI (`REQUIREMENTS.md` §6.2, ADR-F012).
   - `npm run perf:budget` sirve el build con gzip, simula la API del catálogo y corre Lighthouse 3 veces en el inicio, el catálogo y el producto. Falla si la mediana pasa un tope de LCP, si el CLS pasa de 0.1 o si el JavaScript inicial o el de una página pasan de 200 KB y 80 KB. Corre en el job `Pipeline` y deja la tabla en el resumen.
   - Lighthouse fijo en 13.5.0, la versión con la que se midieron los topes.

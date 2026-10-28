@@ -4,7 +4,7 @@
 
 ## Sprint actual
 
-Sprint 4 (pantallas): mi cuenta y mis pedidos; presupuesto de rendimiento en la CI (TF-013, TF-015, y TF-016 si G-01 se resolvió). En curso: TF-013 y TF-015 hechas.
+Ninguno. Los cuatro sprints de pantallas planeados están cerrados; queda TF-016 (aviso de privacidad), bloqueada por G-01 y PF-07.
 
 ## Próximos sprints
 
@@ -20,6 +20,19 @@ Cada sprint termina en algo que se puede probar de punta a punta contra la API l
 Criterio de cierre de cada sprint: sus tareas en DONE y el presupuesto de rendimiento medido (`REQUIREMENTS.md` §6.2).
 
 ## Historial
+
+### Sprint 4 (pantallas), 2026-10-27
+
+- **Objetivo:** mi cuenta y mis pedidos; presupuesto de rendimiento en la CI.
+- **Resultado:** cumplido, salvo TF-016.
+  - TF-013: Mi cuenta, la libreta de direcciones y mis pedidos con su detalle, pago y recompra (PR #22).
+  - TF-015: los chunks comunes pequeños se copian en las páginas que los usan (ADR-F015) y `npm run perf:budget` pone los topes de ADR-F012 en la CI (PR #23).
+  - TF-016 sigue bloqueada: G-01 sigue abierta.
+- **Presupuesto de rendimiento:** medido (`REQUIREMENTS.md` §6.2), dentro de los topes de ADR-F012.
+  - LCP en `main`: inicio 2.56 s, catálogo 3.66 s, producto 3.45 s; `/order-lookup` 2.86 s y `/login` 2.85 s, como referencia.
+  - En el runner de la CI: inicio 2.77 s, catálogo 3.76 s, producto 3.69 s.
+  - JavaScript inicial: 179 KB comprimido. CLS de 0 a 0.03.
+- **Brechas nuevas de la API:** ninguna.
 
 ### Sprint 3 (pantallas), 2026-10-27
 
