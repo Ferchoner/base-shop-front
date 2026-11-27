@@ -37,6 +37,7 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
 | ADR-F013 | Las páginas piden sus datos en cuanto el router las resuelve | Aceptada |
 | ADR-F014 | La orden recién colocada vive solo en memoria | Aceptada |
 | ADR-F015 | Los chunks comunes pequeños se copian en las páginas que los usan | Aceptada |
+| ADR-F016 | Los iconos se dibujan como SVG, no con máscara CSS | Aceptada |
 
 ---
 
@@ -328,3 +329,21 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - Un archivo que se cargue por su URL, fuera del grafo del build, podría saltarse el registro. La tienda no lo hace.
   - En producción con HTTP/2 (PF-09) el número de archivos importa menos: al decidir el hosting se vuelve a medir con y sin la opción.
 - **Estado:** Aceptada.
+
+---
+
+## ADR-F016 — Los iconos se dibujan como SVG, no con máscara CSS
+
+- **Fecha:** 2026-11-27
+- **Contexto:** `@nuxt/ui` 4.13 pide `@nuxt/icon` `^2.6.2`. Desde la 2.6.2, en el modo por defecto (`css`, una máscara CSS por icono), `@nuxt/icon` carga su componente SVG con `import()` aunque no lo use, y parte su runtime en más módulos. El código que comparten la app y ese chunk dinámico queda en archivos aparte que ADR-F015 no junta, porque los usa también la entrada. El JavaScript inicial pasó de 9 a 14 archivos y el inicio pasó su tope de LCP en la CI (3020 y 3010 ms, tope 3000; TF-023). Mientras tanto, `@nuxt/ui` quedó en 4.12.0 y `@nuxt/icon` en 2.6.1, fuera de Dependabot (PR #27).
+- **Decisión:** `icon.mode: 'svg'` en `nuxt.config.ts`. El componente SVG se importa de forma estática y cada icono es un `<svg>` dentro del HTML en vez de un `<span>` con máscara. Los iconos siguen en el bundle del cliente (`provider: 'none'`, `clientBundle`).
+- **Resultados** (medidos como en ADR-F012, en la misma máquina, dos corridas):
+  - JavaScript inicial: 181.7 KB en 11 archivos, contra 183.6 KB en 14 con modo `css` y 179.2 KB en 9 en `main` con `@nuxt/icon` 2.6.1.
+  - LCP del catálogo 3900 y 3813 ms y del producto 3614 y 3639 ms, como `main` (3817 y 3653 ms); con modo `css`, 4208 y 4186 ms y 4010 y 3974 ms. El inicio, 2912 ms contra 3374 y 3540 ms.
+  - Los iconos se ven igual: mismo número, tamaño y color en el catálogo de escritorio y móvil, comparado con capturas. Los e2e con axe pasan.
+- **Alternativas consideradas:** quedarse en `@nuxt/icon` 2.6.1 (deja `@nuxt/ui` sin actualizar); forzar 2.6.1 con `@nuxt/ui` 4.13 por `overrides` (combinación que `@nuxt/ui` no admite); subir el `maxSize` de ADR-F015 (los chunks nuevos ya están por debajo de 32 KB: no se juntan porque los usa la entrada); reemplazar la plantilla `#build/nuxt-icon-svg` de `@nuxt/icon` desde un hook (depende de su código interno).
+- **Consecuencias:**
+  - Quedan 2 archivos iniciales más que en `main`, por el runtime partido de `@nuxt/icon`; el presupuesto de la CI los cubre.
+  - Un icono es un nodo `<svg>` en el DOM: más nodos que un `<span>`, sin efecto medible en estas pantallas.
+  - Si `@nuxt/icon` deja de cargar el componente SVG con `import()` en modo `css`, se puede volver a medir los dos modos.
+- **Estado:** Aceptada (aprobada por el usuario el 2026-11-27).

@@ -94,6 +94,10 @@ export default defineNuxtConfig({
   // SPA estática sin servidor: los iconos van en el bundle, sin pedirlos a la API de Iconify.
   icon: {
     provider: 'none',
+    // SVG y no máscara CSS: en modo CSS, @nuxt/icon 2.6.2 o posterior carga su componente SVG con
+    // import() y el código que comparte con la app se parte en más archivos iniciales, que subían el LCP
+    // (ADR-F016, TF-023). Se ven igual.
+    mode: 'svg',
     clientBundle: {
       scan: { globInclude: ['app/**/*.{vue,ts}'] },
     },
