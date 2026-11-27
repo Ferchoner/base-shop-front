@@ -25,7 +25,7 @@ npm run dev            # http://localhost:3002
 |---|---|
 | `npm run dev` | Tienda en desarrollo en el puerto 3002 (ADR-F010) |
 | `npm run lint`, `npm run format:check` | ESLint y Prettier |
-| `npm run typecheck` | TypeScript estricto con `vue-tsc` |
+| `npm run typecheck` | TypeScript estricto con `vue-tsc`: la app, los scripts y los tests |
 | `npm test` | Tests unitarios y de componentes (Vitest) |
 | `npm run build` | Build estático en `.output/public` (`nuxt generate`) |
 | `npm run test:e2e` | Playwright con axe sobre el build; requiere antes `NUXT_PUBLIC_PRIVACY_NOTICE_VERSION=e2e-2026-10 npm run build`, como la CI, para que el registro esté disponible |

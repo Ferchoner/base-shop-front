@@ -31,6 +31,9 @@ Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack deci
 - [x] TF-015 Presupuesto de rendimiento en la CI y margen del catálogo recuperado (2026-10-27)
 - [x] Sprint 4 cerrado (2026-10-27)
 - [x] TF-019 `node-forge` 1.4.4 y excepción de la auditoría retirada (2026-11-26)
+- [x] TF-018 Agente y skills de Claude Code (2026-11-26)
+- [x] TF-020 `npm run audit` en Windows y fallos de `npm audit` (2026-11-27)
+- [x] TF-021 `npm run typecheck` también revisa scripts y tests (2026-11-27)
 
 ## In Progress
 

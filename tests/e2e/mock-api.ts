@@ -773,7 +773,7 @@ export async function mockCheckoutApi(
     }
     if (retired) return locationError();
     const changes = { ...body, ...named(body.municipalityCode) };
-    if (changes.isDefault === true) takeDefault({ isDefault: true });
+    if (body.isDefault === true) takeDefault({ isDefault: true });
     const address = { ...addresses[index]!, ...changes } as typeof savedAddress;
     addresses[index] = address;
     return json(route, 200, address);

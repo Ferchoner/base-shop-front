@@ -1,6 +1,6 @@
 # CLAUDE.md — Instrucciones permanentes para Claude Code
 
-> Adaptado de `CLAUDE.md` de [base-shop](https://github.com/Ferchoner/base-shop) (commit `7af0f1d`, versión 1.7.0 de la API). Ver ADR-F001.
+> Adaptado de `CLAUDE.md` de [base-shop](https://github.com/Ferchoner/base-shop) (commit `7af0f1d`, cuando la API iba en la versión 1.7.0). Ver ADR-F001. La versión de la API que usa la tienda es la de la tabla de origen de `docs/api/README.md`.
 
 ## Rol
 

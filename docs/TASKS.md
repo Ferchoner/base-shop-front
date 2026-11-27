@@ -42,8 +42,16 @@ Detalle de cada pantalla en `REQUIREMENTS.md` (§ de la columna "Criterios"). To
 | TF-016 | Aviso de privacidad | BLOCKED | TF-006 | `REQUIREMENTS.md` §5.14. Bloqueada por G-01 y PF-07: falta el texto legal y su dueño. Con el enlace al aviso en el pie (§5.15) y junto a la casilla de aceptación del registro (§5.7) |
 | TF-017 | Ajuste del reparto de chunks antes del checkout | DONE | TF-011 | ADR-F012 (seguimiento del sprint 2). El LCP del catálogo y del producto vuelve a quedar en o por debajo del medido al cerrar el sprint 1 (3.66 s y 3.48 s), o se documenta por qué no se puede, sin pasar los 200 KB de JavaScript inicial de `REQUIREMENTS.md` §6.2 y medido igual que ahí. Resuelto adelantando las peticiones de la página, no los chunks (ADR-F013): catálogo 3.60 s, producto 3.43 s, 171 KB |
 
+## Herramientas
+
+| ID | Tarea | Estado | Depende de | Criterios de aceptación |
+|---|---|---|---|---|
+| TF-018 | Agente y skills de Claude Code para implementar, verificar y revisar el contrato de la API | DONE | TF-004 | `.claude/agents/revisor-de-cambios.md` (solo lectura) y las skills `implementar-cambio`, `verificar-cambio` y `revisar-contrato-api` en `.claude/skills/`, que solo se invocan a mano; cada ruta, script de npm y paso de la CI que citan existe; ninguna fija la versión de la API, que se lee de `docs/api/README.md`; `CLAUDE.md` distingue la versión de la que se adaptó (1.7.0) de la vigente |
+
 ## Mantenimiento
 
 | ID | Tarea | Estado | Depende de | Criterios de aceptación |
 |---|---|---|---|---|
 | TF-019 | Vulnerabilidades altas de `node-forge` en la auditoría | DONE | TF-004 | `node-forge` en 1.4.4 o posterior; `npm run audit` sin vulnerabilidades altas ni críticas y sin excepciones que sobren (ADR-F011); el job `Pipeline` pasa |
+| TF-020 | `npm run audit` en Windows y fallos de `npm audit` | DONE | TF-019 | `npm run audit` y `node scripts/audit.ts` corren en Windows con el mismo resultado que en la CI; si `npm audit` no arranca, el script muestra el error y no `undefined`; si `npm audit` falla y responde con un error en JSON (sin red, sin lockfile) o sin informe, la auditoría falla y no se da por buena (ADR-F011); un informe de más de 1 MiB no se corta; un mensaje vacío se reemplaza por el código de salida; tests de cómo se lanza en Windows y en Linux y de cada fallo |
+| TF-021 | `npm run typecheck` también revisa scripts y tests | DONE | TF-020 | `npm run typecheck` (y el paso de la CI) revisa `scripts/`, `tests/unit/`, `tests/e2e/` y `playwright.config.ts`, cada uno con los tipos de su entorno: Nuxt para los tests unitarios, Node para lo demás; un error de tipos en cualquiera de ellos lo hace fallar; los errores que ya había quedan corregidos sin debilitar los tests |
