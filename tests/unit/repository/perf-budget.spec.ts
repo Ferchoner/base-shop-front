@@ -1,7 +1,9 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
+import { join } from 'node:path';
 import {
   initialScripts,
+  lighthouseCommand,
   median,
   violations,
 } from '../../../scripts/perf-budget';
@@ -57,6 +59,23 @@ describe('presupuesto de rendimiento (REQUIREMENTS §6.2, ADR-F012)', () => {
       '/: LCP 3001 ms > 3000 ms',
       '/products: CLS 0.150 > 0.1',
       '/products/producto-1: page JavaScript 81.0 KB > 80 KB',
+    ]);
+  });
+
+  it('lanza Lighthouse con Node y su CLI, sin node_modules/.bin, que en Windows es un .cmd (TF-022)', () => {
+    const { command, args } = lighthouseCommand(
+      'http://localhost:4174/',
+      '/tmp/run-0.json',
+    );
+    expect(command).toBe(process.execPath);
+    expect(args).toEqual([
+      join('node_modules', 'lighthouse', 'cli', 'index.js'),
+      'http://localhost:4174/',
+      '--quiet',
+      '--only-categories=performance',
+      '--chrome-flags=--headless=new --no-sandbox',
+      '--output=json',
+      '--output-path=/tmp/run-0.json',
     ]);
   });
 });
