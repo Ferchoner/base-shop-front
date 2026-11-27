@@ -35,6 +35,7 @@ Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack deci
 - [x] TF-020 `npm run audit` en Windows y fallos de `npm audit` (2026-11-27)
 - [x] TF-021 `npm run typecheck` también revisa scripts y tests (2026-11-27)
 - [x] TF-023 Nuxt UI 4.13 y `@nuxt/icon` 2.6.3 con los iconos como SVG (2026-11-27)
+- [x] TF-022 `npm run perf:budget` en Windows (2026-11-27)
 
 ## In Progress
 
@@ -43,7 +44,6 @@ Ninguna.
 ## Next
 
 - TF-016 cuando se resuelva G-01 (y PF-07)
-- TF-022 `npm run perf:budget` en Windows
 
 ## Blocked
 

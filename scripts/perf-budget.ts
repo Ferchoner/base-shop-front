@@ -234,24 +234,39 @@ function chromePath(): string {
   return found.stdout;
 }
 
+/**
+ * How to run Lighthouse: its CLI with this same Node, not `node_modules/.bin/lighthouse`, which on
+ * Windows is a `.cmd` that Node only runs through a shell (TF-022, like the audit in TF-020).
+ */
+export function lighthouseCommand(
+  url: string,
+  out: string,
+): { command: string; args: string[] } {
+  return {
+    command: process.execPath,
+    args: [
+      join('node_modules', 'lighthouse', 'cli', 'index.js'),
+      url,
+      '--quiet',
+      '--only-categories=performance',
+      '--chrome-flags=--headless=new --no-sandbox',
+      '--output=json',
+      `--output-path=${out}`,
+    ],
+  };
+}
+
 function lighthouse(
   url: string,
   out: string,
   chrome: string,
 ): Promise<LighthouseReport> {
   return new Promise((resolve, reject) => {
-    const child = spawn(
-      join('node_modules', '.bin', 'lighthouse'),
-      [
-        url,
-        '--quiet',
-        '--only-categories=performance',
-        '--chrome-flags=--headless=new --no-sandbox',
-        '--output=json',
-        `--output-path=${out}`,
-      ],
-      { env: { ...process.env, CHROME_PATH: chrome }, stdio: 'inherit' },
-    );
+    const { command, args } = lighthouseCommand(url, out);
+    const child = spawn(command, args, {
+      env: { ...process.env, CHROME_PATH: chrome },
+      stdio: 'inherit',
+    });
     child.on('error', reject);
     child.on('exit', (code) =>
       code === 0

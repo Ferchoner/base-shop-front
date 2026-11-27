@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- TF-022: `npm run perf:budget` funciona en Windows. Lanzaba `node_modules/.bin/lighthouse`, que ahí es un `.cmd` que Node solo ejecuta con una shell, y fallaba con `ENOENT`. Ahora corre la CLI de Lighthouse con el mismo Node, igual en todos los sistemas.
+
 - TF-023: Nuxt UI 4.13.1 y `@nuxt/icon` 2.6.3 sin pasar los topes de LCP. Los iconos se dibujan como SVG y no con máscara CSS (ADR-F016): en modo CSS, `@nuxt/icon` 2.6.2 o posterior partía el JavaScript inicial de 9 a 14 archivos. Se ven igual. Se quitan el `override` de `@nuxt/icon` y su exclusión, y la de Nuxt UI, de Dependabot.
 
 - Dependencias de minor y patch al día (Dependabot, PR #27): Nuxt 4.6.4, Vue 3.5.45, Vue Router 5.5, TanStack Query 5.108, Playwright 1.65, Vitest 5.1, msw 3.0.7, Prettier 3.10 y otras. Lighthouse sigue en 13.5.0 (ADR-F012) y Dependabot ya no lo sube. Prettier 3.10 reacomoda dos plantillas de pedidos, sin cambio visible. Nuxt UI se queda en 4.12.0 y `@nuxt/icon` en 2.6.1 (`overrides`), también fuera de Dependabot: `@nuxt/icon` 2.6.2 o posterior, que pide Nuxt UI 4.13, parte el JavaScript inicial en más archivos y el inicio pasa su tope de LCP en la CI (TF-023).
