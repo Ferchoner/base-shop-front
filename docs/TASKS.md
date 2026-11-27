@@ -53,3 +53,4 @@ Detalle de cada pantalla en `REQUIREMENTS.md` (§ de la columna "Criterios"). To
 | ID | Tarea | Estado | Depende de | Criterios de aceptación |
 |---|---|---|---|---|
 | TF-019 | Vulnerabilidades altas de `node-forge` en la auditoría | DONE | TF-004 | `node-forge` en 1.4.4 o posterior; `npm run audit` sin vulnerabilidades altas ni críticas y sin excepciones que sobren (ADR-F011); el job `Pipeline` pasa |
+| TF-020 | `npm run audit` en Windows | DONE | TF-019 | `npm run audit` y `node scripts/audit.ts` corren en Windows con el mismo resultado que en la CI; si `npm audit` no arranca, el script muestra el error y no `undefined`; un test cubre cómo se lanza en Windows y en Linux |

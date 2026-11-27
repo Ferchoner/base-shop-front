@@ -64,10 +64,25 @@ export function blockingFindings(
   return findings;
 }
 
+/**
+ * How to run `npm audit --json`. On Windows npm is `npm.cmd`, which Node only runs through a shell;
+ * the command is a fixed string, so the shell receives no outside input.
+ */
+export function auditCommand(platform: NodeJS.Platform = process.platform): {
+  command: string;
+  args: string[];
+  shell: boolean;
+} {
+  return platform === 'win32'
+    ? { command: 'npm audit --json', args: [], shell: true }
+    : { command: 'npm', args: ['audit', '--json'], shell: false };
+}
+
 function main(): void {
-  const audit = spawnSync('npm', ['audit', '--json'], { encoding: 'utf8' });
+  const { command, args, shell } = auditCommand();
+  const audit = spawnSync(command, args, { encoding: 'utf8', shell });
   if (!audit.stdout) {
-    console.error(audit.stderr);
+    console.error(audit.error?.message ?? audit.stderr);
     process.exit(1);
   }
   const report = JSON.parse(audit.stdout) as AuditReport;

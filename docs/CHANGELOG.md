@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- TF-020: `npm run audit` funciona en Windows. Ahí npm es `npm.cmd`, que Node solo lanza con una shell, y el script fallaba con `ENOENT` e imprimía `undefined`. Ahora usa la shell solo en Windows, con un comando fijo, y si `npm audit` no arranca muestra el error.
+
 - TF-018: agente y skills de Claude Code.
   - `.claude/agents/revisor-de-cambios.md`: revisa un diff en modo de solo lectura contra los criterios de aceptación y los contratos, con archivo, línea, impacto y corrección.
   - `.claude/skills/`: `implementar-cambio`, `verificar-cambio` (lint, formato, typecheck y tests, con la revisión delegada al agente) y `revisar-contrato-api` (contra `docs/api/` y la comprobación de tipos generados de la CI). Solo se invocan a mano.

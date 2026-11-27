@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
-import { blockingFindings } from '../../../scripts/audit';
+import { auditCommand, blockingFindings } from '../../../scripts/audit';
 
 const advisory = (
   severity: string,
@@ -49,5 +49,18 @@ describe('auditoría de dependencias (ADR-F011)', () => {
     expect(
       blockingFindings(report(advisory('high')), [exception], '2027-01-01'),
     ).toHaveLength(1);
+  });
+
+  it('corre npm audit con una shell solo en Windows, donde npm es npm.cmd', () => {
+    expect(auditCommand('win32')).toEqual({
+      command: 'npm audit --json',
+      args: [],
+      shell: true,
+    });
+    expect(auditCommand('linux')).toEqual({
+      command: 'npm',
+      args: ['audit', '--json'],
+      shell: false,
+    });
   });
 });
