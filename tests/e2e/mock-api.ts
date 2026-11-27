@@ -49,6 +49,20 @@ export async function mockCategories(page: Page, status = 200) {
 
 /** WCAG 2.2 A y AA con axe (ADR-F008); sin violaciones graves ni críticas (REQUIREMENTS §4.6). */
 export async function expectAccessible(page: Page) {
+  // axe mide el color que se ve: a media animación de entrada (un diálogo con opacidad menor a 1)
+  // el contraste sale más bajo que el real. Se esperan las animaciones finitas; las infinitas,
+  // como un indicador de carga, no terminan.
+  await page.evaluate(() =>
+    Promise.all(
+      document
+        .getAnimations()
+        .filter(
+          (animation) =>
+            animation.effect?.getComputedTiming().iterations !== Infinity,
+        )
+        .map((animation) => animation.finished.catch(() => undefined)),
+    ),
+  );
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
     .analyze();

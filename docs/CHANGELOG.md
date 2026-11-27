@@ -4,6 +4,9 @@
 
 ## Unreleased
 
+- TF-019: `node-forge` de 1.4.0 a 1.4.4, que corrige siete vulnerabilidades altas nuevas y la de la excepción de ADR-F011. `audit-exceptions.json` queda vacío. Solo cambia `package-lock.json`: llega por `nuxt → nitropack → listhen` y solo la usa el servidor de desarrollo.
+  - E2E: `expectAccessible` espera a que terminen las animaciones antes de correr axe. A media animación de entrada, un diálogo con opacidad menor a 1 daba un contraste falso (4.28 en vez del real) y el test de Mis direcciones fallaba a veces.
+
 - Sprint 4 cerrado con el presupuesto de rendimiento medido: inicio 2.56 s, catálogo 3.66 s y producto 3.45 s de LCP, dentro de sus topes, con 179 KB de JavaScript inicial. En el runner de la CI: 2.77 s, 3.76 s y 3.69 s (seguimiento de ADR-F012). TF-016 sigue bloqueada por G-01.
 
 - TF-015: presupuesto de rendimiento en la CI (`REQUIREMENTS.md` §6.2, ADR-F012).
