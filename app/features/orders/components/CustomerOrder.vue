@@ -101,8 +101,7 @@ async function buyAgain() {
           <template v-else>
             <p>
               Paga {{ formatMoney(order.grandTotal) }} con el código
-              <strong class="font-mono">{{ order.publicCode }}</strong
-              >.
+              <strong class="font-mono">{{ order.publicCode }}</strong>.
             </p>
             <ProblemAlert v-if="paymentProblem" :problem="paymentProblem" />
             <UButton

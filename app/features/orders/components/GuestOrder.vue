@@ -75,8 +75,7 @@ async function buyAgain() {
       >
         <p>
           Paga {{ formatMoney(order.grandTotal) }} con el código
-          <strong class="font-mono">{{ order.publicCode }}</strong
-          >.
+          <strong class="font-mono">{{ order.publicCode }}</strong>.
         </p>
         <UButton v-if="paymentInstructions" @click="emit('show-payment')"
           >Ver instrucciones de pago</UButton
