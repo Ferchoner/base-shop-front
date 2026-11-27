@@ -4,7 +4,7 @@
 
 ## Unreleased
 
-- Dependencias de minor y patch al día (Dependabot, PR #27): Nuxt 4.6.4, Nuxt UI 4.13, Vue 3.5.45, Vue Router 5.5, TanStack Query 5.108, Playwright 1.65, Vitest 5.1, msw 3.0.7, Prettier 3.10 y otras. Lighthouse sigue en 13.5.0 (ADR-F012) y Dependabot ya no lo sube. Prettier 3.10 reacomoda dos plantillas de pedidos, sin cambio visible.
+- Dependencias de minor y patch al día (Dependabot, PR #27): Nuxt 4.6.4, Vue 3.5.45, Vue Router 5.5, TanStack Query 5.108, Playwright 1.65, Vitest 5.1, msw 3.0.7, Prettier 3.10 y otras. Lighthouse sigue en 13.5.0 (ADR-F012) y Dependabot ya no lo sube. Prettier 3.10 reacomoda dos plantillas de pedidos, sin cambio visible. Nuxt UI se queda en 4.12.0 y `@nuxt/icon` en 2.6.1 (`overrides`), también fuera de Dependabot: `@nuxt/icon` 2.6.2 o posterior, que pide Nuxt UI 4.13, parte el JavaScript inicial en más archivos y el inicio pasa su tope de LCP en la CI (TF-023).
 
 - TF-021: `npm run typecheck` también revisa `scripts/`, `tests/unit/`, `tests/e2e/` y `playwright.config.ts`. Antes solo revisaba la app y la configuración de Nuxt. Los tests unitarios usan los tipos de la app (alias y auto-imports de Nuxt) y lo demás los de Node (`appTsConfig` y `nodeTsConfig` en `nuxt.config.ts`).
   - `tests/unit/shared/client.spec.ts`: msw 3 renombró `onUnhandledRequest` a `onUnhandledFrame` y el test seguía pasando la opción vieja, que msw ignora. Desde que Dependabot subió msw a la 3, una petición sin handler solo avisaba en lugar de fallar el test. Ahora usa `onUnhandledFrame: 'error'`.

@@ -31,6 +31,10 @@ updates:
       # Lighthouse stays on the version the LCP caps were measured with: 13.6.0 reports a false LCP, and an
       # upgrade needs a new measurement against the previous version (ADR-F012). Security updates still come.
       - dependency-name: lighthouse
+      # @nuxt/icon 2.6.2 and later split the initial JavaScript into more files and push the LCP over its caps
+      # (TF-023); @nuxt/ui 4.13 requires them. Both stay where they are until TF-023 is done.
+      - dependency-name: '@nuxt/ui'
+      - dependency-name: '@nuxt/icon'
 
   - package-ecosystem: github-actions
     directory: /
