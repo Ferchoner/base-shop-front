@@ -4,6 +4,11 @@
 
 ## Unreleased
 
+- TF-018: agente y skills de Claude Code.
+  - `.claude/agents/revisor-de-cambios.md`: revisa un diff en modo de solo lectura contra los criterios de aceptación y los contratos, con archivo, línea, impacto y corrección.
+  - `.claude/skills/`: `implementar-cambio`, `verificar-cambio` (lint, formato, typecheck y tests, con la revisión delegada al agente) y `revisar-contrato-api` (contra `docs/api/` y la comprobación de tipos generados de la CI). Solo se invocan a mano.
+  - La versión de la API ya no se fija en las skills ni en `CLAUDE.md`: se lee de `docs/api/README.md` (1.8.0).
+
 - TF-019: `node-forge` de 1.4.0 a 1.4.4, que corrige siete vulnerabilidades altas nuevas y la de la excepción de ADR-F011. `audit-exceptions.json` queda vacío. Solo cambia `package-lock.json`: llega por `nuxt → nitropack → listhen` y solo la usa el servidor de desarrollo.
   - E2E: `expectAccessible` espera a que terminen las animaciones antes de correr axe. A media animación de entrada, un diálogo con opacidad menor a 1 daba un contraste falso (4.28 en vez del real) y el test de Mis direcciones fallaba a veces.
 
