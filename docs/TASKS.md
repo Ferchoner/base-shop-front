@@ -41,3 +41,9 @@ Detalle de cada pantalla en `REQUIREMENTS.md` (§ de la columna "Criterios"). To
 | TF-015 | Presupuesto de rendimiento en la CI | DONE | TF-007 | Lighthouse en la CI contra el build con la API simulada, que falla si se pasa el presupuesto de `REQUIREMENTS.md` §6.2, con los topes locales de LCP de ADR-F012 (salvo el LCP con imágenes mientras G-02 siga abierta). Antes, recuperar el margen del catálogo que se perdió con TF-013 (elegido por el usuario): chunks comunes copiados en las páginas (ADR-F015) |
 | TF-016 | Aviso de privacidad | BLOCKED | TF-006 | `REQUIREMENTS.md` §5.14. Bloqueada por G-01 y PF-07: falta el texto legal y su dueño. Con el enlace al aviso en el pie (§5.15) y junto a la casilla de aceptación del registro (§5.7) |
 | TF-017 | Ajuste del reparto de chunks antes del checkout | DONE | TF-011 | ADR-F012 (seguimiento del sprint 2). El LCP del catálogo y del producto vuelve a quedar en o por debajo del medido al cerrar el sprint 1 (3.66 s y 3.48 s), o se documenta por qué no se puede, sin pasar los 200 KB de JavaScript inicial de `REQUIREMENTS.md` §6.2 y medido igual que ahí. Resuelto adelantando las peticiones de la página, no los chunks (ADR-F013): catálogo 3.60 s, producto 3.43 s, 171 KB |
+
+## Herramientas
+
+| ID | Tarea | Estado | Depende de | Criterios de aceptación |
+|---|---|---|---|---|
+| TF-018 | Agente y skills de Claude Code para implementar, verificar y revisar el contrato de la API | DONE | TF-004 | `.claude/agents/revisor-de-cambios.md` (solo lectura) y las skills `implementar-cambio`, `verificar-cambio` y `revisar-contrato-api` en `.claude/skills/`, que solo se invocan a mano; cada ruta, script de npm y paso de la CI que citan existe; ninguna fija la versión de la API, que se lee de `docs/api/README.md`; `CLAUDE.md` distingue la versión de la que se adaptó (1.7.0) de la vigente |

@@ -4,6 +4,11 @@
 
 ## Unreleased
 
+- TF-018: agente y skills de Claude Code.
+  - `.claude/agents/revisor-de-cambios.md`: revisa un diff en modo de solo lectura contra los criterios de aceptación y los contratos, con archivo, línea, impacto y corrección.
+  - `.claude/skills/`: `implementar-cambio`, `verificar-cambio` (lint, formato, typecheck y tests, con la revisión delegada al agente) y `revisar-contrato-api` (contra `docs/api/` y la comprobación de tipos generados de la CI). Solo se invocan a mano.
+  - La versión de la API ya no se fija en las skills ni en `CLAUDE.md`: se lee de `docs/api/README.md` (1.8.0).
+
 - Sprint 4 cerrado con el presupuesto de rendimiento medido: inicio 2.56 s, catálogo 3.66 s y producto 3.45 s de LCP, dentro de sus topes, con 179 KB de JavaScript inicial. En el runner de la CI: 2.77 s, 3.76 s y 3.69 s (seguimiento de ADR-F012). TF-016 sigue bloqueada por G-01.
 
 - TF-015: presupuesto de rendimiento en la CI (`REQUIREMENTS.md` §6.2, ADR-F012).

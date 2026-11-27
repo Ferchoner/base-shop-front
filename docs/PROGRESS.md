@@ -30,6 +30,7 @@ Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack deci
 - [x] TF-013 Mi cuenta, direcciones y mis pedidos (2026-10-27)
 - [x] TF-015 Presupuesto de rendimiento en la CI y margen del catálogo recuperado (2026-10-27)
 - [x] Sprint 4 cerrado (2026-10-27)
+- [x] TF-018 Agente y skills de Claude Code (2026-11-26)
 
 ## In Progress
 
