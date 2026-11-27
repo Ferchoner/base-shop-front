@@ -37,6 +37,7 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
 | ADR-F013 | Las páginas piden sus datos en cuanto el router las resuelve | Aceptada |
 | ADR-F014 | La orden recién colocada vive solo en memoria | Aceptada |
 | ADR-F015 | Los chunks comunes pequeños se copian en las páginas que los usan | Aceptada |
+| ADR-F016 | Los iconos se dibujan como SVG, no con máscara CSS | Aceptada |
 
 ---
 
@@ -345,4 +346,4 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
   - Quedan 2 archivos iniciales más que en `main`, por el runtime partido de `@nuxt/icon`; el presupuesto de la CI los cubre.
   - Un icono es un nodo `<svg>` en el DOM: más nodos que un `<span>`, sin efecto medible en estas pantallas.
   - Si `@nuxt/icon` deja de cargar el componente SVG con `import()` en modo `css`, se puede volver a medir los dos modos.
-- **Estado:** Propuesta (PR de TF-023).
+- **Estado:** Aceptada (aprobada por el usuario el 2026-11-27).

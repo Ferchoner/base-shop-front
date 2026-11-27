@@ -34,6 +34,7 @@ Inicialización. Reglas, documentación y CI mínima hechas (TF-001). Stack deci
 - [x] TF-018 Agente y skills de Claude Code (2026-11-26)
 - [x] TF-020 `npm run audit` en Windows y fallos de `npm audit` (2026-11-27)
 - [x] TF-021 `npm run typecheck` también revisa scripts y tests (2026-11-27)
+- [x] TF-023 Nuxt UI 4.13 y `@nuxt/icon` 2.6.3 con los iconos como SVG (2026-11-27)
 
 ## In Progress
 
@@ -43,7 +44,6 @@ Ninguna.
 
 - TF-016 cuando se resuelva G-01 (y PF-07)
 - TF-022 `npm run perf:budget` en Windows
-- TF-023 Regresión de LCP con `@nuxt/icon` 2.6.2 o posterior: en revisión (ADR-F016 propuesta)
 
 ## Blocked
 
@@ -78,6 +78,7 @@ Otras brechas de la API que afectan pantallas, en `API_GAPS.md`: G-01 y G-03 afe
 | ADR-F013 | Las páginas piden sus datos en cuanto el router las resuelve |
 | ADR-F014 | La orden recién colocada vive solo en memoria |
 | ADR-F015 | Los chunks comunes pequeños se copian en las páginas que los usan |
+| ADR-F016 | Los iconos se dibujan como SVG, no con máscara CSS (TF-023) |
 
 ## Notas
 
