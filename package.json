@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.157",
-    "@nuxt/ui": "4.12.0",
+    "@nuxt/ui": "^4.13.1",
     "@pinia/nuxt": "^1.0.2",
     "@tanstack/vue-query": "^5.108.1",
     "nuxt": "^4.6.4",
@@ -62,8 +62,5 @@
     "msw": false,
     "unrs-resolver": false,
     "vue-demi": false
-  },
-  "overrides": {
-    "@nuxt/icon": "2.6.1"
   }
 }
