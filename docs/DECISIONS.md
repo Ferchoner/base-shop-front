@@ -226,6 +226,7 @@ Si una decisión del frontend contradice o amplía una de la API, lo dice y cita
 - **Alternativas consideradas:** `npm audit --audit-level=critical` (dejaría pasar cualquier alta nueva); `--omit=dev` (no sirve: `nuxt` es dependencia de producción aunque `node-forge` solo se use en desarrollo); `overrides` hacia otra versión (no hay ninguna corregida); quitar la auditoría de la CI hasta que haya arreglo (ADR-F008 la exige).
 - **Consecuencias:** la CI sigue fallando con cualquier vulnerabilidad alta o crítica nueva. Cuando salga una versión corregida de `node-forge` o Nuxt deje de usarla, el script avisa que la excepción sobra.
 - **Estado:** Aceptada (aprobada por el usuario el 2026-10-26).
+- **Nota (2026-11-26, TF-019):** `node-forge` 1.4.4 corrige GHSA-86w9-cpqp-85rv y siete vulnerabilidades altas nuevas que hacían fallar la CI. `listhen` acepta `^1.4.0`, así que basta con actualizar `package-lock.json`, sin `overrides`. La excepción se quitó y `audit-exceptions.json` queda vacío; el mecanismo sigue para las que vengan.
 
 ---
 
