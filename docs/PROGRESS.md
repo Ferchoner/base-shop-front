@@ -42,6 +42,8 @@ Ninguna.
 ## Next
 
 - TF-016 cuando se resuelva G-01 (y PF-07)
+- TF-022 `npm run perf:budget` en Windows
+- TF-023 Regresión de LCP con `@nuxt/icon` 2.6.2 o posterior (bloquea el PR #27 de Dependabot)
 
 ## Blocked
 
