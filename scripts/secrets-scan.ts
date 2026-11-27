@@ -35,7 +35,7 @@ export interface RepositoryPaths {
  */
 export function containerOptions(
   repository: RepositoryPaths,
-  hostPath: path.PlatformPath = path,
+  hostPath: typeof path = path,
 ): string[] {
   const gitDir = hostPath.relative(repository.commonDir, repository.gitDir);
   if (
@@ -97,7 +97,12 @@ function readRepository(): RepositoryPaths & { head: string } {
   if (result.status !== 0 || lines.length !== 4) {
     throw new Error('git rev-parse could not read the repository');
   }
-  const [workTree, gitDir, commonDir, head] = lines;
+  const [workTree, gitDir, commonDir, head] = lines as [
+    string,
+    string,
+    string,
+    string,
+  ];
   return {
     workTree: path.resolve(workTree),
     gitDir: path.resolve(gitDir),

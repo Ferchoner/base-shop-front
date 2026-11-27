@@ -17,7 +17,7 @@ import { ApiProblem } from '~/shared/api/problem';
 
 const BASE = 'http://api.test';
 const server = setupServer();
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
@@ -148,7 +148,7 @@ describe('cliente de la API', () => {
       body: {},
     }).catch((e) => e);
     expect(error).toBeInstanceOf(ApiProblem);
-    expect(error.retryAfter).toBe(30);
+    expect((error as ApiProblem).retryAfter).toBe(30);
   });
 
   it('envía Idempotency-Key cuando se indica (API_SPEC §4)', async () => {
