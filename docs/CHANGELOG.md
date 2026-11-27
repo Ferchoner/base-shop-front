@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+- TF-021: `npm run typecheck` también revisa `scripts/`, `tests/unit/`, `tests/e2e/` y `playwright.config.ts`. Antes solo revisaba la app y la configuración de Nuxt. Los tests unitarios usan los tipos de la app (alias y auto-imports de Nuxt) y lo demás los de Node (`appTsConfig` y `nodeTsConfig` en `nuxt.config.ts`).
+  - `tests/unit/shared/client.spec.ts`: msw 3 renombró `onUnhandledRequest` a `onUnhandledFrame` y el test seguía pasando la opción vieja, que msw ignora. Desde que Dependabot subió msw a la 3, una petición sin handler solo avisaba en lugar de fallar el test. Ahora usa `onUnhandledFrame: 'error'`.
+  - Tipos corregidos sin cambiar el comportamiento: `scripts/secrets-scan.ts` (tipo de `path` y las cuatro líneas de `git rev-parse`, ya comprobadas), `tests/e2e/mock-api.ts` (`isDefault` se lee del cuerpo) y la aserción de `retryAfter` en `client.spec.ts`.
+
 - TF-020: `npm run audit` funciona en Windows. Ahí npm es `npm.cmd`, que Node solo lanza con una shell, y el script fallaba con `ENOENT` e imprimía `undefined`. Ahora usa la shell solo en Windows, con un comando fijo, y si `npm audit` no arranca muestra el error.
   - La auditoría ya no pasa sin haber auditado: si `npm audit` falla (sin red, registro caído, sin lockfile), con `--json` responde con un error en JSON que el script leía como "sin vulnerabilidades" y salía con 0. Ahora falla con el mensaje de npm. También falla con un mensaje claro si la salida no es JSON o se corta (`maxBuffer` de 64 MiB en vez de 1 MiB), y si no hay mensaje, da el código de salida.
 

@@ -70,6 +70,19 @@ export default defineNuxtConfig({
         noUncheckedIndexedAccess: true,
       },
     },
+    // `nuxt typecheck` solo revisa la app y la configuración. Los tests unitarios corren en el
+    // entorno de Nuxt, con sus alias y auto-imports; los scripts, los e2e y la configuración de
+    // Playwright corren en Node (TF-021). Rutas relativas a `.nuxt/`.
+    appTsConfig: {
+      include: ['../tests/unit/**/*'],
+    },
+    nodeTsConfig: {
+      include: [
+        '../scripts/**/*',
+        '../tests/e2e/**/*',
+        '../playwright.config.ts',
+      ],
+    },
   },
   eslint: {
     config: { stylistic: false },
